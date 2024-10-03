@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication-service
+  template:
+    metadata:
+      labels:
+        app: authentication-service
+    spec:
+      nodeSelector:
+        authentication-service: "true"  # Ensure it runs on the labeled node
+      containers:
+      - name: authentication-service
+        image: pedrosilva06/auth-service
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication-service
+spec:
+  selector:
+    app: authentication-service
+  ports:
+    - protocol: TCP
+      port: 8080         # Service port
+      targetPort: 8080   # Container port
+      nodePort: 30001    # Exposes the service on this node port
+  type: NodePort
