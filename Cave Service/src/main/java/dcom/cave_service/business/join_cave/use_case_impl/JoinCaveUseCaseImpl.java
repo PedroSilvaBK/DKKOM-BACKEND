@@ -24,6 +24,7 @@ public class JoinCaveUseCaseImpl implements JoinCaveUseCase {
     private final ModelMapper modelMapper;
 
     @Transactional
+    //TODO this needs to trigger some event saying that a user joined to update others interfaces
     public boolean joinCave(JoinCaveRequest joinCaveRequest) {
         CaveInviteEntity caveInviteEntity = caveInviteRepository.findById(joinCaveRequest.getInviteId())
                 .orElseThrow(() -> new InvalidCaveInviteException("Invalid invite ID"));

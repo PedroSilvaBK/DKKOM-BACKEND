@@ -1,6 +1,7 @@
 package dcom.cave_service.configuration;
 
 import dcom.cave_service.exceptions.CaveNotFoundException;
+import dcom.cave_service.exceptions.InvalidCaveInviteException;
 import dcom.cave_service.exceptions.InvalidExpirationDateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,12 @@ public class RestCustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {InvalidExpirationDateException.class})
     public ResponseEntity<Object> handleInvalidExpirationDateException(final InvalidExpirationDateException error) {
         log.error("InvalidExpirationDateException with status {} occurred {}", HttpStatus.BAD_REQUEST, error);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getReason());
+    }
+
+    @ExceptionHandler(value = {InvalidCaveInviteException.class})
+    public ResponseEntity<Object> handleInvalidCaveInviteException(final InvalidCaveInviteException error) {
+        log.error("InvalidCaveInviteException with status {} occurred {}", HttpStatus.BAD_REQUEST, error);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getReason());
     }
 }
