@@ -2,9 +2,9 @@ stages:
   - build
   - test
   - sonarqube
+  - security_scan
   - dockerize
   - deploy
-  - security_scan
 
 
 api_gateway_build:
@@ -18,6 +18,12 @@ api_gateway_test:
   script:
     - cd "api gateway"
     - ./gradlew test
+
+api_gateway_sonarqube:
+  stage: sonarqube
+  script:
+    - cd "api gateway"
+    - ./gradlew sonar -Dsonar.projectKey=dcom_api_gateway -Dsonar.projectName='dcom_api_gateway' -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_481ff9454e644655b6002a8b86b29b643b7744aa
 
 snyk_scan_api_gateway:
   stage: security_scan
@@ -36,19 +42,13 @@ snyk_scan_api_gateway:
 owasp_zap_scan_api_gateway:
   stage: security_scan
   script:
-    - docker run -v "${CI_PROJECT_DIR}:/zap/wrk/:rw" -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py -t http://localhost:8080 -g gen.conf -r report.html
+    - docker run --rm -v "${CI_PROJECT_DIR}:/zap/wrk/:rw" -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py -t http://localhost:8080 -g gen.conf -r report.html
   allow_failure: true
   artifacts:
     paths:
       - report.html
   only:
     - develop
-
-# api_gateway_sonarqube:
-#   stage: sonarqube
-#   script:
-#     - cd "api gateway"
-#     - ./gradlew sonarqube
 
 # authentication_build:
 #   stage: build
