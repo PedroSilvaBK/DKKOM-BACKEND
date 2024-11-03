@@ -18,7 +18,7 @@ snyk_scan:
     # Define the Snyk token as an environment variable.
     SNYK_TOKEN: $SNYK_TOKEN
   script:
-      - ls "${CI_PROJECT_DIR}"
+    - ls "${CI_PROJECT_DIR}"
     - echo "Setting executable permission on gradlew if needed..."
     # - chmod +x "${CI_PROJECT_DIR}/api gateway/gradlew"
     - echo "Running Snyk scan..."
