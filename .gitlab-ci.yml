@@ -18,7 +18,7 @@ snyk_scan:
     # Define the Snyk token as an environment variable.
     SNYK_TOKEN: $SNYK_TOKEN
   script:
-    - docker run --rm -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$SNYK_TOKEN snyk/snyk:gradle-jdk21
+    - docker run -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$SNYK_TOKEN snyk/snyk:gradle-jdk21
   allow_failure: true  # Allow failure if Snyk finds issues, but continue with the pipeline
   artifacts:
     paths:
