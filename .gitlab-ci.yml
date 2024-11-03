@@ -36,7 +36,7 @@ snyk_scan_api_gateway:
 owasp_zap_scan_api_gateway:
   stage: security_scan
   script:
-    - docker run -v "${CI_PROJECT_DIR}":/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -g gen.conf -r report.html
+    - docker run -v "${pwd}":/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -g gen.conf -r report.html
   allow_failure: true
   artifacts:
     paths:
