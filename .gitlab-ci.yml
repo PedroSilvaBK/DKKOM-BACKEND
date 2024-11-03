@@ -13,35 +13,24 @@ api_gateway_build:
     - cd "api gateway"
     - ./gradlew build
 
-snyk_scan:
-  stage: security_scan
-  variables:
-    # Define the Snyk token as an environment variable.
-    SNYK_TOKEN: $SNYK_TOKEN
+api_gateway_test:
+  stage: test
   script:
-    - echo $env:SNYK_TOKEN
+    - cd "api gateway"
+    - ./gradlew test
+
+snyk_scan_api_gateway:
+  stage: security_scan
+  script:
     - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradlew" -Force
     - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradle" -Recurse -Force
     - docker run --rm -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$env:SNYK_TOKEN snyk/snyk:gradle-jdk21
-    # - docker run --rm -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$SNYK_TOKEN snyk/snyk:gradle-jdk21
-  allow_failure: true  # Allow failure if Snyk finds issues, but continue with the pipeline
+  allow_failure: true
   artifacts:
     paths:
       - snyk_report.json
   only:
-    - develop  
-
-# api_gateway_build:
-#   stage: build
-#   script:
-#     - cd "api gateway"
-#     - ./gradlew build
-
-# api_gateway_test:
-#   stage: test
-#   script:
-#     - cd "api gateway"
-#     - ./gradlew test
+    - develop
 
 # api_gateway_sonarqube:
 #   stage: sonarqube
