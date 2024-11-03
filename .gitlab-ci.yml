@@ -6,10 +6,6 @@ stages:
   - deploy
   - security_scan
 
-test:
-  stage: test
-  script:
-    - echo "Running tests.. ."
 
 snyk_scan:
   stage: security_scan
