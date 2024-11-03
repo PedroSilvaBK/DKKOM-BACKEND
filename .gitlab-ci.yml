@@ -22,7 +22,7 @@ snyk_scan:
     - echo "Setting executable permission on gradlew if needed..."
     # - chmod +x "${CI_PROJECT_DIR}/api gateway/gradlew"
     - echo "Running Snyk scan..."
-    - docker run --rm -v -it "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$SNYK_TOKEN snyk/snyk:gradle-jdk21 sh
+    - docker run --rm -it -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$SNYK_TOKEN snyk/snyk:gradle-jdk21 sh
     # - docker run --rm -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$SNYK_TOKEN snyk/snyk:gradle-jdk21
   allow_failure: true  # Allow failure if Snyk finds issues, but continue with the pipeline
   artifacts:
