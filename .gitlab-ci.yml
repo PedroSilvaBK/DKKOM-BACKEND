@@ -9,7 +9,7 @@ stages:
 test:
   stage: test
   script:
-    - echo "Running tests..."
+    - echo "Running tests.. ."
 
 snyk_scan:
   stage: security_scan
