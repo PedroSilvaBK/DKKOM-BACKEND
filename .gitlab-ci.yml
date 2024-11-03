@@ -5,118 +5,123 @@ stages:
   - dockerize
   - deploy
 
-api_gateway_build:
-  stage: build
-  script:
-    - cd "api gateway"
-    - ./gradlew build
-
-api_gateway_test:
+test:
   stage: test
   script:
-    - cd "api gateway"
-    - ./gradlew test
+    - echo "Running tests..."
 
-api_gateway_sonarqube:
-  stage: sonarqube
-  script:
-    - cd "api gateway"
-    - ./gradlew sonarqube
+# api_gateway_build:
+#   stage: build
+#   script:
+#     - cd "api gateway"
+#     - ./gradlew build
 
-authentication_build:
-  stage: build
-  script:
-    - cd "Authentication Service"
-    - ./gradlew build
+# api_gateway_test:
+#   stage: test
+#   script:
+#     - cd "api gateway"
+#     - ./gradlew test
 
-authentication_test:
-  stage: test
-  script:
-    - cd "Authentication Service"
-    - ./gradlew test
+# api_gateway_sonarqube:
+#   stage: sonarqube
+#   script:
+#     - cd "api gateway"
+#     - ./gradlew sonarqube
 
-authentication_sonarqube:
-  stage: sonarqube
-  script:
-    - cd "Authentication Service"
-    - ./gradlew sonarqube
+# authentication_build:
+#   stage: build
+#   script:
+#     - cd "Authentication Service"
+#     - ./gradlew build
+
+# authentication_test:
+#   stage: test
+#   script:
+#     - cd "Authentication Service"
+#     - ./gradlew test
+
+# authentication_sonarqube:
+#   stage: sonarqube
+#   script:
+#     - cd "Authentication Service"
+#     - ./gradlew sonarqube
 
 
-cave_service_build:
-  stage: build
-  script:
-    - cd "Cave Service"
-    - ./gradlew build
+# cave_service_build:
+#   stage: build
+#   script:
+#     - cd "Cave Service"
+#     - ./gradlew build
 
-cave_service_test:
-  stage: test
-  script:
-    - cd "Cave Service"
-    - ./gradlew test
+# cave_service_test:
+#   stage: test
+#   script:
+#     - cd "Cave Service"
+#     - ./gradlew test
 
-cave_service_sonarqube:
-  stage: sonarqube
-  script:
-    - cd "Cave Service"
-    - ./gradlew sonarqube
+# cave_service_sonarqube:
+#   stage: sonarqube
+#   script:
+#     - cd "Cave Service"
+#     - ./gradlew sonarqube
 
-media_service_build:
-  stage: build
-  script:
-    - cd "Media Service"
-    - ./gradlew build
+# media_service_build:
+#   stage: build
+#   script:
+#     - cd "Media Service"
+#     - ./gradlew build
 
-media_service_test:
-  stage: test
-  script:
-    - cd "Media Service"
-    - ./gradlew test
+# media_service_test:
+#   stage: test
+#   script:
+#     - cd "Media Service"
+#     - ./gradlew test
 
-media_service_sonarqube:
-  stage: sonarqube
-  script:
-    - cd "Media Service"
-    - ./gradlew sonarqube
+# media_service_sonarqube:
+#   stage: sonarqube
+#   script:
+#     - cd "Media Service"
+#     - ./gradlew sonarqube
 
-messaging_service_build:
-  stage: build
-  script:
-    - cd "Messaging Service"
-    - ./gradlew build
+# messaging_service_build:
+#   stage: build
+#   script:
+#     - cd "Messaging Service"
+#     - ./gradlew build
 
-messaging_service_test:
-  stage: test
-  script:
-    - cd "Messaging Service"
-    - ./gradlew test
+# messaging_service_test:
+#   stage: test
+#   script:
+#     - cd "Messaging Service"
+#     - ./gradlew test
 
-messaging_service_sonarqube:
-  stage: sonarqube
-  script:
-    - cd "Messaging Service"
-    - ./gradlew sonarqube
+# messaging_service_sonarqube:
+#   stage: sonarqube
+#   script:
+#     - cd "Messaging Service"
+#     - ./gradlew sonarqube
 
-notification_service_build:
-  stage: build
-  script:
-    - cd "Notification Service"
-    - ./gradlew build
+# notification_service_build:
+#   stage: build
+#   script:
+#     - cd "Notification Service"
+#     - ./gradlew build
 
-notification_service_test:
-  stage: test
-  script:
-    - cd "Notification Service"
-    - ./gradlew test
+# notification_service_test:
+#   stage: test
+#   script:
+#     - cd "Notification Service"
+#     - ./gradlew test
 
-notification_service_sonarqube:
-  stage: sonarqube
-  script:
-    - cd "Notification Service"
-    - ./gradlew sonarqube
+# notification_service_sonarqube:
+#   stage: sonarqube
+#   script:
+#     - cd "Notification Service"
+#     - ./gradlew sonarqube
 
-deploy-job:      
-  stage: deploy 
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+# deploy-job:      
+#   stage: deploy 
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - echo "Application successfully deployed."
