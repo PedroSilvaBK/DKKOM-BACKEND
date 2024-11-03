@@ -32,6 +32,18 @@ snyk_scan_api_gateway:
   only:
     - develop
 
+
+owasp_zap_scan_api_gateway:
+  stage: security_scan
+  script:
+    - docker run -v "${CI_PROJECT_DIR}":/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -g gen.conf -r report.html
+  allow_failure: true
+  artifacts:
+    paths:
+      - report.html
+  only:
+    - develop
+
 # api_gateway_sonarqube:
 #   stage: sonarqube
 #   script:
