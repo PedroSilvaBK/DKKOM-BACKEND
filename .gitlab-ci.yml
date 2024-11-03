@@ -4,6 +4,7 @@ stages:
   - sonarqube
   - dockerize
   - deploy
+  - security_scan
 
 test:
   stage: test
