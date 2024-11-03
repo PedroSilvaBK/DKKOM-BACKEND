@@ -19,7 +19,7 @@ snyk_scan:
     # Define the Snyk token as an environment variable.
     SNYK_TOKEN: $SNYK_TOKEN
   script:
-    - echo "Running Snyk scan with token: $env:SNYK_TOKEN"
+    - echo "Running Snyk scan $env:SNYK_TOKEN"
     - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradlew" -Force
     - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradle" -Recurse -Force
     - docker run --rm -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$env:SNYK_TOKEN snyk/snyk:gradle-jdk21
