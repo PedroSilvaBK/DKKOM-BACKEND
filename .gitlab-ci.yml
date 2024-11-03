@@ -7,6 +7,11 @@ stages:
   - security_scan
 
 
+print:
+  stage: build
+  script:
+    - echo "Hello, ${CI_PROJECT_DIR}"
+
 snyk_scan:
   stage: security_scan
   variables:
