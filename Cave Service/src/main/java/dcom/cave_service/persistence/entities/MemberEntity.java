@@ -22,7 +22,7 @@ public class MemberEntity {
     @Id
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cave_id", nullable = false)
     private CaveEntity caveEntity;
 
@@ -33,6 +33,11 @@ public class MemberEntity {
     @Size(min = 2, max = 50)
     @Column(name = "nickname")
     private String nickname;
+
+    @Size(min = 2, max = 50)
+    @NotNull
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "joined_at")
     private LocalDateTime joinedAt;

@@ -11,5 +11,5 @@ import java.util.List;
 @Data
 public class ChatChannel extends Channel {
     private String description;
-    private List<ChatChannelRole> chatChannelRoles;
+    private List<ChannelRole> chatChannelRoles;
 }

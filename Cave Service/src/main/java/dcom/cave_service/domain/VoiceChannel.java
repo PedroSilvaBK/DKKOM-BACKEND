@@ -10,5 +10,5 @@ import java.util.List;
 @SuperBuilder
 @Data
 public class VoiceChannel extends Channel {
-    private List<VoiceChannelRole> voiceChannelRole;
+    private List<ChannelRole> channelRole;
 }

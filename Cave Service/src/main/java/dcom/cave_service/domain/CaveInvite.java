@@ -30,6 +30,6 @@ public class CaveInvite {
 
     private boolean validateUses()
     {
-        return inviteUses >= maxUses;
+        return inviteUses <= maxUses;
     }
 }

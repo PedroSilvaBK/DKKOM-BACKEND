@@ -18,6 +18,7 @@ public class Member {
     private User user;
     private UUID caveId;
     private String nickname;
+    private String username;
     private LocalDateTime joinedAt;
     private Set<CaveRole> roles;
 }

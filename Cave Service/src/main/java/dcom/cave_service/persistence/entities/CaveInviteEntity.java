@@ -22,7 +22,7 @@ public class CaveInviteEntity {
     @Id
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cave_id", nullable = false)
     private CaveEntity caveEntity;
 
@@ -41,4 +41,8 @@ public class CaveInviteEntity {
     @NotNull
     @Column(name = "invite_uses")
     private int inviteUses;
+
+    public void increaseInviteUses() {
+        this.inviteUses++;
+    }
 }

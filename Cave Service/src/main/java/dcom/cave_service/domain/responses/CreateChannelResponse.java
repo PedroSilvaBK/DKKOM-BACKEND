@@ -1,5 +1,6 @@
 package dcom.cave_service.domain.responses;
 
+import dcom.cave_service.domain.ChannelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,4 +14,6 @@ import java.util.UUID;
 @Data
 public class CreateChannelResponse {
     private UUID id;
+    private String name;
+    private ChannelType type;
 }

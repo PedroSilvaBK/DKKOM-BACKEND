@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -16,5 +15,17 @@ public class CaveRole {
     private UUID id;
     private UUID caveId;
     private String name;
-    private Set<CavePermissions> permissions;
+    private int permissions;
+
+    public void addPermission(int permission) {
+        permissions |= permission;
+    }
+
+    public void removePermission(int permission) {
+        permissions &= ~permission;
+    }
+
+    public boolean hasPermission(int permission) {
+        return (permissions & permission) == permission;
+    }
 }

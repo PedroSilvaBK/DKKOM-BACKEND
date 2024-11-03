@@ -1,6 +1,5 @@
 package dcom.cave_service.persistence.entities;
 
-import dcom.cave_service.domain.ChatChannelPermissions;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -21,6 +20,6 @@ public class ChatChannelEntity extends ChannelEntity {
     @Size(min = 1, max = 255)
     @Column(name = "description")
     private String description;
-    @OneToMany(mappedBy = "chatChannelEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatChannelRoleEntity> chatChannelRoleEntityList;
+    @OneToMany(mappedBy = "channelEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChannelRoleEntity> chatChannelRoleEntityList;
 }

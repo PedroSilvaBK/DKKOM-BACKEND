@@ -27,15 +27,11 @@ CREATE TABLE channel_roles
     id         BINARY(16) NOT NULL,
     entity_id    BINARY(16) NOT NULL,
     entity_type int NOT NULL,
+    entity_name varchar(50) NOT NULL ,
     channel_id BINARY(16) NOT NULL,
+    allow int NOT NULL,
+    deny int NOT NULL,
     PRIMARY KEY (id),
+    UNIQUE (id),
     FOREIGN KEY (channel_id) REFERENCES channel(id)
 );
-
-
-CREATE TABLE channel_role_permissions (
-    channel_role_id BINARY(16) NOT NULL,
-    permission int NOT NULL,
-    PRIMARY KEY (channel_role_id, permission),
-    FOREIGN KEY (channel_role_id) REFERENCES channel_roles(id)
-)

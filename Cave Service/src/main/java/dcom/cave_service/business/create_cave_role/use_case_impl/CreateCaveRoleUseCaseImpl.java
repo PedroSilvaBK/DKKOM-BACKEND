@@ -8,6 +8,7 @@ import dcom.cave_service.persistence.entities.CaveEntity;
 import dcom.cave_service.persistence.entities.CaveRoleEntity;
 import dcom.cave_service.persistence.repositories.CaveRepository;
 import dcom.cave_service.persistence.repositories.CaveRoleRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class CreateCaveRoleUseCaseImpl implements CreateCaveRoleUseCase {
     private final CaveRoleRepository caveRoleRepository;
     private final CaveRepository caveRepository;
 
+    @Transactional
     public CreateCaveRoleResponse createCaveRole(CreateCaveRoleRequest createCaveRoleRequest) {
         CaveEntity cave = caveRepository.findById(createCaveRoleRequest.getCaveId())
                 .orElseThrow(() -> new CaveNotFoundException("Cave not found"));
@@ -34,6 +36,8 @@ public class CreateCaveRoleUseCaseImpl implements CreateCaveRoleUseCase {
 
         return CreateCaveRoleResponse.builder()
                 .id(savedCaveRole.getId())
+                .name(savedCaveRole.getName())
+                .permissions(savedCaveRole.getPermissions())
                 .build();
     }
 }

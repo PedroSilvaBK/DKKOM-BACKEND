@@ -1,12 +1,13 @@
 package dcom.cave_service.domain.requests;
 
+import dcom.cave_service.domain.CaveInviteExpiration;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -16,7 +17,8 @@ import java.util.UUID;
 public class CreateCaveInviteRequest {
     private UUID caveId;
     @NotNull
-    private LocalDateTime expirationDate;
+    private CaveInviteExpiration caveInviteExpiration;
     @NotNull
-    private int maxUsers;
+    @Max(100)
+    private int maxUses;
 }

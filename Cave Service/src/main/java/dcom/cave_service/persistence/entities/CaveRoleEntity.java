@@ -1,7 +1,6 @@
 package dcom.cave_service.persistence.entities;
 
 
-import dcom.cave_service.domain.CavePermissions;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -30,9 +29,6 @@ public class CaveRoleEntity {
     @Column(name = "name")
     private String name;
 
-    @ElementCollection(targetClass = CavePermissions.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "cave_role_permissions", joinColumns = @JoinColumn(name = "cave_role_id"))
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "permission")
-    private Set<CavePermissions> permissions;
+    @Column(name = "permissions")
+    private int permissions;
 }

@@ -20,6 +20,10 @@ import java.util.UUID;
 public class CaveEntity {
     @Id
     private UUID id;
+
+    @Column(name = "owner", nullable = false)
+    private UUID owner;
+
     @Column(name = "name", nullable = false)
     @Size(max = 50)
     private String name;

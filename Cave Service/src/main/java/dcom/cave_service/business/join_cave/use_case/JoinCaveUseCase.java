@@ -1,7 +1,9 @@
 package dcom.cave_service.business.join_cave.use_case;
 
-import dcom.cave_service.domain.requests.JoinCaveRequest;
+import dcom.cave_service.domain.responses.JoinCaveResponse;
+
+import java.util.UUID;
 
 public interface JoinCaveUseCase {
-    boolean joinCave(JoinCaveRequest joinCaveRequest);
+    JoinCaveResponse joinCave(UUID inviteId);
 }

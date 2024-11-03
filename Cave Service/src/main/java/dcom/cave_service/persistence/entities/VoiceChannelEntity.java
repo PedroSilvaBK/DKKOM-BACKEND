@@ -1,6 +1,5 @@
 package dcom.cave_service.persistence.entities;
 
-import dcom.cave_service.domain.VoiceChannelPermissions;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +16,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class VoiceChannelEntity extends ChannelEntity {
-    @OneToMany(mappedBy = "voiceChannelEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<VoiceChannelRoleEntity> voiceChannelRoleEntities;
+    @OneToMany(mappedBy = "channelEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChannelRoleEntity> voiceChannelRoleEntities;
 }
