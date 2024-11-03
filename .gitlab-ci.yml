@@ -7,10 +7,11 @@ stages:
   - security_scan
 
 
-print:
+api_gateway_build:
   stage: build
   script:
-    - echo "Hello, ${CI_PROJECT_DIR}"
+    - cd "api gateway"
+    - ./gradlew build
 
 snyk_scan:
   stage: security_scan
