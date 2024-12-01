@@ -7,11 +7,11 @@ stages:
   - deploy
 
 
-# api_gateway_build:
-#   stage: build
-#   script:
-#     - cd "api gateway"
-#     - ./gradlew build
+api_gateway_build:
+  stage: build
+  script:
+    - cd "api gateway"
+    - ./gradlew build
 
 # api_gateway_test:
 #   stage: test
