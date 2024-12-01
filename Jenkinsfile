@@ -1,8 +1,7 @@
 pipeline {
     agent {
         dockerContainer {
-            image 'openjdk:8-jdk-alpine'
-            args '-v /root/.gradle:/root/.gradle'
+            image 'openjdk:21-jdk-alpine'
         }
     }
     stages {
