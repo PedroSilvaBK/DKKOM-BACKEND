@@ -10,9 +10,7 @@ pipeline {
             steps {
                 echo 'Building Api Gateway'
                 dir('api gateway') {
-                    sh 'chmod -R 777 /root/.gradle'  // Set the correct permissions on the .gradle directory
-                    sh 'chmod +x ./gradlew'
-                    sh './gradlew clean build'
+                    sh 'gradle clean build'
                 }
             }
         }
