@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'openjdk:21-jdk'
+            image 'gradle:8.10.2-jdk21'
             args '-v /root/.gradle:/root/.gradle'
         }
     }
