@@ -11,7 +11,6 @@ pipeline {
                 echo 'Building Api Gateway'
                 // Escape the space in the directory name
                 dir('api gateway') {
-                    sh 'apt-get update && apt-get install -y findutils'
                     sh 'chmod +x ./gradlew'
                     sh './gradlew clean build'
                 }
