@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'gradle:8.11-jdk21'  // Use Gradle 8.11 with JDK 21 Docker image
-            args '-v /home/gradle/.gradle:/home/gradle/.gradle'  // Mount Gradle user home
+            args '-v root/.gradle:/root/.gradle'  // Mount Gradle user home
         }
     }
 
