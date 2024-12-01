@@ -5,6 +5,7 @@ pipeline {
             steps {
                 echo 'Building Api Gateway'
                 sh 'cd "api gateway"'
+                sh 'ls -la'
                 sh './gradlew clean build'
             }
         }
