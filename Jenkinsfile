@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'openjdk:8-jdk-alpine'
+            args '-v /root/.gradle:/root/.gradle'
+        }
+    }
     stages {
         stage('Build Api Gateway') {
             steps {
