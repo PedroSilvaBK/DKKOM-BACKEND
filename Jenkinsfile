@@ -9,6 +9,7 @@ pipeline {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
                         sh './gradlew build'
+                        sh 'gcloud --version'
                     }
                 }
             }
