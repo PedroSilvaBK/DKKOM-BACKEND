@@ -4,9 +4,10 @@ pipeline {
         stage('Build Api Gateway') {
             steps {
                 echo 'Building Api Gateway'
-                sh 'cd "api gateway"'
-                sh 'ls -la'
-                sh './gradlew clean build'
+                // Escape the space in the directory name
+                dir('api gateway') {
+                    sh './gradlew clean build'
+                }
             }
         }
     }
