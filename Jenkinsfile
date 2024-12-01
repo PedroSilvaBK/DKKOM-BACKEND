@@ -2,7 +2,6 @@ pipeline {
     agent {
         docker {
             image 'gradle:8.11-jdk21'  // Use Gradle 8.11 with JDK 21 Docker image
-            label 'docker'             // Use this label to specify the node with Docker support
             args '-v $HOME/.gradle:/home/gradle/.gradle' // Optional, to persist Gradle cache
         }
     }
