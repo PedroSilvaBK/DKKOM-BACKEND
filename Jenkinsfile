@@ -1,24 +1,17 @@
 pipeline {
-    agent none  // Define no global agent for the pipeline
-
+    agent {
+        docker {
+            image 'openjdk:21-jdk'
+            args '-v /root/.gradle:/root/.gradle'
+        }
+    }
     stages {
-        stage('Build Docker Image and Run') {
-            agent {
-                docker {
-                    image 'gradle:8.10.2-jdk21'  // This will be the custom image you build from Dockerfile_pipelone
-                    args '-v $HOME/.gradle:/root/.gradle'  // Mount volume if needed
-                }
-            }
+        stage('Build Api Gateway') {
             steps {
-                script {
-                    // Build the Docker image using the custom Dockerfile
-                    def customImage = docker.build("gradle:8.10.2-jdk21", "-f Dockerfile_pipeline .")
-                    
-                    // Use the custom image to run commands
-                    customImage.inside {
-                        echo 'Running build inside custom Docker container'
-                        sh './gradlew clean build'
-                    }
+                echo 'Building Api Gateway'
+                dir('api gateway') {
+                    sh 'dir'
+                    sh './gradlew clean build'
                 }
             }
         }
