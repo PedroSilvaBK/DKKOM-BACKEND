@@ -1,8 +1,9 @@
 pipeline {
     agent {
         docker {
-            image 'openjdk:21-jdk'
-            args '-v /root/.gradle:/root/.gradle'
+            image 'gradle:8.11-jdk21'  // Use Gradle 8.11 with JDK 21 Docker image
+            label 'docker'             // Use this label to specify the node with Docker support
+            args '-v $HOME/.gradle:/home/gradle/.gradle' // Optional, to persist Gradle cache
         }
     }
     stages {
@@ -11,6 +12,7 @@ pipeline {
                 echo 'Building Api Gateway'
                 dir('api gateway') {
                     sh 'dir'
+                    sh 'chmod +x ./gradlew'
                     sh './gradlew clean build'
                 }
             }
