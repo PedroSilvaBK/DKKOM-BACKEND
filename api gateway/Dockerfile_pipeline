@@ -1,0 +1,8 @@
+ FROM openjdk:21-jdk
+
+# Install necessary utilities, including xargs
+RUN apt-get update && apt-get install -y findutils gradle
+
+# Set up Gradle home
+ENV GRADLE_HOME=/usr/share/gradle
+ENV PATH=$PATH:$GRADLE_HOME/bin
