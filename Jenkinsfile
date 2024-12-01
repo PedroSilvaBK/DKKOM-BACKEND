@@ -2,14 +2,9 @@ pipeline {
     agent {
         docker {
             image 'gradle:8.11-jdk21'  // Use Gradle 8.11 with JDK 21 Docker image
-            args '-v $HOME/.gradle:/home/gradle/.gradle' // Persist Gradle cache to speed up builds
+            args '-v /home/gradle/.gradle:/home/gradle/.gradle'  // Mount Gradle user home
         }
     }
-
-    environment {
-        GRADLE_USER_HOME = '/home/gradle/.gradle'         // Custom Gradle user home
-    }
-
 
     stages {
         stage('Build Api Gateway') {
