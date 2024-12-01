@@ -5,14 +5,14 @@ pipeline {
         stage('Build Docker Image and Run') {
             agent {
                 docker {
-                    image 'custom-image-from-dockerfile'  // This will be the custom image you build from Dockerfile_pipelone
+                    image 'gradle:8.10.2-jdk21'  // This will be the custom image you build from Dockerfile_pipelone
                     args '-v $HOME/.gradle:/root/.gradle'  // Mount volume if needed
                 }
             }
             steps {
                 script {
                     // Build the Docker image using the custom Dockerfile
-                    def customImage = docker.build("custom-image-from-dockerfile", "-f Dockerfile_pipeline .")
+                    def customImage = docker.build("gradle:8.10.2-jdk21", "-f Dockerfile_pipeline .")
                     
                     // Use the custom image to run commands
                     customImage.inside {
