@@ -6,6 +6,12 @@ pipeline {
         }
     }
 
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'  // Default for JDK 21 in Docker image
+        GRADLE_USER_HOME = '/home/gradle/.gradle'         // Custom Gradle user home
+    }
+
+
     stages {
         stage('Build Api Gateway') {
             steps {
