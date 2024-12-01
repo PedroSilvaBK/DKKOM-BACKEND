@@ -1,23 +1,16 @@
 pipeline {
     agent {
         docker {
-            image 'gradle:8.11-jdk21'  // Use Gradle 8.11 with JDK 21 Docker image
-            args '-v root/.gradle:/root/.gradle'  // Mount Gradle user home
+            image 'openjdk:21-jdk'
+            args '-v /root/.gradle:/root/.gradle'
         }
     }
-
     stages {
         stage('Build Api Gateway') {
             steps {
                 echo 'Building Api Gateway'
                 dir('api gateway') {
-                    // List files in the 'api gateway' directory (Linux command)
-                    sh 'ls -la'
-                    
-                    // Ensure gradlew is executable
-                    sh 'chmod +x ./gradlew'
-                    
-                    // Run Gradle build command
+                    sh 'ls  -la'
                     sh './gradlew clean build'
                 }
             }
