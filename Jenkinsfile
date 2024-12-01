@@ -1,7 +1,7 @@
 pipeline {
     agent {
-        dockerContainer {
-            image 'openjdk:21-jdk-alpine'
+        docker {
+            image 'openjdk:21-jdk'
         }
     }
     stages {
