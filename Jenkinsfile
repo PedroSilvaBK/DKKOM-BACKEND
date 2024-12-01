@@ -10,6 +10,7 @@ pipeline {
             steps {
                 echo 'Building Api Gateway'
                 dir('api gateway') {
+                    sh 'env'
                     sh 'gradle clean build'
                 }
             }
