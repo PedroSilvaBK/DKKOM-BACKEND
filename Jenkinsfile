@@ -11,6 +11,7 @@ pipeline {
                 echo 'Building Api Gateway'
                 dir('api gateway') {
                     sh 'ls  -la'
+                    sh 'chmod +x ./gradlew'
                     sh './gradlew clean build'
                 }
             }
