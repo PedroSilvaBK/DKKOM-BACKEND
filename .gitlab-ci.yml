@@ -22,6 +22,7 @@ api_gateway_build:
 api_gateway_deployment:
   stage: deploy
   script:
+    - echo "Deploying application..."
     - cd "api gateway"
     - docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway .
     - docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway
