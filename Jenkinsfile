@@ -1,10 +1,11 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Build Api Gateway') {
             steps {
-                sh 'ls -la'
-                sh './gradlew build'
+                echo 'Building Api Gateway'
+                sh 'cd api-gateway'
+                sh './gradlew clean build'
             }
         }
     }
