@@ -7,48 +7,57 @@ stages:
   - deploy
 
 
-api_gateway_build:
-  stage: build
+# api_gateway_build:
+#   stage: build
+#   script:
+#     - cd "api gateway"
+#     - ./gradlew build
+
+# api_gateway_test:
+#   stage: test
+#   script:
+#     - cd "api gateway"
+#     - ./gradlew test
+
+api_gateway_deployment:
+  stage: deploy
   script:
     - cd "api gateway"
-    - ./gradlew build
+    - docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway .
+    - docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway
+    - kubectl delete deployment api-gateway --ignore-not-found=true
+    - kubectl apply -f api-gateway-deployment.yaml
 
-api_gateway_test:
-  stage: test
-  script:
-    - cd "api gateway"
-    - ./gradlew test
+# api_gateway_sonarqube:
+#   stage: sonarqube
+#   script:
+#     - cd "api gateway"
+#     - ./gradlew sonar
 
-api_gateway_sonarqube:
-  stage: sonarqube
-  script:
-    - cd "api gateway"
-    - ./gradlew sonar -Dsonar.projectKey=dcom_api_gateway -Dsonar.projectName='dcom_api_gateway' -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_481ff9454e644655b6002a8b86b29b643b7744aa
-
-snyk_scan_api_gateway:
-  stage: security_scan
-  script:
-    - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradlew" -Force
-    - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradle" -Recurse -Force
-    - docker run --rm -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$env:SNYK_TOKEN snyk/snyk:gradle-jdk21
-  allow_failure: true
-  artifacts:
-    paths:
-      - snyk_report.json
-  only:
-    - develop
+# snyk_scan_api_gateway:
+#   stage: security_scan
+#   script:
+#     - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradlew" -Force
+#     - Remove-Item -Path "${CI_PROJECT_DIR}\api gateway\gradle" -Recurse -Force
+#     - docker run --rm -v "${CI_PROJECT_DIR}/api gateway:/app" -e SNYK_TOKEN=$env:SNYK_TOKEN snyk/snyk:gradle-jdk21
+#   allow_failure: true
+#   artifacts:
+#     paths:
+#       - snyk_report.json
+#   only:
+#     - develop
 
 
-owasp_zap_scan_api_gateway:
-  stage: security_scan
-  script:
-    - docker run --rm -v "${CI_PROJECT_DIR}:/zap/wrk/:rw" -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py -t http://localhost:8080 -g gen.conf -r report.html
-  allow_failure: true
-  artifacts:
-    paths:
-      - report.html
-  only:
-    - develop
+# owasp_zap_scan_api_gateway:
+#   stage: security_scan
+#   script:
+#     - docker run --rm -v "${CI_PROJECT_DIR}:/zap/wrk/:rw" -t ghcr.io/zaproxy/zaproxy:nightly zap-baseline.py -t $SERVICE_URL -g gen.conf -r report.html
+#   allow_failure: true
+#   artifacts:
+#     paths:
+#       - report.html
+#   only:
+#     - develop
 
 # authentication_build:
 #   stage: build

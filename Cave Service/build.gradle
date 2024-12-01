@@ -21,17 +21,28 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		name = "GitLab"
+		url = uri("https://git.fhict.nl/api/v4/projects/62309/packages/maven")
+		credentials {
+			username = System.getenv("GITLAB_USER") ?: ""
+			password = System.getenv("GITLAB_TOKEN") ?: ""
+		}
+	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.4'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.3.4'
+	implementation 'org.springframework.kafka:spring-kafka:3.2.4'
 	implementation 'org.modelmapper:modelmapper:3.2.1'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.flywaydb:flyway-core:10.19.0'
 	implementation 'org.flywaydb:flyway-mysql:10.19.0'
+	implementation 'dcom:shared-library-d-com:0.0.6'
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'

@@ -19,7 +19,7 @@ public class GetCaveRolesUseCaseImpl implements GetCaveRolesUseCase {
     private final ModelMapper modelMapper;
 
     public GetCaveRolesResponse getCaveRoles(UUID caveId) {
-        List<CaveRole> caveRoles = caveRoleRepository.findAllByCaveEntity_Id(caveId)
+        List<CaveRole> caveRoles = caveRoleRepository.findAllByCaveEntity_IdOrderByPositionAsc(caveId)
                 .stream()
                 .map(this::map)
                 .toList();

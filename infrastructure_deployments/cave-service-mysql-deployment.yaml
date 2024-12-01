@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cave-service-mysql-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cave-service-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cave-service-mysql
+  template:
+    metadata:
+      labels:
+        app: cave-service-mysql
+    spec:
+      containers:
+      - name: cave-service-mysql
+        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "admin" # Set the root password for MySQL
+        - name: MYSQL_DATABASE
+          value: "cave_db"   # Optional: Pre-create a database
+        - name: MYSQL_USER
+          value: "admin"       # Optional: Create a new user
+        - name: MYSQL_PASSWORD
+          value: "admin"   # Optional: Password for the new user
+        ports:
+        - containerPort: 3306   # MySQL default port
+        volumeMounts:
+        - name: cave-service-mysql-data
+          mountPath: /var/lib/mysql/ # MySQL data directory
+      volumes:
+      - name: cave-service-mysql-data
+        persistentVolumeClaim:
+          claimName: cave-service-mysql-pvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cave-service-mysql
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: cave-service-mysql
+  type: ClusterIP

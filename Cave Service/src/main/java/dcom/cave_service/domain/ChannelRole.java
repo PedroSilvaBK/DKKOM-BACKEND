@@ -14,6 +14,7 @@ public class ChannelRole {
     private UUID entityId;
     private String entityName;
     private PermissionType type;
+    private int position;
     private int allow;
     private int deny;
 }

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cave-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cave-service
+  template:
+    metadata:
+      labels:
+        app: cave-service
+    spec:
+      containers:
+      - name: cave-service
+        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/cave-service:latest
+        ports:
+        - containerPort: 8080  # The container listens on port 80
+        env:
+          - name: DATABASE_IP
+            valueFromo:
+              secretKeyRef:
+                name: database-ip
+                key: DATABASE_IP
+          - name: REDIS_IP
+            valueFrom:
+              secretKeyRef:
+                name: redis-ip
+                key: REDIS_IP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cave-service
+spec:
+  selector:
+    app: cave-service
+  ports:
+    - protocol: TCP
+      port: 8080         # External port (how the service is exposed)
+      targetPort: 8080     # Internal port (the port your app runs on inside the container)
+  type: ClusterIP        # Use LoadBalancer or NodePort if external access is needed

@@ -15,6 +15,7 @@ public class CaveRole {
     private UUID id;
     private UUID caveId;
     private String name;
+    private int position;
     private int permissions;
 
     public void addPermission(int permission) {

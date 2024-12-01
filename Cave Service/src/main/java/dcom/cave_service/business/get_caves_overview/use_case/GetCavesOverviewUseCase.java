@@ -5,5 +5,5 @@ import dcom.cave_service.domain.responses.GetCavesOverviewResponse;
 import java.util.UUID;
 
 public interface GetCavesOverviewUseCase {
-    GetCavesOverviewResponse getCavesOverview(UUID userId);
+    GetCavesOverviewResponse getCavesOverview(UUID userId, String authUserId);
 }

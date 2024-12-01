@@ -51,3 +51,12 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "api_gateway"
+		property "sonar.host.url", "http://localhost:9000"
+		property "sonar.token", "sqp_244ee7b1effe36ad14b28927ebd304823703505c"
+	}
+}
+

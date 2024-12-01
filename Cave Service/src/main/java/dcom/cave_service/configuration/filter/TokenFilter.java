@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class TokenFilter extends OncePerRequestFilter {
             jwtToken = authHeader.substring(7);
         }
 
-        if (jwtToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (jwtToken != null) {
             // Validate the token and set the security context
             try {
                 Claims claims = Jwts.parser()

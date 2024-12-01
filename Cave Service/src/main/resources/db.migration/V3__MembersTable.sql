@@ -6,7 +6,6 @@ CREATE TABLE members (
     nickname varchar(50) NULL,
     joined_at datetime NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (user_id),
     FOREIGN KEY (cave_id) REFERENCES caves(id)
 );
 

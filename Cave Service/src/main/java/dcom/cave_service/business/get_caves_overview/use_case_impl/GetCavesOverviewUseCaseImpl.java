@@ -2,7 +2,6 @@ package dcom.cave_service.business.get_caves_overview.use_case_impl;
 
 import dcom.cave_service.business.get_caves_overview.use_case.GetCavesOverviewUseCase;
 import dcom.cave_service.domain.CaveOverview;
-import dcom.cave_service.domain.JwtUserDetails;
 import dcom.cave_service.domain.responses.GetCavesOverviewResponse;
 import dcom.cave_service.exceptions.IdMismatchException;
 import dcom.cave_service.persistence.DTO.CaveOverviewDTO;
@@ -19,10 +18,9 @@ import java.util.stream.Collectors;
 public class GetCavesOverviewUseCaseImpl implements GetCavesOverviewUseCase {
     private final CaveRepository caveRepository;
     private final ModelMapper modelMapper;
-    private final JwtUserDetails jwtUserDetails;
 
-    public GetCavesOverviewResponse getCavesOverview(UUID userId) {
-        if (!jwtUserDetails.getUserId().equals(userId.toString())) {
+    public GetCavesOverviewResponse getCavesOverview(UUID userId, String authUserId) {
+        if (!authUserId.equals(userId.toString())) {
             throw new IdMismatchException("Ids dont match");
         }
 

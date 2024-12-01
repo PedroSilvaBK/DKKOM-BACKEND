@@ -3,21 +3,19 @@ package dcom.messaging_service;
 import com.dcom.messaging_service.MessageRequest;
 import com.dcom.messaging_service.MessageResponse;
 import com.dcom.messaging_service.MessageServiceGrpc;
+import dcom.messaging_service.domain.AuthorDTO;
+import dcom.messaging_service.domain.MessageDTO;
+import dcom.messaging_service.persistence.entities.MessageEntity;
+import dcom.messaging_service.persistence.repositories.MessageRepository;
 import io.grpc.stub.StreamObserver;
-import lombok.RequiredArgsConstructor;
-import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.UUID;
 
-@GrpcService
-@RequiredArgsConstructor
 public class MessageGrpcService extends MessageServiceGrpc.MessageServiceImplBase {
-    private final MessageRepository messageRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private MessageRepository messageRepository;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void processMessage(MessageRequest request, StreamObserver<MessageResponse> responseObserver) {

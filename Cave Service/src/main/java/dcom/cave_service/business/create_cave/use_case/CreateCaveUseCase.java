@@ -4,5 +4,5 @@ import dcom.cave_service.domain.requests.CreateCaveRequest;
 import dcom.cave_service.domain.responses.CreateCaveResponse;
 
 public interface CreateCaveUseCase {
-    CreateCaveResponse createCave(CreateCaveRequest request);
+    CreateCaveResponse createCave(CreateCaveRequest request, String authUserId, String authUsername);
 }

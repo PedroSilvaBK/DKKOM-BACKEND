@@ -3,10 +3,7 @@ package dcom.cave_service.persistence.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 import java.util.UUID;
@@ -17,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Data
+@EqualsAndHashCode(exclude = "caveEntity")
 public class CaveRoleEntity {
     @Id
     private UUID id;
@@ -26,9 +24,12 @@ public class CaveRoleEntity {
     private CaveEntity caveEntity;
 
     @Size(min = 1, max = 50)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "permissions")
+    @Column(name = "position", nullable = false)
+    private int position;
+
+    @Column(name = "permissions", nullable = false)
     private int permissions;
 }

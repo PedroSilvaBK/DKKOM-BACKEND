@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-presence-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-presence-service
+  template:
+    metadata:
+      labels:
+        app: user-presence-service
+    spec:
+      containers:
+      - name: user-presence-service
+        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-presence-service
+        ports:
+        - containerPort: 8080
+        env:
+          - name: REDIS_IP
+            valueFrom:
+              secretKeyRef:
+                name: redis-ip
+                key: REDIS_IP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-presence-service
+spec:
+  selector:
+    app: user-presence-service
+  ports:
+    - protocol: TCP
+      port: 8080         # Service port
+      targetPort: 8080   # Container port
+  type: ClusterIP

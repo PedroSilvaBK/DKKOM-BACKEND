@@ -14,6 +14,7 @@ import java.util.UUID;
 @Data
 public class CreateChannelResponse {
     private UUID id;
+    private UUID caveId;
     private String name;
     private ChannelType type;
 }

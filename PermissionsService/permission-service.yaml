@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: permission-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: permission-service
+  template:
+    metadata:
+      labels:
+        app: permission-service
+    spec:
+      containers:
+      - name: permission-service
+        image:  europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/permission-service
+        ports:
+        - containerPort: 8080  # The container listens on port 80
+        env:
+          - name: DATABASE_IP
+            valueFrom:
+              secretKeyRef:
+                name: database-ip
+                key: DATABASE_IP
+          - name: REDIS_IP
+            valueFrom:
+              secretKeyRef:
+                name: redis-ip
+                key: REDIS_IP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: permission-service
+spec:
+  selector:
+    app: permission-service
+  ports:
+    - protocol: TCP
+      port: 8080         # External port (how the service is exposed)
+      targetPort: 8080     # Internal port (the port your app runs on inside the container)
+  type: ClusterIP        # Use LoadBalancer or NodePort if external access is needed

@@ -1,7 +1,10 @@
 package dcom.gateway.api_gateway.configuration;
 
-import dcom.gateway.api_gateway.RsaKeyProvider;
+import dcom.gateway.api_gateway.configuration.filters.FailureOauthHandler;
+import dcom.gateway.api_gateway.configuration.filters.SuccessOauthFilter;
+import dcom.gateway.api_gateway.configuration.jwt_token.RsaKeyProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,14 +26,16 @@ public class SecurityConfig {
     private final RsaKeyProvider rsaKeyProvider;
 
     private final SuccessOauthFilter successOauthFilter;
-
+    private final FailureOauthHandler failureOauthHandler;
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .cors(corsSpec -> corsSpec.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.addAllowedOrigin("http://localhost:5173"); // Allow the frontend origin
+                    config.addAllowedOrigin(frontendUrl); // Allow the frontend origin
                     config.addAllowedMethod("*"); // Allow all HTTP methods
                     config.addAllowedHeader("*"); // Allow all headers
                     config.setAllowCredentials(true); // Allow cookies and authentication headers
@@ -45,6 +50,7 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
                         .authenticationSuccessHandler(successOauthFilter.customAuthenticationSuccessHandler()) // Use custom success handler
+                        .authenticationFailureHandler(failureOauthHandler.serverAuthenticationFailureHandler())
                 )
                 .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                         oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder())) // JWT-based resource server configuration
@@ -65,7 +71,7 @@ public class SecurityConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:5173"); // Allow requests from your front-end
+        corsConfig.addAllowedOrigin(frontendUrl); // Allow requests from your front-end
         corsConfig.addAllowedMethod("*"); // Allow all HTTP methods
         corsConfig.addAllowedHeader("*"); // Allow all headers
         corsConfig.setAllowCredentials(true); // Allow credentials if needed

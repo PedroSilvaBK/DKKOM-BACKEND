@@ -11,4 +11,6 @@ public interface ChannelRoleRepository extends JpaRepository<ChannelRoleEntity, 
     boolean existsByEntityIdAndId(UUID entityId, UUID channelId);
 
     List<ChannelRoleEntity> findAllByChannelEntity_Id(UUID channelId);
+
+    List<ChannelRoleEntity> findAllByEntityId(UUID entityId);
 }

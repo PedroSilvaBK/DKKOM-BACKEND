@@ -1,35 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authentication-service
+  name: user-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: authentication-service
+      app: user-service
   template:
     metadata:
       labels:
-        app: authentication-service
+        app: user-service
     spec:
-      nodeSelector:
-        authentication-service: "true"  # Ensure it runs on the labeled node
       containers:
-      - name: authentication-service
-        image: pedrosilva06/auth-service
+      - name: user-service
+        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-service:latest
         ports:
         - containerPort: 8080
+        env:
+          - name: DATABASE_IP
+            valueFrom:
+              secretKeyRef:
+                name: database-ip
+                key: DATABASE_IP
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: authentication-service
+  name: user-service
 spec:
   selector:
-    app: authentication-service
+    app: user-service
   ports:
     - protocol: TCP
       port: 8080         # Service port
       targetPort: 8080   # Container port
-      nodePort: 30001    # Exposes the service on this node port
-  type: NodePort
+  type: ClusterIP

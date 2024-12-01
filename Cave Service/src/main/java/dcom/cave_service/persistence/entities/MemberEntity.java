@@ -42,9 +42,9 @@ public class MemberEntity {
     @Column(name = "joined_at")
     private LocalDateTime joinedAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "member_roles",
+            name = "members_roles",
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

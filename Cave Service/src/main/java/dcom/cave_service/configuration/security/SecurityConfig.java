@@ -21,11 +21,12 @@ public class SecurityConfig {
         // Configure HTTP security for your application
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-                    authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
-                })
-                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class); // Register JWT filter
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+////                    authorizationManagerRequestMatcherRegistry.requestMatchers("/cave/**").permitAll();
+//                    authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
+//                });
+//                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class); // Register JWT filter
 
         return http.build();
     }

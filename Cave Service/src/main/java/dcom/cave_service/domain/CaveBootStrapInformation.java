@@ -1,5 +1,6 @@
 package dcom.cave_service.domain;
 
+import dcom.sharedlibrarydcom.shared.UserRolesAndPermissionsCache;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,5 @@ public class CaveBootStrapInformation {
     private UUID owner;
     private List<ChannelOverviewDTO> voiceChannelsOverview;
     private List<ChannelOverviewDTO> textChannelsOverview;
+    private UserRolesAndPermissionsCache userPermissionsCache;
 }

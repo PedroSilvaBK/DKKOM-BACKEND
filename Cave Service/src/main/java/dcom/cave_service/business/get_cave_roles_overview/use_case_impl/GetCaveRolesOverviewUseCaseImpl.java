@@ -19,7 +19,7 @@ public class GetCaveRolesOverviewUseCaseImpl implements GetCaveRolesOverviewUseC
     private final ModelMapper modelMapper;
 
     public GetCaveRolesOverviewResponse getCaveRoles(UUID caveId) {
-        List<CaveRoleOverview> caveRoles = caveRoleRepository.findAllByCaveEntity_Id(caveId)
+        List<CaveRoleOverview> caveRoles = caveRoleRepository.findAllByCaveEntity_IdOrderByPositionAsc(caveId)
                 .stream()
                 .map(this::map)
                 .toList();

@@ -2,20 +2,14 @@ package dcom.cave_service.business.get_channel_roles.use_case_impl;
 
 import dcom.cave_service.business.get_channel_roles.use_case.GetChannelRolesUseCase;
 import dcom.cave_service.domain.ChannelRole;
-import dcom.cave_service.domain.PermissionType;
 import dcom.cave_service.domain.responses.GetChannelRolesResponse;
-import dcom.cave_service.persistence.entities.CaveRoleEntity;
 import dcom.cave_service.persistence.entities.ChannelRoleEntity;
-import dcom.cave_service.persistence.entities.MemberEntity;
-import dcom.cave_service.persistence.repositories.CaveRoleRepository;
 import dcom.cave_service.persistence.repositories.ChannelRoleRepository;
-import dcom.cave_service.persistence.repositories.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
