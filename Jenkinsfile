@@ -12,7 +12,7 @@ pipeline {
                 dir('api gateway') {
                     sh 'ls  -la'
                     sh 'chmod +x ./gradlew'
-                    sh './gradlew clean build'
+                    sh './gradlew build'
                 }
             }
         }
