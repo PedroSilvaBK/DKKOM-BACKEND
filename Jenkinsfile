@@ -109,7 +109,7 @@ pipeline {
         //permission service
         stage('Build Permission Service') {
             steps {
-                dir('Permission Service') {
+                dir('PermissionsService') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
@@ -120,7 +120,7 @@ pipeline {
         }
         stage("Dockerize Permission Service") {
             steps {
-                dir('Permission Service') {
+                dir('PermissionsService') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/permission-service:latest .'
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
                     sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/permission-service:latest'
