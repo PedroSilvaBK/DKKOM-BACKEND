@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
-        GITLAB_USER = credentials('SHARED_LIBARY_USERNAME')
-        GITLAB_TOKEN = credentials('SHARED_LIBARY_PASSWORD')
+        GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+        GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
     }
     stages {
         stage('Authenticate with Google Cloud') {
