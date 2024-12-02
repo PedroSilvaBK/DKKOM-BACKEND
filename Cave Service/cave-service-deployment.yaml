@@ -19,7 +19,7 @@ spec:
         - containerPort: 8080  # The container listens on port 80
         env:
           - name: DATABASE_IP
-            valueFromo:
+            valueFrom:
               secretKeyRef:
                 name: database-ip
                 key: DATABASE_IP
