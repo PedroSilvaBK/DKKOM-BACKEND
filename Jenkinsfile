@@ -240,7 +240,7 @@ pipeline {
             steps {
                 dir('user-presence-service') {
                     echo 'Deploying User Presence Service'
-                    sh 'kubectl apply -f user-presence-service-deployment.yaml'
+                    sh 'kubectl apply -f user-presence-service.yaml'
                 }
             }
         }
