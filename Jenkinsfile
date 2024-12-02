@@ -182,7 +182,7 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize User Presence Service") {
+        stage("Dockerize Websocket gateway") {
             steps {
                 dir('Websocket-gateway') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/websocket-gateway:latest .'
