@@ -10,6 +10,8 @@ pipeline {
                         sh 'chmod +x ./gradlew'
                         sh './gradlew build'
                         sh 'gcloud --version'
+                        sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest .'
+                        sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest'
                     }
                 }
             }
