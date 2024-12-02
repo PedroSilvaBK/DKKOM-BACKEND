@@ -1,6 +1,23 @@
 pipeline {
     agent any
+    environment {
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
+    }
     stages {
+        stage('Authenticate with Google Cloud') {
+            steps {
+                script {
+                    // Copy the service account key to a secure location if needed
+                    sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
+                    
+                    // Authenticate with gcloud
+                    sh '''
+                        gcloud auth activate-service-account --key-file=gcloud-key.json
+                        gcloud config set project [PROJECT_ID]
+                    '''
+                }
+            }
+        }
         stage('Build Api Gateway') {
             steps {
                 echo 'Building Api Gateway'
