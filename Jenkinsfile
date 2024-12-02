@@ -87,7 +87,7 @@ pipeline {
         //message service
         stage('Build Message Service') {
             steps {
-                dir('Message Service') {
+                dir('Messaging Service') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
@@ -98,7 +98,7 @@ pipeline {
         }
         stage("Dockerize Message Service") {
             steps {
-                dir('Message Service') {
+                dir('Messaging Service') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/message-service:latest .'
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
                     sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/message-service:latest'
