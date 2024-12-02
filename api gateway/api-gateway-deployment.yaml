@@ -16,8 +16,11 @@ spec:
       - name: api-gateway
         image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest
         env:
-        - name: GOOGLE_CLIENT_SECRET
-          value: "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"
+          - name: GOOGLE_CLIENT_SECRET
+            valueFromo:
+              secretKeyRef:
+                name: google-client-secret
+                key: GOOGLE_CLIENT_SECRET
         ports:
         - containerPort: 8080  # The container listens on port 80
 

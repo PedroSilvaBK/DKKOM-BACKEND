@@ -16,6 +16,11 @@ pipeline {
                 }
             }
         }
+        stage('Get Cluster Credentials') {
+            steps {
+                sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project d-com-437216'
+            }
+        }
         stage('Build Api Gateway') {
             steps {
                 echo 'Building Api Gateway'
@@ -36,6 +41,12 @@ pipeline {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
                     sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest'
                 }
+            }
+        }
+        stage('Deploy Api Gateway') {
+            steps {
+                echo 'Deploying Api Gateway'
+                sh 'kubectl apply -f api-gateway-deployment.yaml'
             }
         }
 
@@ -62,6 +73,14 @@ pipeline {
             }
         }
 
+        // Deploy Media Service
+        stage('Deploy Media Service') {
+            steps {
+                echo 'Deploying Media Service'
+                sh 'kubectl apply -f media-service-deployment.yaml'
+            }
+        }
+
         //cave service
         stage('Build Cave Service') {
             steps {
@@ -81,6 +100,14 @@ pipeline {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
                     sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/cave-service:latest'
                 }
+            }
+        }
+
+        // Deploy Cave Service
+        stage('Deploy Cave Service') {
+            steps {
+                echo 'Deploying Cave Service'
+                sh 'kubectl apply -f cave-service-deployment.yaml'
             }
         }
 
@@ -106,6 +133,14 @@ pipeline {
             }
         }
 
+        // Deploy Message Service
+        stage('Deploy Message Service') {
+            steps {
+                echo 'Deploying Message Service'
+                sh 'kubectl apply -f message-service-deployment.yaml'
+            }
+        }
+
         //permission service
         stage('Build Permission Service') {
             steps {
@@ -125,6 +160,14 @@ pipeline {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
                     sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/permission-service:latest'
                 }
+            }
+        }
+
+        // Deploy Permission Service
+        stage('Deploy Permission Service') {
+            steps {
+                echo 'Deploying Permission Service'
+                sh 'kubectl apply -f permission-service.yaml'
             }
         }
 
@@ -150,6 +193,14 @@ pipeline {
             }
         }
 
+        // Deploy User Service
+        stage('Deploy User Service') {
+            steps {
+                echo 'Deploying User Service'
+                sh 'kubectl apply -f user-service-deployment.yaml'
+            }
+        }
+
         //user presence service service
         stage('Build User Presence Service') {
             steps {
@@ -172,6 +223,14 @@ pipeline {
             }
         }
 
+        // Deploy User Presence Service
+        stage('Deploy User Presence Service') {
+            steps {
+                echo 'Deploying User Presence Service'
+                sh 'kubectl apply -f user-presence-service.yaml'
+            }
+        }
+
         //websocket gateway
         stage('Build Websocket Gateway') {
             steps {
@@ -191,6 +250,14 @@ pipeline {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
                     sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/websocket-gateway:latest'
                 }
+            }
+        }
+
+        // Deploy Websocket Gateway
+        stage('Deploy Websocket Gateway') {
+            steps {
+                echo 'Deploying Websocket Gateway'
+                sh 'kubectl apply -f websocket-gateway-deployment.yaml'
             }
         }
     }
