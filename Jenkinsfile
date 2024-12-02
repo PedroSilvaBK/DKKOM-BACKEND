@@ -14,7 +14,7 @@ pipeline {
                     sh 'ls'
                     sh 'cat gcloud-key.json'
                     sh '''
-                        gcloud auth activate-service-account --key-file=gcloud-key.json
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                         gcloud config set project [PROJECT_ID]
                     '''
                 }
