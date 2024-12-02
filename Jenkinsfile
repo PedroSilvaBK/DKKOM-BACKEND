@@ -45,8 +45,10 @@ pipeline {
         }
         stage('Deploy Api Gateway') {
             steps {
-                echo 'Deploying Api Gateway'
-                sh 'kubectl apply -f api-gateway-deployment.yaml'
+                dir('api gateway') {
+                    echo 'Deploying Api Gateway'
+                    sh 'kubectl apply -f api-gateway-deployment.yaml'
+                }
             }
         }
 
@@ -76,8 +78,10 @@ pipeline {
         // Deploy Media Service
         stage('Deploy Media Service') {
             steps {
-                echo 'Deploying Media Service'
-                sh 'kubectl apply -f media-service-deployment.yaml'
+                dir('Media Service') {
+                    echo 'Deploying Media Service'
+                    sh 'kubectl apply -f media-service-deployment.yaml'
+                }
             }
         }
 
@@ -106,8 +110,10 @@ pipeline {
         // Deploy Cave Service
         stage('Deploy Cave Service') {
             steps {
-                echo 'Deploying Cave Service'
-                sh 'kubectl apply -f cave-service-deployment.yaml'
+                dir('Cave Service') {
+                    echo 'Deploying Cave Service'
+                    sh 'kubectl apply -f cave-service-deployment.yaml'
+                }
             }
         }
 
@@ -136,8 +142,10 @@ pipeline {
         // Deploy Message Service
         stage('Deploy Message Service') {
             steps {
-                echo 'Deploying Message Service'
-                sh 'kubectl apply -f message-service-deployment.yaml'
+                dir('Messaging Service') {
+                    echo 'Deploying Message Service'
+                    sh 'kubectl apply -f message-service-deployment.yaml'
+                }
             }
         }
 
@@ -166,8 +174,10 @@ pipeline {
         // Deploy Permission Service
         stage('Deploy Permission Service') {
             steps {
-                echo 'Deploying Permission Service'
-                sh 'kubectl apply -f permission-service.yaml'
+                dir('PermissionsService') {
+                    echo 'Deploying Permission Service'
+                    sh 'kubectl apply -f permission-service.yaml'
+                }
             }
         }
 
@@ -196,8 +206,10 @@ pipeline {
         // Deploy User Service
         stage('Deploy User Service') {
             steps {
-                echo 'Deploying User Service'
-                sh 'kubectl apply -f user-service-deployment.yaml'
+                dir('User Service') {
+                    echo 'Deploying User Service'
+                    sh 'kubectl apply -f user-service-deployment.yaml'
+                }
             }
         }
 
@@ -226,8 +238,10 @@ pipeline {
         // Deploy User Presence Service
         stage('Deploy User Presence Service') {
             steps {
-                echo 'Deploying User Presence Service'
-                sh 'kubectl apply -f user-presence-service.yaml'
+                dir('user-presence-service') {
+                    echo 'Deploying User Presence Service'
+                    sh 'kubectl apply -f user-presence-service-deployment.yaml'
+                }
             }
         }
 
@@ -256,8 +270,10 @@ pipeline {
         // Deploy Websocket Gateway
         stage('Deploy Websocket Gateway') {
             steps {
-                echo 'Deploying Websocket Gateway'
-                sh 'kubectl apply -f websocket-gateway-deployment.yaml'
+                dir('Websocket-gateway') {
+                    echo 'Deploying Websocket Gateway'
+                    sh 'kubectl apply -f websocket-gateway-deployment.yaml'
+                }
             }
         }
     }
