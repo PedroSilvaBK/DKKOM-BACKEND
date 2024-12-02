@@ -17,7 +17,7 @@ spec:
         image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest
         env:
           - name: GOOGLE_CLIENT_SECRET
-            valueFromo:
+            valueFrom:
               secretKeyRef:
                 name: google-client-secret
                 key: GOOGLE_CLIENT_SECRET
