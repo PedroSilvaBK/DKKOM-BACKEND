@@ -10,12 +10,8 @@ pipeline {
                     // Copy the service account key to a secure location if needed
                     sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
                     
-                    // Authenticate with gcloud
-                    sh 'ls'
-                    sh 'cat gcloud-key.json'
                     sh '''
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                        gcloud config set project [PROJECT_ID]
                     '''
                 }
             }
