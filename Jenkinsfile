@@ -11,6 +11,7 @@ pipeline {
                         sh './gradlew build'
                         sh 'gcloud --version'
                         sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest .'
+                        sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev'
                         sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest'
                     }
                 }
