@@ -38,6 +38,9 @@ dependencies {
 	implementation 'org.springframework:spring-core:6.1.14'
 	implementation 'org.springframework:spring-web:6.1.14'
 	implementation 'org.springframework:spring-webmvc:6.1.14'
+	implementation 'org.xmlunit:xmlunit-core:2.10.0'
+	implementation 'io.netty:netty-common:4.1.115.Final'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-cassandra'
 	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 	compileOnly 'org.projectlombok:lombok'
