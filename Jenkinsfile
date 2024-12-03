@@ -59,6 +59,8 @@ pipeline {
             steps {
                 dir('api gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
                         sh 'snyk auth $SNYK_TOKEN'
                         sh 'snyk test --all-projects'
                     }
