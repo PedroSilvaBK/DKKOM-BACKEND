@@ -304,21 +304,21 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Snyk Scan Permission Service') {
-            agent {
-                label 'snyk-agent'
-            }
-            steps {
-                dir('PermissionsService') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'ls -la'
-                        sh 'chmod +x ./gradlew'
-                        sh 'snyk auth $SNYK_TOKEN'
-                        sh 'snyk test --all-projects'
-                    }
-                }
-            }
-        }
+        // stage('Snyk Scan Permission Service') {
+        //     agent {
+        //         label 'snyk-agent'
+        //     }
+        //     steps {
+        //         dir('PermissionsService') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'ls -la'
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh 'snyk auth $SNYK_TOKEN'
+        //                 sh 'snyk test --all-projects'
+        //             }
+        //         }
+        //     }
+        // }
         // stage("Dockerize Permission Service") {
         //     when {
         //         expression { params.ACTION == 'deploy' }
@@ -367,6 +367,21 @@ pipeline {
         //         }
         //     }
         // }
+        stage('Snyk Scan User Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('User Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         // stage("Dockerize User Service") {
         //     when {
         //         expression { params.ACTION == 'deploy' }
