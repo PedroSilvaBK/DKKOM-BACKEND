@@ -45,7 +45,9 @@ pipeline {
         stage('Sonarqube Analysis Api Gateway') {
             steps {
                 dir('api gateway') {
-                    sh './gradlew sonar'
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
@@ -89,8 +91,10 @@ pipeline {
         }
         stage('Sonarqube Analysis Media Service') {
             steps {
-                dir('api gateway') {
-                    sh './gradlew sonar'
+                dir('Media Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
@@ -137,7 +141,9 @@ pipeline {
         stage('Sonarqube Analysis Cave Service') {
             steps {
                 dir('Cave Service') {
-                    sh './gradlew sonar'
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
@@ -183,7 +189,9 @@ pipeline {
         stage('Sonarqube Analysis Message Service') {
             steps {
                 dir('Messaging Service') {
-                    sh './gradlew sonar'
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
@@ -229,7 +237,9 @@ pipeline {
         stage('Sonarqube Analysis Permission Service') {
             steps {
                 dir('PermissionsService') {
-                    sh './gradlew sonar'
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
@@ -275,7 +285,9 @@ pipeline {
         stage('Sonarqube Analysis User Service') {
             steps {
                 dir('User Service') {
-                    sh './gradlew sonar'
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
@@ -321,7 +333,9 @@ pipeline {
         stage('Sonarqube Analysis User Presence Service') {
             steps {
                 dir('user-presence-service') {
-                    sh './gradlew sonar'
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
@@ -367,7 +381,9 @@ pipeline {
         stage('Sonarqube Analysis Websocket Gateway') {
             steps {
                 dir('Websocket-gateway') {
-                    sh './gradlew sonar'
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
                 }
             }
         }
