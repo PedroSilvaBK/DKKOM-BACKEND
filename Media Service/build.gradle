@@ -30,6 +30,14 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.kafka:spring-kafka:3.3.0'
+    implementation 'org.apache.kafka:kafka-clients:3.8.0'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.0'
+    implementation 'org.springframework:spring-context:6.1.14'
+    implementation 'org.springframework:spring-core:6.1.14'
+    implementation 'org.springframework:spring-web:6.1.14'
+    implementation 'org.springframework:spring-webmvc:6.1.14'
+    implementation 'org.springframework.security:spring-security-crypto:6.3.5'
+    implementation 'org.xmlunit:xmlunit-core:2.10.0'
     implementation 'org.springframework.boot:spring-boot-starter-web:3.3.5'
     implementation 'com.google.cloud:spring-cloud-gcp-starter-secretmanager'
     implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
