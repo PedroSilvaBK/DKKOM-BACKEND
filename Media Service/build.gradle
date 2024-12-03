@@ -29,14 +29,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.kafka:spring-kafka:3.2.4'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.kafka:spring-kafka:3.3.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.3.5'
     implementation 'com.google.cloud:spring-cloud-gcp-starter-secretmanager'
     implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools:3.3.5'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.4.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
