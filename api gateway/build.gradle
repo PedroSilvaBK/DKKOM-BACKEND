@@ -54,9 +54,9 @@ tasks.named('test') {
 
 sonarqube {
 	properties {
-		property "sonar.projectKey", "api_gateway"
-		property "sonar.host.url", "http://localhost:9000"
-		property "sonar.token", "sqp_244ee7b1effe36ad14b28927ebd304823703505c"
+		property "sonar.projectKey", "API-Gateway"
+		property "sonar.host.url", "http://192.168.138.132:9000"
+		property "sonar.token", "sqp_8673d6ba1b755589d9228413e01275894416c94a"
 	}
 }
 

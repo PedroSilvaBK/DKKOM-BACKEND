@@ -65,9 +65,9 @@ tasks.named('test') {
 
 sonarqube {
 	properties {
-		property "sonar.projectKey", "messaing-service"
-		property "sonar.host.url", "http://localhost:9000"
-		property "sonar.token", "sqp_0d5751a28297b97811ed5d20b1edc71e7a334455"
+		property "sonar.projectKey", "Messaging-Service"
+		property "sonar.host.url", "http://192.168.138.132:9000"
+		property "sonar.token", "sqp_2aae4dfa67ab5d59388323711201a90f060844b0"
 	}
 }
 

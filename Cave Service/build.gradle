@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id "org.sonarqube" version "5.1.0.4882"
 }
 
 group = 'dcom'
@@ -56,4 +57,12 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "Cave-Service"
+		property "sonar.host.url", "http://192.168.138.132:9000"
+		property "sonar.token", "sqp_a1bc29701a95cd03b05e2f69fedaccd2c75e4c27"
+	}
 }
