@@ -114,21 +114,21 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Snyk Scan Media Service') {
-            agent {
-                label 'snyk-agent'
-            }
-            steps {
-                dir('Media Service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'ls -la'
-                        sh 'chmod +x ./gradlew'
-                        sh 'snyk auth $SNYK_TOKEN'
-                        sh 'snyk test --all-projects'
-                    }
-                }
-            }
-        }
+        // stage('Snyk Scan Media Service') {
+        //     agent {
+        //         label 'snyk-agent'
+        //     }
+        //     steps {
+        //         dir('Media Service') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'ls -la'
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh 'snyk auth $SNYK_TOKEN'
+        //                 sh 'snyk test --all-projects'
+        //             }
+        //         }
+        //     }
+        // }
         // stage("Dockerize Media Service") {
         //     when {
         //         expression { params.ACTION == 'deploy' }
@@ -178,6 +178,21 @@ pipeline {
         //         }
         //     }
         // }
+        stage('Snyk Scan Cave Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('Cave Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         // stage("Dockerize Cave Service") {
         //     when {
         //         expression { params.ACTION == 'deploy' }
