@@ -38,13 +38,16 @@ public class MessageServiceFilter implements GatewayFilter {
                 log.debug("Username is present - {}", username);
                 log.debug("Userid is present - {}", userId);
 
-                ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                        .header("X-User-Id", userId)
-                        .header("X-Username", username)
+                ServerHttpRequest modifiedRequest = exchange.getRequest()
+                        .mutate()
+                        .header("X-User-Id", userId != null ? userId : "")
+                        .header("X-Username", username != null ? username : "")
                         .build();
 
-                // Create a new exchange with the modified request
-                ServerWebExchange modifiedExchange = exchange.mutate().request(modifiedRequest).build();
+                // Build a new exchange with the modified request
+                ServerWebExchange modifiedExchange = exchange.mutate()
+                        .request(modifiedRequest)
+                        .build();
                 return chain.filter(modifiedExchange);
             }
         }

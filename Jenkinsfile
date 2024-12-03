@@ -43,6 +43,16 @@ pipeline {
                 }
             }
         }
+        stage("Test Api Gateway") {
+            steps {
+                echo 'Testing Api Gateway'
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew test'
+                    }
+                }
+            }
+        }
         stage('Sonarqube Analysis Api Gateway') {
             steps {
                 dir('api gateway') {
