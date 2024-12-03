@@ -10,6 +10,9 @@ pipeline {
     }
     stages {
         stage('Authenticate with Google Cloud') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 script {
                     sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
@@ -20,6 +23,9 @@ pipeline {
             }
         }
         stage('Get Cluster Credentials') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project d-com-437216'
             }
