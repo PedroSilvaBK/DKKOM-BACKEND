@@ -430,21 +430,21 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Snyk Scan User Presence Service') {
-            agent {
-                label 'snyk-agent'
-            }
-            steps {
-                dir('user-presence-service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'ls -la'
-                        sh 'chmod +x ./gradlew'
-                        sh 'snyk auth $SNYK_TOKEN'
-                        sh 'snyk test --all-projects'
-                    }
-                }
-            }
-        }
+        // stage('Snyk Scan User Presence Service') {
+        //     agent {
+        //         label 'snyk-agent'
+        //     }
+        //     steps {
+        //         dir('user-presence-service') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'ls -la'
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh 'snyk auth $SNYK_TOKEN'
+        //                 sh 'snyk test --all-projects'
+        //             }
+        //         }
+        //     }
+        // }
         // stage("Dockerize User Presence Service") {
         //     when {
         //         expression { params.ACTION == 'deploy' }
@@ -493,6 +493,21 @@ pipeline {
         //         }
         //     }
         // }
+        stage('Snyk Scan Websocket Gateway') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('Websocket-gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         // stage("Dockerize Websocket gateway") {
         //     when {
         //         expression { params.ACTION == 'deploy' }

@@ -33,10 +33,17 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.4.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework.kafka:spring-kafka:3.2.4'
+    implementation 'org.springframework.kafka:spring-kafka:3.3.0'
+    implementation 'org.apache.kafka:kafka-clients:3.8.0'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.31'
+    implementation 'org.springframework:spring-context:6.1.14'
+    implementation 'org.springframework:spring-core:6.1.14'
+    implementation 'org.springframework:spring-web:6.1.14'
+    implementation 'org.springframework:spring-webmvc:6.1.14'
+    implementation 'org.xmlunit:xmlunit-core:2.10.0'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'dcom:shared-library-d-com:0.0.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
