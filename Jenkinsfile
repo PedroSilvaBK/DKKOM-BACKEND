@@ -31,27 +31,27 @@ pipeline {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project d-com-437216'
             }
         }
-        stage('Build Api Gateway') {
-            steps {
-                echo 'Building Api Gateway'
-                dir('api gateway') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'ls -la'
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
-                    }
-                }
-            }
-        }
-        stage('Sonarqube Analysis Api Gateway') {
-            steps {
-                dir('api gateway') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh './gradlew sonar'
-                    }
-                }
-            }
-        }
+        // stage('Build Api Gateway') {
+        //     steps {
+        //         echo 'Building Api Gateway'
+        //         dir('api gateway') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'ls -la'
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build'
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Sonarqube Analysis Api Gateway') {
+        //     steps {
+        //         dir('api gateway') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh './gradlew sonar'
+        //             }
+        //         }
+        //     }
+        // }
         stage('Snyk Scan Api Gateway') {
             agent {
                 label 'snyk-agent'
