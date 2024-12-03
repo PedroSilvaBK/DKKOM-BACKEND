@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    parameters {
+        choice(name: 'ACTION', choices: ['normal', 'deploy'], description: 'Choose whether to have normal ci or with deployment')
+    }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
         GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
@@ -41,6 +44,9 @@ pipeline {
             }
         }
         stage("Dockerize Api Gateway") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 echo 'Dockerizing Api Gateway'
                 dir('api gateway') {
@@ -51,6 +57,9 @@ pipeline {
             }
         }
         stage('Deploy Api Gateway') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('api gateway') {
                     echo 'Deploying Api Gateway'
@@ -80,6 +89,9 @@ pipeline {
             }
         }
         stage("Dockerize Media Service") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 echo 'Dockerizing Api Gateway'
                 dir('Media Service') {
@@ -92,6 +104,9 @@ pipeline {
 
         // Deploy Media Service
         stage('Deploy Media Service') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('Media Service') {
                     echo 'Deploying Media Service'
@@ -121,6 +136,9 @@ pipeline {
             }
         }
         stage("Dockerize Cave Service") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('Cave Service') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/cave-service:latest .'
@@ -132,6 +150,9 @@ pipeline {
 
         // Deploy Cave Service
         stage('Deploy Cave Service') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('Cave Service') {
                     echo 'Deploying Cave Service'
@@ -161,6 +182,9 @@ pipeline {
             }
         }
         stage("Dockerize Message Service") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('Messaging Service') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/message-service:latest .'
@@ -172,6 +196,9 @@ pipeline {
 
         // Deploy Message Service
         stage('Deploy Message Service') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('Messaging Service') {
                     echo 'Deploying Message Service'
@@ -201,6 +228,9 @@ pipeline {
             }
         }
         stage("Dockerize Permission Service") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('PermissionsService') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/permission-service:latest .'
@@ -212,6 +242,9 @@ pipeline {
 
         // Deploy Permission Service
         stage('Deploy Permission Service') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('PermissionsService') {
                     echo 'Deploying Permission Service'
@@ -241,6 +274,9 @@ pipeline {
             }
         }
         stage("Dockerize User Service") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('User Service') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-service:latest .'
@@ -252,6 +288,9 @@ pipeline {
 
         // Deploy User Service
         stage('Deploy User Service') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('User Service') {
                     echo 'Deploying User Service'
@@ -281,6 +320,9 @@ pipeline {
             }
         }
         stage("Dockerize User Presence Service") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('user-presence-service') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-presence-service:latest .'
@@ -292,6 +334,9 @@ pipeline {
 
         // Deploy User Presence Service
         stage('Deploy User Presence Service') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('user-presence-service') {
                     echo 'Deploying User Presence Service'
@@ -321,6 +366,9 @@ pipeline {
             }
         }
         stage("Dockerize Websocket gateway") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('Websocket-gateway') {
                     sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/websocket-gateway:latest .'
@@ -332,6 +380,9 @@ pipeline {
 
         // Deploy Websocket Gateway
         stage('Deploy Websocket Gateway') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps {
                 dir('Websocket-gateway') {
                     echo 'Deploying Websocket Gateway'
