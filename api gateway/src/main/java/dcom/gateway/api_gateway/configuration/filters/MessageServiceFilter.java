@@ -10,6 +10,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -38,16 +39,19 @@ public class MessageServiceFilter implements GatewayFilter {
                 log.debug("Username is present - {}", username);
                 log.debug("Userid is present - {}", userId);
 
-                ServerHttpRequest modifiedRequest = exchange.getRequest()
-                        .mutate()
-                        .header("X-User-Id", userId != null ? userId : "")
-                        .header("X-Username", username != null ? username : "")
-                        .build();
+                ServerHttpRequest modifiedRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
+                    @Override
+                    public HttpHeaders getHeaders() {
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.putAll(super.getHeaders());
+                        headers.add("X-User-Id", userId != null ? userId : "");
+                        headers.add("X-Username", username != null ? username : "");
+                        return headers;
+                    }
+                };
 
-                // Build a new exchange with the modified request
-                ServerWebExchange modifiedExchange = exchange.mutate()
-                        .request(modifiedRequest)
-                        .build();
+                // Create the modified exchange with the new request
+                ServerWebExchange modifiedExchange = exchange.mutate().request(modifiedRequest).build();
                 return chain.filter(modifiedExchange);
             }
         }
