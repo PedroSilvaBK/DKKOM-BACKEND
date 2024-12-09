@@ -59,10 +59,12 @@ public class PermissionsService {
     public UserRolesAndPermissionsCache getMergedUserPermissions(UUID userId, UUID caveId) {
         UserRolesAndPermissionsCache userPermissionsCache = (UserRolesAndPermissionsCache) redisTemplate.opsForValue().get(userId.toString());
 
+        // return cached user permissions
         if (userPermissionsCache != null) {
             return userPermissionsCache;
         }
 
+        // check if user is owner and return owner level permissions
         boolean isOwner = caveRepository.existsByOwnerAndId(userId, caveId);
         if (isOwner) {
             return UserRolesAndPermissionsCache.builder()
@@ -72,15 +74,21 @@ public class PermissionsService {
                     .build();
         }
 
+        // fetch user's cave roles
         List<CaveRoleEntity> orderedCaveRoles = caveRepository.findAllRolesByCaveIdAndMemberId(caveId, userId);
+        // if the user has no roles return default permissions
         if (orderedCaveRoles.isEmpty()) {
             return UserRolesAndPermissionsCache.builder()
                     .cavePermissions(961)
-                    .channelPermissionsCacheHashMap(new HashMap<>())
-                    .userRoles(new ArrayList<>())
+                    .channelPermissionsCacheHashMap(new HashMap<>(0))
+                    .userRoles(new ArrayList<>(0))
                     .build();
         }
 
+        // fetch overwritten roles for channels
+        // channel overwrites can be by a cave role or a member
+        // so I can allow a specific user to do something within a channel or a role a user has
+        // in this case member channel overwrites have priority over cave role overwrites
         List<ChannelRoleEntity> allRolesChannelPermissions = channelRoleRepository.findAllByEntityId(orderedCaveRoles.getFirst().getId());
         List<ChannelRoleEntity> allMembersChannelPermissions = channelRoleRepository.findAllByEntityId(userId);
 
@@ -102,6 +110,7 @@ public class PermissionsService {
                     .build());
         }
 
+        // Since im taking a hierarchical approach the only role permissions that matter are the highest one.
         int permissionsOfHighesRole = orderedCaveRoles.getFirst().getPermissions();
         List<String> userCaveRolesIds = orderedCaveRoles.stream()
                 .map(caveRoleEntity -> caveRoleEntity.getId().toString())
@@ -114,6 +123,7 @@ public class PermissionsService {
                 .userRoles(userCaveRolesIds)
                 .build();
 
+        // cache new permissions
         redisTemplate.opsForValue().set(userId.toString(), userPermissionsCache);
 
 
