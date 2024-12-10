@@ -54,4 +54,5 @@ public interface CaveRepository extends JpaRepository<CaveEntity, UUID> {
 
     boolean existsByOwnerAndId(UUID ownerId, UUID caveId);
 
+    int deleteAllByOwner(UUID ownerId);
 }

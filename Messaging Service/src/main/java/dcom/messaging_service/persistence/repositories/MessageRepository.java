@@ -21,7 +21,4 @@ public interface MessageRepository extends CassandraRepository<MessageEntity, UU
 
     @Query("SELECT id FROM messages WHERE authorId = ?0 ALLOW FILTERING")
     List<MessageIdDTO> findByAuthorId(UUID authorId);
-
-    @Query("UPDATE messages SET authorName = :authorName WHERE id IN :ids")
-    void updateAuthorNameByIds(@Param("authorName") String authorName, @Param("ids") List<UUID> ids);
 }

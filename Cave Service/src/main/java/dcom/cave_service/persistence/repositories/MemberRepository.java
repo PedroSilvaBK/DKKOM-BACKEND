@@ -30,4 +30,5 @@ public interface MemberRepository extends JpaRepository<MemberEntity, UUID> {
 
     List<MemberEntity> findAllByUserId(UUID userId);
 
+    int deleteAllByUserId(UUID userId);
 }

@@ -53,7 +53,7 @@ public class PermissionsUtils {
 
     private boolean hasPermission(int permissions, int permission) {
         // if the use is owner or admin he can do anything
-        if ((permissions & CavePermissions.OWNER) == CavePermissions.OWNER || (permissions & CavePermissions.ADMIN) == CavePermissions.ADMIN)
+        if ((permissions & CavePermissions.OWNER) == CavePermissions.OWNER)
         {
             return true;
         }

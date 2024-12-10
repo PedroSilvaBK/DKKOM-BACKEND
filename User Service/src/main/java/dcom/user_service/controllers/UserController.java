@@ -1,5 +1,6 @@
 package dcom.user_service.controllers;
 
+import dcom.user_service.business.delete_user.usecase.DeleteUserUseCase;
 import dcom.user_service.business.get_user.usecase.GetUserUseCase;
 import dcom.user_service.business.register_user.usecase.RegisterUserUseCase;
 import dcom.user_service.business.update_user.use_case.UpdateUserUseCase;
@@ -25,7 +26,7 @@ public class UserController {
     private final RegisterUserUseCase registerUserUseCase;
     private final GetUserUseCase getUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
-
+    private final DeleteUserUseCase deleteUserUseCase;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RsaKeyProvider rsaKeyProvider;
@@ -57,6 +58,12 @@ public class UserController {
         User user = getUserUseCase.getUser(UUID.fromString(claims.get("id").toString()));
 
         return ResponseEntity.ok(jwtTokenProvider.generateToken(user.getUsername(), user.getId(), user.getEmail()));
+    }
+
+    @DeleteMapping("{userId}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable UUID userId) {
+        log.debug("delete endpoint reached - {}", userId);
+        return ResponseEntity.ok(deleteUserUseCase.deleteUser(userId));
     }
 
     private Claims decodeJWT(String token) {

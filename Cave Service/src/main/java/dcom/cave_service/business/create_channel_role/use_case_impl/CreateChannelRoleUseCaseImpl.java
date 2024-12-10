@@ -49,7 +49,7 @@ public class CreateChannelRoleUseCaseImpl implements CreateChannelRoleUseCase {
 
         UUID caveId = channelRepository.findCaveIdByChannelId(createChannelRoleRequest.getChannelId());
         UserRolesAndPermissionsCache requestUserPermissions = rolesAndPermissionsService.getUserMergedPermissions(UUID.fromString(jwtUserDetails.getUserId()), caveId);
-        if (!permissionsUtils.canManageChannel(requestUserPermissions))
+        if (!permissionsUtils.canManageChannel(requestUserPermissions) && !permissionsUtils.isAdmin(requestUserPermissions))
         {
             throw new Unauthorized("User doesnt have permissions to perform this action");
         }

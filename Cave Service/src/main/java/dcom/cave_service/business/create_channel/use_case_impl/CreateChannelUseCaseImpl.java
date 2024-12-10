@@ -40,7 +40,7 @@ public class CreateChannelUseCaseImpl implements CreateChannelUseCase {
     @Transactional
     public CreateChannelResponse createChannel(CreateChannelRequest createChannelRequest) {
         UserRolesAndPermissionsCache requestUserPermissions = rolesAndPermissionsService.getUserMergedPermissions(UUID.fromString(jwtUserDetails.getUserId()), createChannelRequest.getCaveId());
-        if (!permissionsUtils.canManageChannel(requestUserPermissions))
+        if (!permissionsUtils.canManageChannel(requestUserPermissions) && !permissionsUtils.isAdmin(requestUserPermissions))
         {
             throw new Unauthorized("User doesnt have permissions to perform this action");
         }

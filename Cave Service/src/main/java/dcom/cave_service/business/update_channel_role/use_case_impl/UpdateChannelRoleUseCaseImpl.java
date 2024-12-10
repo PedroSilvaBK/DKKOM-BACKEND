@@ -43,7 +43,7 @@ public class UpdateChannelRoleUseCaseImpl implements UpdateChannelRoleUseCase {
 
         UUID caveId = channelRepository.findCaveIdByChannelId(channelRole.getChannelId());
         UserRolesAndPermissionsCache userRolesAndPermissionsCache = rolesAndPermissionsService.getUserMergedPermissions(UUID.fromString(jwtUserDetails.getUserId()), caveId);
-        if (!permissionsUtils.canManageChannel(userRolesAndPermissionsCache))
+        if (!permissionsUtils.canManageChannel(userRolesAndPermissionsCache) && !permissionsUtils.isAdmin(userRolesAndPermissionsCache))
         {
             throw new Unauthorized("User doesnt have permissions to perform this action");
         }

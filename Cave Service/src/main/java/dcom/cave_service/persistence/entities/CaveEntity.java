@@ -38,4 +38,7 @@ public class CaveEntity {
 
     @OneToMany(mappedBy = "caveEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ChatChannelEntity> chatChannelEntities;
+
+    @OneToMany(mappedBy = "caveEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CaveInviteEntity> caveInviteEntities;
 }
