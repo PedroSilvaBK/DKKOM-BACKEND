@@ -5,42 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03ceb67e-46e6-4569-adef-5c07c4489862" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/business/real_time_events/UserDisconnectedVoiceChannelListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/business/real_time_events/UserJoinedVoiceChannelListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/domain/VoiceChannelOverviewDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/domain/events/UserJoinedVoiceChannelEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/VoiceService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/listeners/UserVoiceChannelEventListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/listeners/WebRTCOffersListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/CreateConnectionResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/CreatePeerRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/DisconnectRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/ICECandidateRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/RoomMetadata.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/SessionDescription.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/UserJoinedVoiceChannelEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/WebRTCServerOffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/business/get_cave/use_case_impl/GetCaveBootstrapUseCaveImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/business/get_cave/use_case_impl/GetCaveBootstrapUseCaveImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/domain/ChannelOverviewDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/domain/ChannelOverviewDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/persistence/repositories/CaveRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Cave Service/src/main/java/dcom/cave_service/persistence/repositories/CaveRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Cave Service/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Cave Service/src/main/resources/application-dev.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Cave Service/src/main/resources/application-prod.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Cave Service/src/main/resources/application-prod.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Jenkinsfile" beforeDir="false" afterPath="$PROJECT_DIR$/../Jenkinsfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/SessionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/SessionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/handler/CaveWebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/handler/CaveWebSocketHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/EventResponseType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/EventResponseType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/Response.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/resources/application-dev.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/resources/application-prod.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/resources/application-prod.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../voice-video service/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../voice-video service/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../voice-video service/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../voice-video service/.idea/voice-video service.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../voice-video service/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../voice-video service/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
