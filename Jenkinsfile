@@ -109,6 +109,8 @@ pipeline {
             steps {
                 echo 'Building Voice Service'
                 dir('voice-video-service') {
+                    sh 'go version'
+                    sh 'go mod tidy'
                     sh 'go mod download'
                     sh 'go build -o voice-service'
                 }
