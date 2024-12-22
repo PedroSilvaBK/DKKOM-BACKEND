@@ -9,6 +9,7 @@ pipeline {
         GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
         SNYK_TOKEN = credentials('SNYK_TOKEN')
         SONARQUBE_ENV = credentials('SONARQUBE_TOKEN')
+        PATH = "/usr/local/go/bin:${env.PATH}"
     }
     stages {
         stage('Authenticate with Google Cloud') {
