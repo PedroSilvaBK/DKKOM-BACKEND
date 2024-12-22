@@ -109,6 +109,7 @@ pipeline {
             steps {
                 echo 'Building Voice Service'
                 dir('voice-video-service') {
+                    sh 'echo $PATH'
                     sh 'go version'
                     sh 'go mod tidy'
                     sh 'go mod download'
