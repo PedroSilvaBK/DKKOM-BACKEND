@@ -129,7 +129,7 @@ pipeline {
         stage('Sonarqube Analysis Voice Service') {
             steps {
                 dir('voice-video-service') {
-                    withSonarQubeEnv('SonarQube') {
+                    withSonarQubeEnv('Sonarqube Server') {
                         sh 'sonar-scanner \
                             -Dsonar.projectKey=Voice-Service \
                             -Dsonar.sources=. \
