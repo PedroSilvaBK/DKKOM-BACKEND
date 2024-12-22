@@ -1,5 +1,6 @@
 package dcom.websocketgateway.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +12,9 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Response<T> {
-    private String type;
-    private T data;
-    private Map<String, Object> metadata;
+public class DisconnectRequest {
+    @JsonProperty("user_id")
+    private String userId;
+    @JsonProperty("room_id")
+    private String roomId;
 }

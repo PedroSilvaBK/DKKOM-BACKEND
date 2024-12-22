@@ -1,0 +1,461 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/gorilla/websocket"
+	"github.com/pion/webrtc/v3"
+	"log"
+	"net/http"
+	"sync"
+)
+
+type Message struct {
+	Type      string                     `json:"type"`
+	Offer     *webrtc.SessionDescription `json:"offer,omitempty"`
+	Answer    *webrtc.SessionDescription `json:"answer,omitempty"`
+	Candidate *webrtc.ICECandidateInit   `json:"candidate,omitempty"`
+}
+
+type OfferMessage struct {
+	Type             string                     `json:"type"`
+	Offer            *webrtc.SessionDescription `json:"offer,omitempty"`
+	Answer           *webrtc.SessionDescription `json:"answer,omitempty"`
+	Candidate        *webrtc.ICECandidateInit   `json:"candidate,omitempty"`
+	CurrentStreamIds []string                   `json:"current_stream_ids"`
+}
+
+type threadSafeWriter struct {
+	*websocket.Conn
+	sync.Mutex
+}
+
+type Peer struct {
+	ID   string
+	Conn *threadSafeWriter
+	PC   *webrtc.PeerConnection
+}
+
+type Room struct {
+	Peers  map[string]*Peer
+	Tracks map[string]*webrtc.TrackLocalStaticRTP
+	Mutex  sync.Mutex
+}
+
+var (
+	upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}
+	mu       sync.Mutex
+	//peers       = make(map[string]*Peer) // Map of connected peers
+	listLock sync.RWMutex
+	//trackLocals = make(map[string]*webrtc.TrackLocalStaticRTP) // Centralized track storage
+	rooms = make(map[string]*Room)
+)
+
+func main() {
+	http.HandleFunc("/ws", wsHandler)
+	log.Println("Simplified SFU server running on :9999")
+	log.Fatal(http.ListenAndServe(":9999", nil))
+}
+
+func createPeerHandler (w http.ResponseWriter, r *http.Request) {
+
+}
+
+func wsHandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("WebSocket upgrade error:", err)
+		return
+	}
+
+	safeConn := &threadSafeWriter{conn, sync.Mutex{}}
+
+	defer safeConn.Close()
+
+	peerID := r.URL.Query().Get("id")
+	roomId := r.URL.Query().Get("roomId")
+	if peerID == "" {
+		log.Println("Peer ID is required")
+		return
+	}
+
+	peer := &Peer{
+		ID:   peerID,
+		Conn: safeConn,
+	}
+
+	peer.PC, err = webrtc.NewPeerConnection(webrtc.Configuration{
+		ICEServers: []webrtc.ICEServer{
+			{URLs: []string{"stun:stun.l.google.com:19302"}},
+		},
+	})
+
+	defer peer.PC.Close()
+	if err != nil {
+		log.Println("Error creating PeerConnection:", err)
+		return
+	}
+
+	addPeerToRoom(peer, roomId)
+
+	handleNewPeer(peer, roomId)
+
+	for {
+		_, msgBytes, err := conn.ReadMessage()
+		if err != nil {
+			log.Println("WebSocket read error:", err)
+			break
+		}
+
+		var msg Message
+		if err := json.Unmarshal(msgBytes, &msg); err != nil {
+			log.Println("Error unmarshaling WebSocket message:", err)
+			continue
+		}
+
+		switch msg.Type {
+		case "offer":
+			handleOffer(peer, msg.Offer)
+		case "answer":
+			handleAnswer(peer, msg.Answer)
+		case "candidate":
+			handleCandidate(peer, msg.Candidate)
+		default:
+			log.Printf("Unknown message type: %s", msg.Type)
+		}
+	}
+
+	//removePeerTracks(peer)
+	removePeerTracksFromRoom(peer, roomId)
+	removePeerFromRoom(roomId, peerID)
+	//delete(peers, peerID)
+
+	log.Printf("Peer %s disconnected", peerID)
+}
+
+func addPeerToRoom(peer *Peer, room string) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	if _, exists := rooms[room]; !exists {
+		rooms[room] = &Room{
+			Peers:  make(map[string]*Peer),
+			Tracks: make(map[string]*webrtc.TrackLocalStaticRTP),
+		}
+	}
+
+	rooms[room].Peers[peer.ID] = peer
+	log.Printf("Added peer %s to rom %s\n", peer.ID, room)
+}
+
+func removePeerFromRoom(roomID, peerID string) {
+	mu.Lock()
+
+	room, exists := rooms[roomID]
+	mu.Unlock()
+	if !exists {
+		return
+	}
+
+	room.Mutex.Lock()
+	// Remove the peer
+	delete(room.Peers, peerID)
+	log.Printf("Removed peer %s from room %s", peerID, roomID)
+
+	// Clean up room if empty
+	if len(room.Peers) == 0 && len(room.Tracks) == 0 {
+		room.Mutex.Unlock()
+		delete(rooms, roomID)
+		log.Printf("Deleted room %s as it is now empty", roomID)
+		return
+	}
+
+	room.Mutex.Unlock()
+}
+
+func addTrackToRoom(roomID, trackID string, track *webrtc.TrackLocalStaticRTP) {
+	mu.Lock()
+	room, exists := rooms[roomID]
+	mu.Unlock()
+
+	room.Mutex.Lock()
+	defer room.Mutex.Unlock()
+
+	if !exists {
+		log.Printf("Room %s does not exist, creating it", roomID)
+		room = &Room{
+			Peers:  make(map[string]*Peer),
+			Tracks: make(map[string]*webrtc.TrackLocalStaticRTP),
+		}
+		rooms[roomID] = room
+	}
+
+	room.Tracks[trackID] = track
+	log.Printf("Added track %s to room %s", trackID, roomID)
+}
+
+func removeTrackFromRoom(roomID, trackID string) {
+	mu.Lock()
+	room, exists := rooms[roomID]
+	mu.Unlock()
+
+	if !exists {
+		return
+	}
+
+	room.Mutex.Lock()
+	defer room.Mutex.Unlock()
+
+	delete(room.Tracks, trackID)
+	log.Printf("Removed track %s from room %s", trackID, roomID)
+
+	// Clean up room if empty
+	if len(room.Peers) == 0 && len(room.Tracks) == 0 {
+		delete(rooms, roomID)
+		log.Printf("Deleted room %s as it is now empty", roomID)
+	}
+}
+
+func handleNewPeer(peer *Peer, roomId string) {
+	mu.Lock()
+	log.Printf("New peer %s connected.", peer.ID)
+	room, exists := rooms[roomId]
+	mu.Unlock()
+
+	room.Mutex.Lock()
+	defer room.Mutex.Unlock()
+
+	if !exists {
+		log.Printf("Room %s does not exist when adding tracks to peer in it", roomId)
+		return
+	}
+
+	// Add existing tracks to the new peer
+	for _, track := range room.Tracks {
+		if _, err := peer.PC.AddTrack(track); err != nil {
+			log.Printf("Error adding track to peer %s: %v", peer.ID, err)
+		}
+	}
+
+	peer.PC.OnTrack(func(remoteTrack *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
+		log.Printf("Received track from peer %s: Kind=%s, ID=%s", peer.ID, remoteTrack.Kind(), remoteTrack.ID())
+
+		localTrack, err := webrtc.NewTrackLocalStaticRTP(remoteTrack.Codec().RTPCodecCapability, remoteTrack.ID(), fmt.Sprintf("stream-%s", peer.ID))
+		if err != nil {
+			log.Printf("Error creating local track: %v", err)
+			return
+		}
+
+		addTrackToRoom(roomId, remoteTrack.ID(), localTrack)
+
+		log.Printf("Added track %s to trackLocals with StreamID %s", remoteTrack.ID(), remoteTrack.StreamID())
+
+		go func() {
+			buf := make([]byte, 1500)
+			for {
+
+				if remoteTrack == nil {
+					log.Printf("Remote track is nil for track %s", remoteTrack.ID())
+				}
+
+				n, _, err := remoteTrack.Read(buf)
+				if err != nil {
+					log.Printf("Error reading track: %v", err)
+					return
+				}
+
+				if localTrack == nil {
+					log.Printf("Local track is nil for track %s", remoteTrack.ID())
+				}
+
+				if _, err = localTrack.Write(buf[:n]); err != nil {
+					log.Printf("Error writing to local track: %v", err)
+					return
+				}
+			}
+		}()
+
+		signalAllPeers(roomId)
+	})
+}
+
+func removePeerTracksFromRoom(peer *Peer, roomId string) {
+	mu.Lock()
+	room, exists := rooms[roomId]
+	mu.Unlock()
+	if !exists {
+		log.Printf("Room %s does not exist", roomId)
+		return
+	}
+
+	room.Mutex.Lock()
+
+	// Flag to determine if the room has been deleted
+	roomDeleted := false
+
+	for trackID, track := range room.Tracks {
+		if track.StreamID() == fmt.Sprintf("stream-%s", peer.ID) {
+			delete(room.Tracks, trackID)
+			log.Printf("Removed track %s from room %s", trackID, roomId)
+
+			// Clean up room if empty
+			if len(room.Peers) == 0 && len(room.Tracks) == 0 {
+				roomDeleted = true
+				break
+			}
+		}
+	}
+
+	// If the room was deleted, clean it up and exit early.
+	room.Mutex.Unlock()
+	if roomDeleted {
+		mu.Lock()
+		delete(rooms, roomId)
+		mu.Unlock()
+		log.Printf("Deleted room %s as it is now empty", roomId)
+		return // Exit early to prevent further actions.
+	}
+
+	// Signal peers only if the room still exists.
+	signalAllPeers(roomId)
+}
+
+func signalAllPeers(roomId string) {
+
+	if room, exists := rooms[roomId]; exists {
+
+		for _, peerState := range room.Peers {
+
+			existingSenders := map[string]bool{}
+
+			// Check existing senders
+			for _, sender := range peerState.PC.GetSenders() {
+				if sender.Track() != nil {
+					existingSenders[sender.Track().ID()] = true
+
+					// Remove tracks that are no longer in trackLocals
+					if _, exists := room.Tracks[sender.Track().ID()]; !exists {
+						// Ensure PeerConnection is stable before removing
+						if peerState.PC.SignalingState() != webrtc.SignalingStateStable {
+							log.Printf("Cannot remove track %s from peer %s: PeerConnection is not stable", sender.Track().ID(), peerState.ID)
+							continue
+						}
+
+						// Attempt to remove the track
+						if err := peerState.PC.RemoveTrack(sender); err != nil {
+							log.Printf("Error removing track from sender: %v", err)
+						} else {
+							log.Printf("Removed track from peer %s", peerState.ID)
+						}
+					}
+				} else {
+					log.Printf("Sender track is nil for peer %s, skipping removal", peerState.ID)
+				}
+			}
+
+			// Add tracks from trackLocals, excluding the peer's own tracks
+			for trackID, localTrack := range room.Tracks {
+				if localTrack.StreamID() == fmt.Sprintf("stream-%s", peerState.ID) {
+					log.Printf("Skipping own track %s for peer %s", trackID, peerState.ID)
+					continue
+				}
+
+				if _, alreadySending := existingSenders[trackID]; !alreadySending {
+					if _, err := peerState.PC.AddTrack(localTrack); err != nil {
+						log.Printf("Error adding track %s to peer %s: %v", trackID, peerState.ID, err)
+					} else {
+						log.Printf("Added track %s to peer %s", trackID, peerState.ID)
+					}
+				}
+			}
+
+			// Create and send a new offer
+			offer, err := peerState.PC.CreateOffer(nil)
+			if err != nil {
+				log.Printf("Error creating offer: %v", err)
+				continue
+			}
+
+			if err := peerState.PC.SetLocalDescription(offer); err != nil {
+				log.Printf("Error setting local description: %v", err)
+				continue
+			}
+
+			// Send the updated offer
+			// Check if the connection is still open
+			err = peerState.Conn.WriteJSON(Message{
+				Type:  "offer",
+				Offer: &offer,
+			})
+			if err != nil {
+				log.Printf("Error sending offer to peer %s: %v. Removing peer.", peerState.ID, err)
+
+				// Safely remove the disconnected peer
+				//mu.Lock()
+				removePeerFromRoom(roomId, peerState.ID)
+				//delete(peers, peerState.ID)
+				//mu.Unlock()
+
+				// Close the PeerConnection if it's still active
+				if peerState.PC.ConnectionState() != webrtc.PeerConnectionStateClosed {
+					if closeErr := peerState.PC.Close(); closeErr != nil {
+						log.Printf("Error closing PeerConnection for peer %s: %v", peerState.ID, closeErr)
+					}
+				}
+			} else {
+				log.Printf("Sent offer to peer %s", peerState.ID)
+			}
+
+		}
+	}
+
+}
+
+func handleOffer(peer *Peer, offer *webrtc.SessionDescription) {
+	if offer == nil {
+		log.Println("Invalid offer received.")
+		return
+	}
+	if err := peer.PC.SetRemoteDescription(*offer); err != nil {
+		log.Println("Error setting remote description:", err)
+		return
+	}
+
+	answer, err := peer.PC.CreateAnswer(nil)
+	if err != nil {
+		log.Println("Error creating answer:", err)
+		return
+	}
+	if err := peer.PC.SetLocalDescription(answer); err != nil {
+		log.Println("Error setting local description:", err)
+		return
+	}
+	peer.Conn.WriteJSON(Message{Type: "answer", Answer: &answer})
+}
+
+func handleAnswer(peer *Peer, answer *webrtc.SessionDescription) {
+	if answer == nil {
+		log.Println("Invalid answer received.")
+		return
+	}
+	if err := peer.PC.SetRemoteDescription(*answer); err != nil {
+		log.Println("Error setting remote description:", err)
+	}
+}
+
+func (t *threadSafeWriter) WriteJSON(v interface{}) error {
+	t.Lock()
+	defer t.Unlock()
+
+	return t.Conn.WriteJSON(v)
+}
+
+func handleCandidate(peer *Peer, candidate *webrtc.ICECandidateInit) {
+	if candidate == nil {
+		log.Println("Invalid candidate received.")
+		return
+	}
+	if err := peer.PC.AddICECandidate(*candidate); err != nil {
+		log.Println("Error adding ICE candidate:", err)
+	}
+}

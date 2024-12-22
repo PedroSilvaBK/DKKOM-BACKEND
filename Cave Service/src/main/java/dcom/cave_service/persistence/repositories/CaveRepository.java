@@ -42,6 +42,14 @@ public interface CaveRepository extends JpaRepository<CaveEntity, UUID> {
             "WHERE c.id = :caveId")
     List<MemberEntity> findAllCaveMembersByCaveId(UUID caveId);
 
+    @Query("SELECT m.username " +
+            "FROM ChannelEntity ch " +
+            "JOIN ch.caveEntity c " +
+            "JOIN c.memberEntities m " +
+            "WHERE ch.id = :channelId AND m.userId = :userId")
+    String findUsernameByChannelIdAndUserId(@Param("channelId") UUID channelId, @Param("userId") UUID userId);
+
+
     @Query("SELECT r FROM CaveEntity c " +
             "JOIN c.memberEntities m " +
             "JOIN m.roleEntities r " +
@@ -51,6 +59,9 @@ public interface CaveRepository extends JpaRepository<CaveEntity, UUID> {
 
     @Query("SELECT cc.id FROM CaveEntity c JOIN c.chatChannelEntities cc ON cc.caveEntity.id = c.id WHERE c.id = :caveId")
     List<UUID> findAllTextChannelsFromCave(@Param("caveId") UUID caveId);
+
+    @Query("SELECT cc.id FROM CaveEntity c JOIN c.voiceChannelEntities cc ON cc.caveEntity.id = c.id WHERE c.id = :caveId")
+    List<UUID> findAllVoiceChannelsFromCave(@Param("caveId") UUID caveId);
 
     boolean existsByOwnerAndId(UUID ownerId, UUID caveId);
 

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,14 @@ public class SessionService {
 
     public void addCaveSession(String caveId, WebSocketSession session) {
         sessionsByCave.computeIfAbsent(caveId, k -> new CopyOnWriteArraySet<>()).add(session.getId());
+    }
+
+    public WebSocketSession getSession(String sessionId) {
+        return sessionCache.get(sessionId);
+    }
+
+    public Set<WebSocketSession> getSessions(List<String> sessionIds) {
+        return sessionIds.stream().map(sessionCache::get).collect(Collectors.toSet());
     }
 
     public Set<WebSocketSession>  getSessionsByCave(String caveId) {

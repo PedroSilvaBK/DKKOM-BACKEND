@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voice-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: voice-service
+  template:
+    metadata:
+      labels:
+        app: voice-service
+    spec:
+      containers:
+      - name: voice-service
+        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/voice-service:latest
+        ports:
+        - containerPort: 9999  # The container listens on port 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: voice-service
+spec:
+  selector:
+    app: voice-service
+  ports:
+    - protocol: TCP
+      port: 9999         # External port (how the service is exposed)
+      targetPort: 9999     # Internal port (the port your app runs on inside the container)
+  type: ClusterIP        # Use LoadBalancer or NodePort if external access is needed

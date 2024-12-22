@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Response<T> {
-    private String type;
-    private T data;
-    private Map<String, Object> metadata;
+public class UserJoinedVoiceChannelEvent {
+    private String roomId;
+    private String userId;
+    private String username;
+    private String caveId;
 }

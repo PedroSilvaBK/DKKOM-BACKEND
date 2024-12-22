@@ -7,7 +7,11 @@ public enum EventResponseType {
     CAVE_ROLE_CREATED("cave-role-created"),
     UPDATE_CHANNEL_LIST("update-channel-list"),
     ROLE_ASSIGNED_TO_MEMBER("role-assigned-to-member"),
-    USER_JOINED_CAVE("user-joined-cave");
+    USER_JOINED_CAVE("user-joined-cave"),
+    USER_JOINED_VOICE_CHANNEL("user-joined-voice-channel"),
+    USER_DISCONNECT_VOICE_CHANNEL("user-disconnect-voice-channel"),
+    WEB_RTC_ANSWER("webrtc-answer"),
+    WEB_RTC_OFFER("webrtc-offer");
 
     private final String label;
 

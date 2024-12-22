@@ -1,17 +1,17 @@
-package dcom.cave_service.domain;
+package dcom.cave_service.domain.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class User {
-    private UUID id;
+public class UserJoinedVoiceChannelEvent {
+    private String roomId;
+    private String userId;
+    private String caveId;
     private String username;
 }
