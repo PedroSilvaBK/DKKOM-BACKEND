@@ -67,8 +67,9 @@ var (
 
 func main() {
 	instanceIP = os.Getenv("POD_IP")
+	kafkaHost := os.Getenv("KAFKA_HOST")
 
-	initKafkaProducer()
+	initKafkaProducer(kafkaHost)
 
 	http.HandleFunc("/connect", createPeerConnection)
 	http.HandleFunc("/answer", handleAnswer)
@@ -88,14 +89,14 @@ func main() {
 	log.Fatal(http.ListenAndServe(":9999", handler))
 }
 
-func initKafkaProducer() {
+func initKafkaProducer(hostname string) {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll // Wait for all in-sync replicas to ack the message
 	config.Producer.Retry.Max = 5                    // Retry up to 5 times
 	config.Producer.Return.Successes = true
 
 	var err error
-	producer, err = sarama.NewSyncProducer([]string{"localhost:9092"}, config)
+	producer, err = sarama.NewSyncProducer([]string{hostname + ":9092"}, config)
 	if err != nil {
 		log.Fatalf("Failed to start Kafka producer: %v", err)
 	}

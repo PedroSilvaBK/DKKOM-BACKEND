@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: voice-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: voice-service
@@ -15,6 +15,13 @@ spec:
       containers:
       - name: voice-service
         image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/voice-service:latest
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: KAFKA_HOST
+            value: "kafka"
         ports:
         - containerPort: 9999  # The container listens on port 80
 
