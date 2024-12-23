@@ -58,7 +58,7 @@ dependencies {
 
 	// Logback
 //	implementation 'ch.qos.logback:logback-core:1.5.13'
-//	implementation 'ch.qos.logback:logback-classic:1.5.13'
+	implementation 'ch.qos.logback:logback-classic:1.5.13'
 
 	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
