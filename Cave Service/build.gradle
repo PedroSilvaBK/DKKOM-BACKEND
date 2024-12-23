@@ -44,6 +44,8 @@ dependencies {
 	implementation 'io.netty:netty-common:4.1.115.Final'
 	implementation 'org.springframework.security:spring-security-oauth2-client'
 	implementation 'org.springframework.kafka:spring-kafka:3.3.1'
+	implementation 'ch.qos.logback:logback-core:1.5.14'
+	implementation 'ch.qos.logback:logback-classic:1.5.14'
 	implementation 'org.apache.kafka:kafka-clients:3.8.1'
 	implementation 'org.springframework:spring-context'
 	implementation 'org.springframework:spring-core'
