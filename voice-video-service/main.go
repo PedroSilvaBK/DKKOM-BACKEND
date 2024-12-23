@@ -338,6 +338,10 @@ func handleNewPeer(peer *Peer, roomId string) {
 		}
 	}
 
+	peer.PC.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
+		log.Printf("Connection state changed: %s", state.String())
+	})
+
 	peer.PC.OnTrack(func(remoteTrack *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 		log.Printf("Received track from peer %s: Kind=%s, ID=%s", peer.ID, remoteTrack.Kind(), remoteTrack.ID())
 

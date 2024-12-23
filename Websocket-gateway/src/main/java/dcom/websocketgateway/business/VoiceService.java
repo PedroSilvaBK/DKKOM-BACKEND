@@ -57,7 +57,7 @@ public class VoiceService {
                 .caveId(currentCaveInfo.getCaveId())
                 .build());
 
-        return request.getSessionDescription();
+        return response.getSessionDescription();
     }
 
     public void disconnect(String userId, String roomId) {
