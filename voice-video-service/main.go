@@ -156,7 +156,7 @@ func handleAnswer(w http.ResponseWriter, r *http.Request) {
 
 func handleIceCandidate(w http.ResponseWriter, r *http.Request) {
 	var candidateRequest ICECandidateRequest
-
+	log.Printf("cadidante received")
 	err := json.NewDecoder(r.Body).Decode(&candidateRequest)
 	if err != nil {
 		log.Printf("Error decoding cadidateRequest: %v", err)
