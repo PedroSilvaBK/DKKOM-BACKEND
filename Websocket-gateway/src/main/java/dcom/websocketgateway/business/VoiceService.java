@@ -2,6 +2,7 @@ package dcom.websocketgateway.business;
 
 import dcom.websocketgateway.domain.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VoiceService {
     @Value("${sfu-service-host}")
     private String sfuHost;
@@ -34,6 +36,8 @@ public class VoiceService {
         if (response.getInstanceIP() == null) {
             throw new RuntimeException("Could not create connection");
         }
+
+        log.info("Received response with server ip: ${}", response.getInstanceIP());
 
         String userId = session.getHandshakeHeaders().getFirst("x-user-id");
 
@@ -96,10 +100,15 @@ public class VoiceService {
     }
 
     public void iceCandidate(ICECandidateRequest iceCandidateRequest) {
+        log.info("ice candidate reached");
         RoomMetadata roomMetadata = rooms.get(iceCandidateRequest.getRoomId());
+
+        log.info("Room Data found in ice candidate ${}", roomMetadata);
 
         String fullUrl = buildInstanceURL(roomMetadata.getSFUAddr()) + "/candidate";
         restTemplate.postForObject(fullUrl, iceCandidateRequest, Void.class);
+
+        log.info("Request sent");
     }
 
     private String buildInstanceURL(String instanceIP){

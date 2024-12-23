@@ -69,6 +69,8 @@ func main() {
 	instanceIP = os.Getenv("POD_IP")
 	kafkaHost := os.Getenv("KAFKA_HOST")
 
+	log.Printf("Server IP: %s", instanceIP)
+
 	initKafkaProducer(kafkaHost)
 
 	http.HandleFunc("/connect", createPeerConnection)
