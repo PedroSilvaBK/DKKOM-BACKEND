@@ -11,6 +11,7 @@ public enum EventResponseType {
     USER_JOINED_VOICE_CHANNEL("user-joined-voice-channel"),
     USER_DISCONNECT_VOICE_CHANNEL("user-disconnect-voice-channel"),
     WEB_RTC_ANSWER("webrtc-answer"),
+    WEB_RTC_SERVER_CANDIDATE("webrtc-server-candidate"),
     WEB_RTC_OFFER("webrtc-offer");
 
     private final String label;

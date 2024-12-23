@@ -48,12 +48,6 @@ type ICECandidateRequest struct {
 	Candidate *webrtc.ICECandidateInit `json:"candidate"`
 }
 
-type ICECandidateResponse struct {
-	UserID    string                  `json:"user_id"`
-	RoomID    string                  `json:"room_id"`
-	Candidate webrtc.ICECandidateInit `json:"candidate"`
-}
-
 type CreateConnectionResponse struct {
 	Answer     webrtc.SessionDescription `json:"sessionDescription"`
 	InstanceIP string                    `json:"instanceIP"`
@@ -350,38 +344,27 @@ func handleNewPeer(peer *Peer, roomId string) {
 		log.Printf("Connection state changed: %s", state.String())
 	})
 
-	peer.PC.OnICECandidate(func(i *webrtc.ICECandidate) {
-		if i == nil {
-			return
-		}
-		// If you are serializing a candidate make sure to use ToJSON
-		// Using Marshal will result in errors around `sdpMid`
-
-		candidateResponse := &ICECandidateResponse{
-			Candidate: i.ToJSON(),
-			RoomID:    roomId,
-			UserID:    peer.ID,
-		}
-
-		candidateString, err := json.Marshal(*candidateResponse)
-		if err != nil {
-			log.Printf("Failed to marshal candidate to json: %v", err)
-			return
-		}
-
-		msg := &sarama.ProducerMessage{
-			Topic: "webrtc-server-candidates",
-			Value: sarama.ByteEncoder(candidateString),
-		}
-
-		_, _, err = producer.SendMessage(msg)
-		if err != nil {
-			log.Printf("Failed to send offer to Kafka: %v", err)
-			return
-		}
-
-		log.Printf("Send candidate to client: %s", candidateString)
-	})
+	//peer.PC.OnICECandidate(func(i *webrtc.ICECandidate) {
+	//	if i == nil {
+	//		return
+	//	}
+	//	// If you are serializing a candidate make sure to use ToJSON
+	//	// Using Marshal will result in errors around `sdpMid`
+	//	candidateString, err := json.Marshal(i.ToJSON())
+	//	if err != nil {
+	//		log.Printf("Failed to marshal candidate to json: %v", err)
+	//		return
+	//	}
+	//
+	//	log.Printf("Send candidate to client: %s", candidateString)
+	//
+	//	if writeErr := c.WriteJSON(&websocketMessage{
+	//		Event: "candidate",
+	//		Data:  string(candidateString),
+	//	}); writeErr != nil {
+	//		log.Errorf("Failed to write JSON: %v", writeErr)
+	//	}
+	//})
 
 	peer.PC.OnTrack(func(remoteTrack *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 		log.Printf("Received track from peer %s: Kind=%s, ID=%s", peer.ID, remoteTrack.Kind(), remoteTrack.ID())
