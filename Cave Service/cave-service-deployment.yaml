@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: cave-service
-        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/cave-service:latest
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:latest
         ports:
         - containerPort: 8080  # The container listens on port 80
         env:

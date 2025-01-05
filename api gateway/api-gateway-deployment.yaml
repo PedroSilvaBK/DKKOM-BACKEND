@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:latest
         env:
           - name: GOOGLE_CLIENT_SECRET
             valueFrom:

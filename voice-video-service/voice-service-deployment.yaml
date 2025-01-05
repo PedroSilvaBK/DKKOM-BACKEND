@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: voice-service
-        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/voice-service:latest
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/voice-service:latest
         env:
           - name: POD_IP
             valueFrom:

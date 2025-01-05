@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: user-presence-service
-        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-presence-service
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-presence-service
         ports:
         - containerPort: 8080
         env:
