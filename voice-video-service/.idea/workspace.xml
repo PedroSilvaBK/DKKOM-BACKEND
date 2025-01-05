@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03ceb67e-46e6-4569-adef-5c07c4489862" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/listeners/Candidate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/listeners/ServerCandidate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/business/listeners/WebRTCServerCandidateListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mainv2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/EventResponseType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Websocket-gateway/src/main/java/dcom/websocketgateway/domain/EventResponseType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-    </list>
+    <list default="true" id="03ceb67e-46e6-4569-adef-5c07c4489862" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

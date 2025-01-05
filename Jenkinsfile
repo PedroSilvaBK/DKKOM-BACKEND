@@ -30,7 +30,7 @@ pipeline {
                 expression { params.ACTION == 'deploy' }
             }
             steps {
-                sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project d-com-437216'
+                sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
             }
         }
         stage('Build Api Gateway') {
@@ -87,8 +87,8 @@ pipeline {
                 echo 'Dockerizing Api Gateway'
                 dir('api gateway') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/api-gateway:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:latest'
                 }
             }
         }
@@ -159,8 +159,8 @@ pipeline {
                 echo 'Dockerizing Voice Service'
                 dir('voice-video-service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/voice-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/voice-service:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/voice-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/voice-service:latest'
                 }
             }
         }
@@ -221,8 +221,8 @@ pipeline {
                 echo 'Dockerizing Api Gateway'
                 dir('Media Service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/media-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/media-service:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/media-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/media-service:latest'
                 }
             }
         }
@@ -284,8 +284,8 @@ pipeline {
             steps {
                 dir('Cave Service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/cave-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/cave-service:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:latest'
                 }
             }
         }
@@ -347,8 +347,8 @@ pipeline {
             steps {
                 dir('Messaging Service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/message-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/message-service:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:latest'
                 }
             }
         }
@@ -410,8 +410,8 @@ pipeline {
             steps {
                 dir('PermissionsService') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/permission-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/permission-service:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:latest'
                 }
             }
         }
@@ -473,8 +473,8 @@ pipeline {
             steps {
                 dir('User Service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-service:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:latest'
                 }
             }
         }
@@ -536,8 +536,8 @@ pipeline {
             steps {
                 dir('user-presence-service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-presence-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/user-presence-service:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-presence-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-presence-service:latest'
                 }
             }
         }
@@ -599,8 +599,8 @@ pipeline {
             steps {
                 dir('Websocket-gateway') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/websocket-gateway:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/websocket-gateway:latest'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/websocket-gateway:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/websocket-gateway:latest'
                 }
             }
         }
