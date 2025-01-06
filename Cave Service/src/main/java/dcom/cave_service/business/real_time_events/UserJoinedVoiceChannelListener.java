@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dcom.cave_service.domain.User;
 import dcom.cave_service.domain.events.UserJoinedVoiceChannelEvent;
 import dcom.cave_service.persistence.repositories.CaveRepository;
+import dcom.cave_service.persistence.repositories.ChannelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class UserJoinedVoiceChannelListener {
     private final ObjectMapper objectMapper;
     private final CaveRepository caveRepository;
+    private final ChannelRepository channelRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final RedisTemplate<String, List<User>> redisTemplate;
 
@@ -35,6 +37,9 @@ public class UserJoinedVoiceChannelListener {
 
             List<User> usersInChannel = redisTemplate.opsForValue().get(userJoinedVoiceChannel.getRoomId());
             String username = caveRepository.findUsernameByChannelIdAndUserId(UUID.fromString(userJoinedVoiceChannel.getRoomId()), UUID.fromString(userJoinedVoiceChannel.getUserId()));
+            String caveId = channelRepository.findCaveIdByChannelId(UUID.fromString(userJoinedVoiceChannel.getRoomId())).toString();
+
+            userJoinedVoiceChannel.setCaveId(caveId);
 
             if (usersInChannel == null || usersInChannel.isEmpty()) {
 

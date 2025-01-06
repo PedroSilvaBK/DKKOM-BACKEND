@@ -36,6 +36,11 @@ type CreatePeerRequest struct {
 	Offer  *webrtc.SessionDescription `json:"offer"`
 }
 
+type UserConnectedToVoiceChannel struct {
+	RoomId string `json:"room_id"`
+	UserId string `json:"user_id"`
+}
+
 type KafkaOffer struct {
 	UserID string                     `json:"user_id"`
 	RoomID string                     `json:"room_id"`
@@ -187,6 +192,14 @@ func createPeerConnection(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	if _, exists := rooms[peerRequest.RoomId]; exists {
+		if _, exists := rooms[peerRequest.RoomId].Peers[peerRequest.UserId]; exists {
+			log.Printf("Peer %s already has a peer in room %s", peerRequest.UserId, peerRequest.RoomId)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 	}
 
 	peer := &Peer{
@@ -347,6 +360,30 @@ func handleNewPeer(peer *Peer, roomId string) {
 	}
 
 	peer.PC.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
+		if state.String() == "connected" {
+			userConnected := UserConnectedToVoiceChannel{
+				UserId: peer.ID,
+				RoomId: roomId,
+			}
+
+			userConnectedString, err := json.Marshal(userConnected)
+			if err != nil {
+				log.Printf("Error marshalling user connected to voice channel: %v", err)
+				return
+			}
+
+			msg := &sarama.ProducerMessage{
+				Topic: "user-joined-voice-channel-preprocess",
+				Value: sarama.ByteEncoder(userConnectedString),
+			}
+
+			_, _, err = producer.SendMessage(msg)
+			if err != nil {
+				log.Printf("Failed to send offer to Kafka: %v", err)
+				return
+			}
+		}
+
 		log.Printf("Connection state changed: %s", state.String())
 	})
 

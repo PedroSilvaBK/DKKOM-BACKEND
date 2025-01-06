@@ -55,11 +55,11 @@ public class VoiceService {
             roomMetadata.getUsersSessions().put(userId, session.getId());
         }
 
-        kafkaTemplate.send("user-joined-voice-channel-preprocess", UserJoinedVoiceChannelEvent.builder()
-                .roomId(request.getRoomId())
-                .userId(userId)
-                .caveId(currentCaveInfo.getCaveId())
-                .build());
+//        kafkaTemplate.send("user-joined-voice-channel-preprocess", UserJoinedVoiceChannelEvent.builder()
+//                .roomId(request.getRoomId())
+//                .userId(userId)
+//                .caveId(currentCaveInfo.getCaveId())
+//                .build());
 
         return response.getSessionDescription();
     }

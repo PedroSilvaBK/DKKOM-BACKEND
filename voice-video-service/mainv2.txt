@@ -36,6 +36,11 @@ type CreatePeerRequest struct {
 	Offer  *webrtc.SessionDescription `json:"offer"`
 }
 
+type UserConnectedToVoiceChannel struct {
+	RoomId string `json:"room_id"`
+	UserId string `json:"user_id"`
+}
+
 type KafkaOffer struct {
 	UserID string                     `json:"user_id"`
 	RoomID string                     `json:"room_id"`
@@ -46,6 +51,12 @@ type ICECandidateRequest struct {
 	UserID    string                   `json:"user_id"`
 	RoomID    string                   `json:"room_id"`
 	Candidate *webrtc.ICECandidateInit `json:"candidate"`
+}
+
+type ICECandidateResponse struct {
+	UserID    string                  `json:"user_id"`
+	RoomID    string                  `json:"room_id"`
+	Candidate webrtc.ICECandidateInit `json:"candidate"`
 }
 
 type CreateConnectionResponse struct {
@@ -181,6 +192,14 @@ func createPeerConnection(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	if _, exists := rooms[peerRequest.RoomId]; exists {
+		if _, exists := rooms[peerRequest.RoomId].Peers[peerRequest.UserId]; exists {
+			log.Printf("Peer %s already has a peer in room %s", peerRequest.UserId, peerRequest.RoomId)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 	}
 
 	peer := &Peer{
@@ -341,30 +360,65 @@ func handleNewPeer(peer *Peer, roomId string) {
 	}
 
 	peer.PC.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
+		if state.String() == "connected" {
+			userConnected := UserConnectedToVoiceChannel{
+				UserId: peer.ID,
+				RoomId: roomId,
+			}
+
+			userConnectedString, err := json.Marshal(userConnected)
+			if err != nil {
+				log.Printf("Error marshalling user connected to voice channel: %v", err)
+				return
+			}
+
+			msg := &sarama.ProducerMessage{
+				Topic: "user-joined-voice-channel-preprocess",
+				Value: sarama.ByteEncoder(userConnectedString),
+			}
+
+			_, _, err = producer.SendMessage(msg)
+			if err != nil {
+				log.Printf("Failed to send offer to Kafka: %v", err)
+				return
+			}
+		}
+
 		log.Printf("Connection state changed: %s", state.String())
 	})
 
-	//peer.PC.OnICECandidate(func(i *webrtc.ICECandidate) {
-	//	if i == nil {
-	//		return
-	//	}
-	//	// If you are serializing a candidate make sure to use ToJSON
-	//	// Using Marshal will result in errors around `sdpMid`
-	//	candidateString, err := json.Marshal(i.ToJSON())
-	//	if err != nil {
-	//		log.Printf("Failed to marshal candidate to json: %v", err)
-	//		return
-	//	}
-	//
-	//	log.Printf("Send candidate to client: %s", candidateString)
-	//
-	//	if writeErr := c.WriteJSON(&websocketMessage{
-	//		Event: "candidate",
-	//		Data:  string(candidateString),
-	//	}); writeErr != nil {
-	//		log.Errorf("Failed to write JSON: %v", writeErr)
-	//	}
-	//})
+	peer.PC.OnICECandidate(func(i *webrtc.ICECandidate) {
+		if i == nil {
+			return
+		}
+		// If you are serializing a candidate make sure to use ToJSON
+		// Using Marshal will result in errors around `sdpMid`
+
+		candidateResponse := &ICECandidateResponse{
+			Candidate: i.ToJSON(),
+			RoomID:    roomId,
+			UserID:    peer.ID,
+		}
+
+		candidateString, err := json.Marshal(*candidateResponse)
+		if err != nil {
+			log.Printf("Failed to marshal candidate to json: %v", err)
+			return
+		}
+
+		msg := &sarama.ProducerMessage{
+			Topic: "webrtc-server-candidates",
+			Value: sarama.ByteEncoder(candidateString),
+		}
+
+		_, _, err = producer.SendMessage(msg)
+		if err != nil {
+			log.Printf("Failed to send offer to Kafka: %v", err)
+			return
+		}
+
+		log.Printf("Send candidate to client: %s", candidateString)
+	})
 
 	peer.PC.OnTrack(func(remoteTrack *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 		log.Printf("Received track from peer %s: Kind=%s, ID=%s", peer.ID, remoteTrack.Kind(), remoteTrack.ID())
