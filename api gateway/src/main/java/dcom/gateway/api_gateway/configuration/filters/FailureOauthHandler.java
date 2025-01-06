@@ -49,7 +49,9 @@ public class FailureOauthHandler {
             log.debug("Redirecting to error URL: {}", failureReason);
 
             exchange.getResponse().setStatusCode(HttpStatus.FOUND);
-            exchange.getResponse().getHeaders().setLocation(URI.create("https://dkkom.com/login"));
+
+            String selectedUrl = prodCookie ? "https://dkkom.com/login" : "http://localhost:5173login";
+            exchange.getResponse().getHeaders().setLocation(URI.create(selectedUrl));
 
             return exchange.getResponse().setComplete();
         };
