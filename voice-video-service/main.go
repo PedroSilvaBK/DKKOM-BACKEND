@@ -212,9 +212,9 @@ func createPeerConnection(w http.ResponseWriter, r *http.Request) {
 			//	URLs: []string{"stun:stun.l.google.com:19302"},
 			//},
 			{
-				URLs:       []string{"turn:35.210.177.27:3478"}, // Replace with your TURN server IP/hostname
-				Username:   "username",                          // Your TURN server username
-				Credential: "password",                          // Your TURN server password
+				URLs:       []string{"turn:turn.dkkom.com:3478"}, // Replace with your TURN server IP/hostname
+				Username:   "username",                           // Your TURN server username
+				Credential: "password",                           // Your TURN server password
 			},
 		},
 	})
