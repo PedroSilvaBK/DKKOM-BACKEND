@@ -208,8 +208,13 @@ func createPeerConnection(w http.ResponseWriter, r *http.Request) {
 
 	peer.PC, err = webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
+			//{
+			//	URLs: []string{"stun:stun.l.google.com:19302"},
+			//},
 			{
-				URLs: []string{"stun:stun.l.google.com:19302"},
+				URLs:       []string{"turn:35.210.177.27:3478"}, // Replace with your TURN server IP/hostname
+				Username:   "username",                          // Your TURN server username
+				Credential: "password",                          // Your TURN server password
 			},
 		},
 	})
