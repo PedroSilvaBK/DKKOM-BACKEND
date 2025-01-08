@@ -24,6 +24,7 @@ pipeline {
                 sh 'docker-compose up -d'
                 sh 'docker ps'
                 sh 'docker-compose down'
+                sh 'docker system prune -a || y'
             }
         }
         // stage('Authenticate with Google Cloud') {
