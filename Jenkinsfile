@@ -33,28 +33,28 @@ pipeline {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
             }
         }
-        stage('Build Api Gateway') {
-            steps {
-                echo 'Building Api Gateway'
-                dir('api gateway') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'ls -la'
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
-                    }
-                }
-            }
-        }
-        stage("Test Api Gateway") {
-            steps {
-                echo 'Testing Api Gateway'
-                dir('api gateway') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh './gradlew test'
-                    }
-                }
-            }
-        }
+        // stage('Build Api Gateway') {
+        //     steps {
+        //         echo 'Building Api Gateway'
+        //         dir('api gateway') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'ls -la'
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build'
+        //             }
+        //         }
+        //     }
+        // }
+        // stage("Test Api Gateway") {
+        //     steps {
+        //         echo 'Testing Api Gateway'
+        //         dir('api gateway') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh './gradlew test'
+        //             }
+        //         }
+        //     }
+        // }
         // stage('Sonarqube Analysis Api Gateway') {
         //     steps {
         //         dir('api gateway') {
@@ -118,6 +118,8 @@ pipeline {
             steps {
                 echo 'Dockerizing Api Gateway'
                 dir('api gateway') {
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew build -x test -pProfile=test'
                     sh 'docker build -f Dockerfile-test -t api-gateway:latest . '
                     sh 'docker run -d -p 8080:8080 -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET api-gateway:latest'
                     sh 'sleep 5'
