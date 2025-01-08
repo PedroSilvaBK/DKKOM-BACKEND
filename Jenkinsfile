@@ -12,71 +12,49 @@ pipeline {
         PATH = "/opt/sonar-scanner/bin:/usr/local/go/bin:${env.PATH}"
     }
     stages {
-        stage('create integration test env') {
-            agent {
-                label 'integration-tests-env'
-            }
+        stage('Authenticate with Google Cloud') {
             when {
-                expression { params.ACTION == 'normal' }
+                expression { params.ACTION == 'deploy' }
             }
             steps {
-                sh 'echo "Creating integration test environment"'
-                sh 'docker-compose up -d'
-                sh 'docker ps'
+                script {
+                    sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
+                    sh '''
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                    '''
+                }
+            }
+        }
+        stage('Get Cluster Credentials') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
+            steps {
+                sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
+            }
+        }
+        stage('Build Api Gateway') {
+            steps {
+                echo 'Building Api Gateway'
                 dir('api gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
+                        sh './gradlew build'
+                    }
+                }
+            }
+        }
+        stage("Test Api Gateway") {
+            steps {
+                echo 'Testing Api Gateway'
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh './gradlew test'
                     }
                 }
-                sh 'docker-compose down'
-                sh 'docker system prune -af'
             }
         }
-        // stage('Authenticate with Google Cloud') {
-        //     when {
-        //         expression { params.ACTION == 'deploy' }
-        //     }
-        //     steps {
-        //         script {
-        //             sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
-        //             sh '''
-        //                 gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-        //             '''
-        //         }
-        //     }
-        // }
-        // stage('Get Cluster Credentials') {
-        //     when {
-        //         expression { params.ACTION == 'deploy' }
-        //     }
-        //     steps {
-        //         sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
-        //     }
-        // }
-        // stage('Build Api Gateway') {
-        //     steps {
-        //         echo 'Building Api Gateway'
-        //         dir('api gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage("Test Api Gateway") {
-        //     steps {
-        //         echo 'Testing Api Gateway'
-        //         dir('api gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew test'
-        //             }
-        //         }
-        //     }
-        // }
         // stage('Sonarqube Analysis Api Gateway') {
         //     steps {
         //         dir('api gateway') {
@@ -114,6 +92,52 @@ pipeline {
         //         }
         //     }
         // }
+        stage('create integration test base env') {
+            agent {
+                label 'integration-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                sh 'echo "Creating integration test environment"'
+                sh 'docker-compose up -d'
+                sh 'docker ps'
+            }
+        }
+        stage("Dockerize Api Gateway for tests") {
+            agent {
+                label 'integration-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                echo 'Dockerizing Api Gateway'
+                dir('api gateway') {
+                    sh 'docker build -t api-gateway:latest .'
+                    sh 'docker run -d -p 8080:8080 api-gateway:latest'
+                    sh 'sleep 30'
+                    sh 'Simulate test'
+                }
+            }
+        }
+        stage('Run integration tests api-gateway') {
+            agent {
+                label 'integration-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker remove api-gateway'
+                        sh 'docker build -f Dockerfile-test -t api-gateway-test:latest .'
+                    }
+                }
+            }
+        }
         // stage('Deploy Api Gateway') {
         //     when {
         //         expression { params.ACTION == 'deploy' }

@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # -------------------------
+  # MySQL
+  # -------------------------
+  mysql:
+    image: mysql:latest
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: cave_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # -------------------------
+  # ZooKeeper (for Kafka)
+  # -------------------------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  # -------------------------
+  # Kafka (single broker)
+  # -------------------------
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+
+  # -------------------------
+  # Redis
+  # -------------------------
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  # -------------------------
+  # ScyllaDB
+  # -------------------------
+  scylla:
+    image: scylladb/scylla:latest
+    container_name: scylla_db
+    ports:
+      - "9042:9042"   # CQL port
+      - "9160:9160"   # Thrift port (optional)
+      - "9180:9180"   # Scylla admin port
+    # Adjust resources as needed (CPU, memory). Developer mode can be enabled if needed.
+    # command: ["--developer-mode", "1"] 
+    command: ["--smp", "1", "--memory", "512M"]
+
+volumes:
+  mysql_data:
+  scylla_data:
