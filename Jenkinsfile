@@ -144,7 +144,7 @@ pipeline {
                         sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
                         sh 'docker run --rm --network=test-network cave-service-tests:latest'
                         sh 'docker start cave-service'
-                        sh 'Cave service back running'
+                        sh 'echo Cave service back running'
                         sleep 10
                     }
                 }
