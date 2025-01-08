@@ -11,4 +11,14 @@ class CaveServiceApplicationTests {
 		System.out.println("context loaded");
 	}
 
+	@Test
+	void test1() {
+		System.out.println("teste1");
+	}
+
+	@Test
+	void teste3() {
+		System.out.println("teste3");
+	}
+
 }

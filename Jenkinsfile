@@ -121,6 +121,22 @@ pipeline {
                 }
             }
         }
+        stage('Run integration tests cave-service') {
+            agent {
+                label 'local-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                dir('Cave Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker build -f Dockerfile-run-test -t cave-service-test:latest .'
+                        sh 'docker remove cave-service-test || true'
+                    }
+                }
+            }
+        }
         stage('clean test env') {
             agent {
                 label 'local-tests-env'
@@ -131,6 +147,7 @@ pipeline {
             steps {
                 sh 'echo "Cleaning integration test environment"'
                 sh 'docker-compose down'
+                sh 'docker prune -af'
             }
         }
         // stage('Deploy Api Gateway') {
