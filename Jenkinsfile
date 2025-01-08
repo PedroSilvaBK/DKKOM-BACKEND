@@ -98,7 +98,7 @@ pipeline {
                 DOCKER_PASS = credentials('DOCKER_USERNAME')
             }
             steps {
-                sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
             }
         }
         stage('create test base env') {
