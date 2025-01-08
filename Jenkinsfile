@@ -105,7 +105,7 @@ pipeline {
                 sh 'docker ps'
             }
         }
-        stage('Run integration tests api-gateway') {
+        stage('Setup services for test') {
             agent {
                 label 'local-tests-env'
             }
@@ -113,10 +113,14 @@ pipeline {
                 expression { params.ACTION == 'normal' }
             }
             steps {
-                dir('api gateway') {
+                sh 'echo "Setting up services for integration tests"'
+                dir('Cave Service'){
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'docker build -f Dockerfile-run-test -t api-gateway-test:latest .'
-                        sh 'docker remove api-gateway-test || true'
+                        sh './gradlew build'
+                        sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
+                        sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
+                        sh 'Cave service running on test environment'
+                        sleep 10
                     }
                 }
             }
@@ -135,8 +139,12 @@ pipeline {
             steps {
                 dir('Cave Service') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-test:latest .'
-                        sh 'docker run --rm --network=test-network cave-service-test:latest'
+                        sh 'docker stop cave-service'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network cave-service-tests:latest'
+                        sh 'docker start cave-service'
+                        sh 'Cave service back running'
+                        sleep 10
                     }
                 }
             }
