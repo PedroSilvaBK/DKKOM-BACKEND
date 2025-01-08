@@ -23,8 +23,6 @@ pipeline {
                 sh 'echo "Creating integration test environment"'
                 sh 'docker-compose up -d'
                 sh 'docker ps'
-                sh 'docker-compose down'
-                sh 'docker system prune -af'
                 dir('api gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
@@ -32,6 +30,8 @@ pipeline {
                         sh './gradlew build'
                     }
                 }
+                sh 'docker-compose down'
+                sh 'docker system prune -af'
             }
         }
         // stage('Authenticate with Google Cloud') {
