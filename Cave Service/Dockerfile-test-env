@@ -1,7 +1,35 @@
-FROM gradle:8.10.2-jdk21
-WORKDIR /opt/app
-COPY ./build/libs/Cave_Service-0.0.1-SNAPSHOT.jar ./
+# -------------------------------------------
+# Stage 1: Build the application
+# -------------------------------------------
+FROM gradle:8.10.2-jdk21 AS builder
 
+# Set working directory inside the container
+WORKDIR /opt/app
+
+# Copy Gradle wrapper and build scripts
+COPY gradlew ./gradlew
+COPY gradle ./gradle
+COPY build.gradle ./build.gradle
+COPY settings.gradle ./settings.gradle
+
+# Copy the source code
+COPY src ./src
+
+# Build the application
+RUN ./gradlew clean build --no-daemon
+
+# -------------------------------------------
+# Stage 2: Run the application
+# -------------------------------------------
+FROM gradle:8.10.2-jdk21
+
+# Set working directory inside the container
+WORKDIR /opt/app
+
+# Expose the application port
 EXPOSE 8085
+
+# Copy the built JAR file from the builder stage
+COPY --from=builder /opt/app/build/libs/Cave_Service-0.0.1-SNAPSHOT.jar ./Cave_Service-0.0.1-SNAPSHOT.jar
 
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar Cave_Service-0.0.1-SNAPSHOT.jar --spring.profiles.active=test"]
