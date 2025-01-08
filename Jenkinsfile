@@ -120,7 +120,7 @@ pipeline {
                         sh './gradlew build -x test'
                         sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
                         sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
-                        sh 'Cave service running on test environment'
+                        sh 'echo Cave service running on test environment'
                         sleep 10
                     }
                 }
