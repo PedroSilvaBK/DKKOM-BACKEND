@@ -146,6 +146,7 @@ pipeline {
             environment {
                 GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
                 GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
             }
             when {
                 expression { params.ACTION == 'normal' }
@@ -158,6 +159,15 @@ pipeline {
                         sh 'docker run --rm --network=test-network cave-service-tests:latest'
                         sh 'docker start cave-service'
                         sh 'echo Cave service back running'
+                    }
+                }
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop api-gateway'
+                        sh 'docker build --build-arg GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET -f Dockerfile-run-test -t api-gateway-tests:latest .'
+                        sh 'docker run --rm --network=test-network api-gateway-tests:latest'
+                        sh 'docker start api-gateway'
+                        sh 'echo Api gateway back running'
                         sleep 10
                     }
                 }

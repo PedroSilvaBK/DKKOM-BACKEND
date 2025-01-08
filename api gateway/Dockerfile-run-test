@@ -6,6 +6,11 @@ FROM gradle:8.10.2-jdk21
 # Create a working directory inside the container
 WORKDIR /app
 
+# Accept arguments for GitLab credentials
+ARG GOOGLE_CLIENT_SECRET
+
+ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+
 # Copy Gradle configuration files first for caching
 COPY build.gradle settings.gradle ./
 
