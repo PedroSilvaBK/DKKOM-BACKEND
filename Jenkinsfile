@@ -27,7 +27,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
+                        sh './gradlew test'
                     }
                 }
                 sh 'docker-compose down'
