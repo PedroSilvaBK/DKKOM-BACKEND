@@ -117,8 +117,8 @@ pipeline {
                 dir('api gateway') {
                     sh 'docker build -t api-gateway:latest .'
                     sh 'docker run -d -p 8080:8080 api-gateway:latest'
-                    sh 'sleep 30'
-                    sh 'Simulate test'
+                    sh 'sleep 5'
+                    sh 'echo Simuulate sleep'
                 }
             }
         }
