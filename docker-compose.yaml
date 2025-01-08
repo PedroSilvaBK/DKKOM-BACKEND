@@ -14,6 +14,8 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - test-network
 
   # -------------------------
   # ZooKeeper (for Kafka)
@@ -26,6 +28,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      - test-network
 
   # -------------------------
   # Kafka (single broker)
@@ -43,6 +47,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
+    networks:
+      - test-network
 
   # -------------------------
   # Redis
@@ -52,6 +58,8 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    networks:
+      - test-network
 
   # -------------------------
   # ScyllaDB
@@ -63,10 +71,14 @@ services:
       - "9042:9042"   # CQL port
       - "9160:9160"   # Thrift port (optional)
       - "9180:9180"   # Scylla admin port
-    # Adjust resources as needed (CPU, memory). Developer mode can be enabled if needed.
-    # command: ["--developer-mode", "1"] 
     command: ["--smp", "1", "--memory", "512M"]
+    networks:
+      - test-network
 
 volumes:
   mysql_data:
   scylla_data:
+
+networks:
+  test-network:
+    driver: bridge
