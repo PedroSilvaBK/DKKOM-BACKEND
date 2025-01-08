@@ -3,11 +3,11 @@ package dcom.user_service;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-//@SpringBootTest
-//class UserServiceApplicationTests {
-//
-//	@Test
-//	void contextLoads() {
-//	}
-//
-//}
+@SpringBootTest(properties = "spring.profiles.active=test")
+class UserServiceApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
