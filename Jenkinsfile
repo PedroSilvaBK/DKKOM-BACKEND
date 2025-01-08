@@ -125,7 +125,7 @@ pipeline {
                     sh 'chmod +x ./gradlew'
                     sh './gradlew build -x test'
                     sh 'docker build -f Dockerfile-test -t cave-service:latest . '
-                    sh 'docker run --name api-gateway -d -p 8085:8085 -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET cave-service:latest'
+                    sh 'docker run --name cave-service -d -p 8085:8085 cave-service:latest'
                     sh 'sleep 5'
                     sh 'echo Simuulate sleep'
                 }
