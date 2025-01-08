@@ -19,7 +19,7 @@ COPY . .
 # For example:
 # task integrationTest(type: Test) { ... }
 # Then call that specific task:
-RUN gradle --no-daemon clean integrationTest
+RUN gradle --no-daemon clean test
 
 # If you only want to run unit tests or a general test suite, use:
 # RUN gradle --no-daemon clean test
