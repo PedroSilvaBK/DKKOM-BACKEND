@@ -75,27 +75,6 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-sourceSets {
-	integrationTest {
-		java {
-			srcDir file('src/integrationTest/java')
-		}
-		resources {
-			srcDir file('src/integrationTest/resources')
-		}
-		compileClasspath += main.output + test.output
-		runtimeClasspath += main.output + test.output
-	}
-}
-
-
-task integrationTest(type: Test) {
-	description = 'Runs integration tests.'
-	group = 'verification'
-	testClassesDirs = sourceSets.integrationTest.output.classesDirs
-	classpath = sourceSets.integrationTest.runtimeClasspath
-	shouldRunAfter test
-}
 
 sonarqube {
 	properties {

@@ -92,60 +92,45 @@ pipeline {
         //         }
         //     }
         // }
-        stage('create integration test base env') {
+        stage('create test base env') {
             agent {
-                label 'integration-tests-env'
+                label 'local-tests-env'
             }
             when {
                 expression { params.ACTION == 'normal' }
             }
             steps {
-                dir('Cave Service') {
+                sh 'echo "Creating integration test environment"'
+                sh 'docker-compose up -d'
+                sh 'docker ps'
+            }
+        }
+        stage('Run integration tests api-gateway') {
+            agent {
+                label 'local-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                dir('api gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'echo "Creating integration test environment"'
-                        sh 'docker-compose up -d'
-                        sh 'docker ps'
+                        sh 'docker build -f Dockerfile-run-test -t api-gateway-test:latest .'
+                        sh 'docker remove api-gateway-test || true'
                     }
                 }
             }
         }
-        stage("Dockerize Cave Service for tests") {
+        stage('clean test env') {
             agent {
-                label 'integration-tests-env'
-            }
-            when {
-                expression { params.ACTION == 'normal' }
-            }
-            environment {
-                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
-            }
-            steps {
-                echo 'Dockerizing Cave Service'
-                dir('Cave Service') {
-                    sh 'chmod +x ./gradlew'
-                    sh './gradlew build -x test'
-                    sh 'docker build -f Dockerfile-test -t cave-service:latest . '
-                    sh 'docker run --name cave-service -d -p 8085:8085 cave-service:latest'
-                    sh 'sleep 5'
-                    sh 'echo Simuulate sleep'
-                }
-            }
-        }
-        stage('Run integration tests Cave Service') {
-            agent {
-                label 'integration-tests-env'
+                label 'local-tests-env'
             }
             when {
                 expression { params.ACTION == 'normal' }
             }
             steps {
-                dir('Cave Service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'docker stop cave-service'
-                        sh 'docker remove cave-service'
-                        sh 'docker build -f Dockerfile-run-test -t cave-service-test:latest .'
-                    }
-                }
+                sh 'echo "Cleaning integration test environment"'
+                sh 'docker-compose down'
             }
         }
         // stage('Deploy Api Gateway') {
