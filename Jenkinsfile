@@ -103,6 +103,7 @@ pipeline {
                 sh 'echo "Creating integration test environment"'
                 sh 'docker-compose up -d'
                 sh 'docker exec mysql_db mysql -uroot -padmin -e "CREATE DATABASE IF NOT EXISTS users_db;"'
+                sleep 5
                 sh 'docker ps'
             }
         }
