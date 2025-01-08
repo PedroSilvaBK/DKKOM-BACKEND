@@ -25,6 +25,13 @@ pipeline {
                 sh 'docker ps'
                 sh 'docker-compose down'
                 sh 'docker system prune -af'
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build'
+                    }
+                }
             }
         }
         // stage('Authenticate with Google Cloud') {
