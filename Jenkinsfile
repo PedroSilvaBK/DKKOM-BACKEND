@@ -21,7 +21,9 @@ pipeline {
             }
             steps {
                 sh 'echo "Creating integration test environment"'
-                sh 'ls -la'
+                sh 'docker-compose up -d'
+                sh 'docker ps'
+                sh 'docker-compose down'
             }
         }
         // stage('Authenticate with Google Cloud') {
