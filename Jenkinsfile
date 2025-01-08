@@ -92,15 +92,6 @@ pipeline {
         //         }
         //     }
         // }
-        stage('docker login') {
-            environment {
-                DOCKER_USER = credentials('DOCKER_PASSWORD')
-                DOCKER_PASS = credentials('DOCKER_USERNAME')
-            }
-            steps {
-                sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-            }
-        }
         stage('create test base env') {
             agent {
                 label 'local-tests-env'
