@@ -137,7 +137,6 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-test:latest .'
                         sh 'docker run --rm --network=test-network cave-service-test:latest'
-                        sh 'docker remove cave-service-test || true'
                     }
                 }
             }
