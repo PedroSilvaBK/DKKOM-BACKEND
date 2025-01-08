@@ -125,13 +125,17 @@ pipeline {
             agent {
                 label 'local-tests-env'
             }
+            environment {
+                GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+                GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+            }
             when {
                 expression { params.ACTION == 'normal' }
             }
             steps {
                 dir('Cave Service') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'docker build -f Dockerfile-run-test -t cave-service-test:latest .'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-test:latest .'
                         sh 'docker remove cave-service-test || true'
                     }
                 }

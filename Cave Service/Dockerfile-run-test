@@ -6,6 +6,13 @@ FROM gradle:8.10.2-jdk21
 # Create a working directory inside the container
 WORKDIR /app
 
+ARG GITLAB_USER
+ARG GITLAB_TOKEN
+
+ENV GITLAB_USER=${GITLAB_USER}
+ENV GITLAB_TOKEN=${GITLAB_TOKEN}
+
+
 # Copy Gradle config first so Docker can cache dependencies if they rarely change
 COPY build.gradle settings.gradle ./
 
