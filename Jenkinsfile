@@ -112,6 +112,9 @@ pipeline {
             when {
                 expression { params.ACTION == 'normal' }
             }
+            environment {
+                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
+            }
             steps {
                 sh 'echo "Setting up services for integration tests"'
                 dir('Cave Service'){
@@ -128,7 +131,7 @@ pipeline {
                         sh 'chmod +x ./gradlew'
                         sh './gradlew build -x test'
                         sh 'docker build -f Dockerfile-test-env -t api-gateway:latest .'
-                        sh 'docker run --network=test-network -d --name api-gateway api-gateway:latest'
+                        sh 'docker run --network=test-network -d -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET --name api-gateway api-gateway:latest'
                         sh 'echo Api gateway running on test environment'
                     }
                 }
