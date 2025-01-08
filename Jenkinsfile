@@ -116,6 +116,8 @@ pipeline {
                 sh 'echo "Setting up services for integration tests"'
                 dir('Cave Service'){
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build'
                         sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
                         sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
                         sh 'Cave service running on test environment'
