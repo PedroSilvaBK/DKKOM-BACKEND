@@ -135,7 +135,7 @@ pipeline {
                         sh 'echo Api gateway running on test environment'
                     }
                 }
-                sh 'Service Deployed and running'
+                sh 'echo Service Deployed and running'
                 sleep 10
             }
         }
