@@ -145,6 +145,15 @@ pipeline {
                         sh 'echo User Service running on test environment'
                     }
                 }
+                dir('Websocket-gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t websocket-gateway:latest .'
+                        sh 'docker run --network=test-network -d --name websocket-gateway websocket-gateway:latest'
+                        sh 'echo websocket-gateway running on test environment'
+                    }
+                }
                 sh 'echo Service Deployed and running'
                 sleep 10
             }
@@ -178,7 +187,6 @@ pipeline {
                         sh 'docker run --rm --network=test-network api-gateway-tests:latest'
                         sh 'docker start api-gateway'
                         sh 'echo Api gateway back running'
-                        sleep 10
                     }
                 }
                 dir('User Service') {
@@ -188,6 +196,15 @@ pipeline {
                         sh 'docker run --rm --network=test-network user-service-tests:latest'
                         sh 'docker start user-service'
                         sh 'echo User Service back running'
+                    }
+                }
+                dir('Websocket-gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop websocket-gateway'
+                        sh 'docker build -f Dockerfile-run-test -t websocket-gateway-tests:latest .'
+                        sh 'docker run --rm --network=test-network websocket-gateway-tests:latest'
+                        sh 'docker start websocket-gateway'
+                        sh 'echo websocket-gateway back running'
                         sleep 10
                     }
                 }
