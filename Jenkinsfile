@@ -151,7 +151,7 @@ pipeline {
             steps {
                 sh 'echo "Cleaning integration test environment"'
                 sh 'docker-compose down'
-                sh 'docker prune -af'
+                sh 'docker system prune -af'
             }
         }
         // stage('Deploy Api Gateway') {
