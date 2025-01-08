@@ -170,7 +170,8 @@ pipeline {
                 sh 'echo "Cleaning integration test environment"'
                 sh 'docker stop $(docker ps -q)'
                 sh 'docker-compose down'
-                sh 'docker system prune -af'
+                sh 'docker container prune -af'
+                // sh 'docker system prune -af'
             }
         }
         // stage('Deploy Api Gateway') {
