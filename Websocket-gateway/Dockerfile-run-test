@@ -6,6 +6,14 @@ FROM gradle:8.10.2-jdk21
 # Create a working directory inside the container
 WORKDIR /app
 
+# Accept arguments for GitLab credentials
+ARG GITLAB_USER
+ARG GITLAB_TOKEN
+
+# Set them as environment variables
+ENV GITLAB_USER=${GITLAB_USER}
+ENV GITLAB_TOKEN=${GITLAB_TOKEN}
+
 # Copy Gradle configuration files first for caching
 COPY build.gradle settings.gradle ./
 

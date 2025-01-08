@@ -202,7 +202,7 @@ pipeline {
                 dir('Websocket-gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'docker stop websocket-gateway'
-                        sh 'docker build -f Dockerfile-run-test -t websocket-gateway-tests:latest .'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t websocket-gateway-tests:latest .'
                         sh 'docker run --rm --network=test-network websocket-gateway-tests:latest'
                         sh 'docker start websocket-gateway'
                         sh 'echo websocket-gateway back running'
