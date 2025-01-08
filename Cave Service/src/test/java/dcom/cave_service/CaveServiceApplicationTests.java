@@ -6,7 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(properties = "spring.profiles.active=dev")
 class CaveServiceApplicationTests {
 
+	@Test
 	void contextLoads() {
+
 	}
 
 }
