@@ -119,7 +119,7 @@ pipeline {
                 echo 'Dockerizing Api Gateway'
                 dir('api gateway') {
                     sh 'chmod +x ./gradlew'
-                    sh './gradlew build -x test -pProfile=test'
+                    sh './gradlew build -x test'
                     sh 'docker build -f Dockerfile-test -t api-gateway:latest . '
                     sh 'docker run -d -p 8080:8080 -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET api-gateway:latest'
                     sh 'sleep 5'
