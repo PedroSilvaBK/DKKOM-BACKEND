@@ -139,7 +139,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'docker stop api-gateway'
                         sh 'docker build -f Dockerfile-run-test -t api-gateway-test:latest .'
-                        sh 'docker-compose down'
+                        sh 'docker stop $(docker ps -q)'
                     }
                 }
             }
