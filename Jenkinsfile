@@ -112,11 +112,14 @@ pipeline {
             when {
                 expression { params.ACTION == 'normal' }
             }
+            environment {
+                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
+            }
             steps {
                 echo 'Dockerizing Api Gateway'
                 dir('api gateway') {
-                    sh 'docker build -t api-gateway:latest .'
-                    sh 'docker run -d -p 8080:8080 api-gateway:latest'
+                    sh 'docker build -f Dockerfile-test -t api-gateway:latest . '
+                    sh 'docker run -d -p 8080:8080 -e $GOOGLE_CLIENT_SECRET api-gateway:latest'
                     sh 'sleep 5'
                     sh 'echo Simuulate sleep'
                 }
@@ -133,7 +136,7 @@ pipeline {
                 dir('api gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'docker remove api-gateway'
-                        sh 'docker build -f Dockerfile-test -t api-gateway-test:latest .'
+                        sh 'docker build -f Dockerfile-run-test -t api-gateway-test:latest .'
                     }
                 }
             }
