@@ -121,9 +121,19 @@ pipeline {
                         sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
                         sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
                         sh 'echo Cave service running on test environment'
-                        sleep 10
                     }
                 }
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t api-gateway:latest .'
+                        sh 'docker run --network=test-network -d --name api-gateway api-gateway:latest'
+                        sh 'echo Api gateway running on test environment'
+                    }
+                }
+                sh 'Service Deployed and running'
+                sleep 10
             }
         }
         stage('Run integration tests cave-service') {
