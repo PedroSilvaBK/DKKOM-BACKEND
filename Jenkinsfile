@@ -161,7 +161,7 @@ pipeline {
                 sh 'echo "Cleaning integration test environment"'
                 sh 'docker stop $(docker ps -q)'
                 sh 'docker-compose down'
-                sh 'docker container prune -af'
+                sh 'docker container prune -f'
                 // sh 'docker system prune -af'
             }
         }
