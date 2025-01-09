@@ -155,6 +155,15 @@ pipeline {
                         sh 'echo websocket-gateway running on test environment'
                     }
                 }
+                dir('PermissionsService') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t permission-service:latest .'
+                        sh 'docker run --network=test-network -d --name permission-service permission-service:latest'
+                        sh 'echo permission-service running on test environment'
+                    }
+                }
                 sh 'echo Service Deployed and running'
                 sleep 10
             }
