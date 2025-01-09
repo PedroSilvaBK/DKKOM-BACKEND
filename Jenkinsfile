@@ -186,6 +186,7 @@ pipeline {
                         sh 'docker stop cave-service'
                         sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
                         sh 'docker run --rm --network=test-network cave-service-tests:latest'
+                        sh 'docker image rm cave-service-tests:latest'
                         sh 'docker start cave-service'
                         sh 'echo Cave service back running'
                     }
@@ -195,6 +196,7 @@ pipeline {
                         sh 'docker stop api-gateway'
                         sh 'docker build --build-arg GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET -f Dockerfile-run-test -t api-gateway-tests:latest .'
                         sh 'docker run --rm --network=test-network api-gateway-tests:latest'
+                        sh 'docker image rm api-gateway-tests:latest'
                         sh 'docker start api-gateway'
                         sh 'echo Api gateway back running'
                     }
@@ -204,6 +206,7 @@ pipeline {
                         sh 'docker stop user-service'
                         sh 'docker build -f Dockerfile-run-test -t user-service-tests:latest .'
                         sh 'docker run --rm --network=test-network user-service-tests:latest'
+                        sh 'docker image rm user-service-tests:latest'
                         sh 'docker start user-service'
                         sh 'echo User Service back running'
                     }
@@ -213,6 +216,7 @@ pipeline {
                         sh 'docker stop websocket-gateway'
                         sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t websocket-gateway-tests:latest .'
                         sh 'docker run --rm --network=test-network websocket-gateway-tests:latest'
+                        sh 'docker image rm websocket-gateway-tests:latest'
                         sh 'docker start websocket-gateway'
                         sh 'echo websocket-gateway back running'
                     }
@@ -222,6 +226,7 @@ pipeline {
                         sh 'docker stop permission-service'
                         sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t permission-service-tests:latest .'
                         sh 'docker run --rm --network=test-network permission-service-tests:latest'
+                        sh 'docker image rm permission-service-tests:latest'
                         sh 'docker start permission-service'
                         sh 'echo permission-service back running'
                         sleep 10
