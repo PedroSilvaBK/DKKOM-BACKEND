@@ -234,6 +234,21 @@ pipeline {
                 }
             }
         }
+        stage('clean service images') {
+            agent {
+                label 'local-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                sh 'docker image rm cave-service:latest'
+                sh 'docker image rm api-gateway:latest'
+                sh 'docker image rm user-service:latest'
+                sh 'docker image rm websocket-gateway:latest'
+                sh 'docker image rm permission-service:latest'
+            }
+        }
         stage('clean test env') {
             agent {
                 label 'local-tests-env'
