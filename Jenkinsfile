@@ -234,21 +234,6 @@ pipeline {
                 }
             }
         }
-        stage('clean service images') {
-            agent {
-                label 'local-tests-env'
-            }
-            when {
-                expression { params.ACTION == 'normal' }
-            }
-            steps {
-                sh 'docker image rm cave-service:latest'
-                sh 'docker image rm api-gateway:latest'
-                sh 'docker image rm user-service:latest'
-                sh 'docker image rm websocket-gateway:latest'
-                sh 'docker image rm permission-service:latest'
-            }
-        }
         stage('clean test env') {
             agent {
                 label 'local-tests-env'
@@ -260,6 +245,13 @@ pipeline {
                 sh 'echo "Cleaning integration test environment"'
                 sh 'docker image prune -f'
                 sh 'docker stop $(docker ps -q)'
+                //
+                sh 'docker image rm cave-service:latest'
+                sh 'docker image rm api-gateway:latest'
+                sh 'docker image rm user-service:latest'
+                sh 'docker image rm websocket-gateway:latest'
+                sh 'docker image rm permission-service:latest'
+                //
                 sh 'docker-compose down'
                 sh 'docker container prune -f'
                 // sh 'docker system prune -af'
