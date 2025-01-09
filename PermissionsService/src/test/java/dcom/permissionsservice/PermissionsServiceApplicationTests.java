@@ -3,10 +3,10 @@ package dcom.permissionsservice;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(properties = "spring.profiles.active=dev")
+@SpringBootTest(properties = "spring.profiles.active=test")
 class PermissionsServiceApplicationTests {
 
-//	@Test
+	@Test
 	void contextLoads() {
 	}
 

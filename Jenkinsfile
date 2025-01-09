@@ -206,6 +206,15 @@ pipeline {
                         sh 'docker run --rm --network=test-network websocket-gateway-tests:latest'
                         sh 'docker start websocket-gateway'
                         sh 'echo websocket-gateway back running'
+                    }
+                }
+                dir('PermissionsService') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop permission-service'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t permission-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network permission-service-tests:latest'
+                        sh 'docker start permission-service'
+                        sh 'echo permission-service back running'
                         sleep 10
                     }
                 }

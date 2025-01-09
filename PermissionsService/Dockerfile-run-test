@@ -1,0 +1,27 @@
+# -----------------------------------------
+# Dockerfile: Run tests at runtime
+# -----------------------------------------
+FROM gradle:8.10.2-jdk21
+
+# Create a working directory inside the container
+WORKDIR /app
+
+# Accept arguments for GitLab credentials
+ARG GITLAB_USER
+ARG GITLAB_TOKEN
+
+# Set them as environment variables
+ENV GITLAB_USER=${GITLAB_USER}
+ENV GITLAB_TOKEN=${GITLAB_TOKEN}
+
+# Copy Gradle configuration files first for caching
+COPY build.gradle settings.gradle ./
+
+# Pre-fetch dependencies to leverage Docker layer caching
+RUN gradle --no-daemon dependencies
+
+# Copy the rest of the project (source code, resources, etc.)
+COPY . .
+
+# Set the default command to run tests when the container starts
+ENTRYPOINT ["gradle", "--no-daemon", "clean", "test"]
