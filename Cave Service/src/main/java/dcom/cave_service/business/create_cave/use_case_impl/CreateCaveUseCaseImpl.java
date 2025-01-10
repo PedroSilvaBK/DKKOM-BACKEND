@@ -1,6 +1,7 @@
 package dcom.cave_service.business.create_cave.use_case_impl;
 
 import dcom.cave_service.business.create_cave.use_case.CreateCaveUseCase;
+import dcom.cave_service.configuration.UUIDGenerator;
 import dcom.cave_service.domain.requests.CreateCaveRequest;
 import dcom.cave_service.domain.responses.CreateCaveResponse;
 import dcom.cave_service.exceptions.IdMismatchException;
@@ -19,13 +20,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CreateCaveUseCaseImpl implements CreateCaveUseCase {
     private final CaveRepository caveRepository;
+    private final UUIDGenerator uuidGenerator;
 
     public CreateCaveResponse createCave(CreateCaveRequest request, String authUserId, String authUsername) {
         if (!authUserId.equals(request.getOwnerId())) {
             throw new IdMismatchException("Owner Id is a mismatch");
         }
 
-        UUID caveId = UUID.randomUUID();
+        UUID caveId = uuidGenerator.generateUUID();
         CaveEntity caveEntity = CaveEntity.builder()
                 .id(caveId)
                 .owner(UUID.fromString(request.getOwnerId()))
@@ -35,7 +37,7 @@ public class CreateCaveUseCaseImpl implements CreateCaveUseCase {
         caveEntity.setMemberEntities(
                 List.of(
                         MemberEntity.builder()
-                                .id(UUID.randomUUID())
+                                .id(uuidGenerator.generateUUID())
                                 .userId(UUID.fromString(authUserId))
                                 .username(authUsername)
                                 .caveEntity(caveEntity)
