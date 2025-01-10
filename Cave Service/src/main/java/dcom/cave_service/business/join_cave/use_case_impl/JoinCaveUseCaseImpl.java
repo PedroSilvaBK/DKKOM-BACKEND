@@ -3,6 +3,7 @@ package dcom.cave_service.business.join_cave.use_case_impl;
 import dcom.cave_service.business.join_cave.use_case.JoinCaveUseCase;
 import dcom.cave_service.business.permissions_service.RolesAndPermissionsService;
 import dcom.cave_service.business.utils.PermissionsUtils;
+import dcom.cave_service.configuration.UUIDGenerator;
 import dcom.cave_service.domain.CaveInvite;
 import dcom.cave_service.domain.events.UserJoinedCave;
 import dcom.cave_service.domain.responses.JoinCaveResponse;
@@ -33,6 +34,7 @@ public class JoinCaveUseCaseImpl implements JoinCaveUseCase {
     private final CaveRepository caveRepository;
     private final RolesAndPermissionsService rolesAndPermissionsService;
     private final PermissionsUtils permissionsUtils;
+    private final UUIDGenerator uuidGenerator;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -56,7 +58,7 @@ public class JoinCaveUseCaseImpl implements JoinCaveUseCase {
         UUID caveId = caveInviteEntity.getCaveEntity().getId();
 
         MemberEntity memberEntity = MemberEntity.builder()
-                .id(UUID.randomUUID())
+                .id(uuidGenerator.generateUUID())
                 .username(authUsername)
                 .userId(UUID.fromString(authUserId))
                 .caveEntity(CaveEntity.builder()

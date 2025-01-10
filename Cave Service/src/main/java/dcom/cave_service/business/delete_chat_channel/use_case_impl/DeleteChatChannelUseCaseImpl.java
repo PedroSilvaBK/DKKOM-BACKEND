@@ -1,6 +1,7 @@
 package dcom.cave_service.business.delete_chat_channel.use_case_impl;
 
 import dcom.cave_service.business.delete_chat_channel.use_case.DeleteChatChannelUseCase;
+import dcom.cave_service.domain.JwtUserDetails;
 import dcom.cave_service.persistence.repositories.CaveRepository;
 import dcom.cave_service.persistence.repositories.ChatChannelRepository;
 import jakarta.transaction.Transactional;

@@ -23,7 +23,7 @@ public class GetCaveBootstrapUseCaveImpl implements GetCaveBootstrapUseCase {
     private final CaveRepository caveRepository;
     private final MemberRepository memberRepository;
     private final RolesAndPermissionsService rolesAndPermissionsService;
-    private final JwtUserDetails jwtUserDetails;
+//    private final JwtUserDetails jwtUserDetails;
     private final RedisTemplate<String, List<User>> redisTemplate;
 
     public CaveBootStrapInformation getCaveBootstrapUseCave(UUID caveId, String authUserId) {
