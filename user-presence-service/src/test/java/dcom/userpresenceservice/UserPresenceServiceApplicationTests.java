@@ -2,12 +2,12 @@ package dcom.userpresenceservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-//
-//@SpringBootTest
-//class UserPresenceServiceApplicationTests {
-//
-//    @Test
-//    void contextLoads() {
-//    }
-//
-//}
+
+@SpringBootTest(properties = "spring.profiles.active=test")
+class UserPresenceServiceApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}

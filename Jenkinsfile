@@ -164,6 +164,24 @@ pipeline {
                         sh 'echo permission-service running on test environment'
                     }
                 }
+                dir('user-presence-service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t user-presence-service:latest .'
+                        sh 'docker run --network=test-network -d --name user-presence-service user-presence-service:latest'
+                        sh 'echo user-presence-service running on test environment'
+                    }
+                }
+                dir('Messaging Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t message-service:latest .'
+                        sh 'docker run --network=test-network -d --name message-service message-service:latest'
+                        sh 'echo message-service running on test environment'
+                    }
+                }
                 sh 'echo Service Deployed and running'
                 sleep 10
             }
@@ -229,6 +247,26 @@ pipeline {
                         sh 'docker image rm permission-service-tests:latest'
                         sh 'docker start permission-service'
                         sh 'echo permission-service back running'
+                    }
+                }
+                dir('user-presence-service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop user-presence-service'
+                        sh 'docker build -f Dockerfile-run-test -t user-presence-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network user-presence-service-tests:latest'
+                        sh 'docker image rm user-presence-service-tests:latest'
+                        sh 'docker start user-presence-service'
+                        sh 'echo user-presence-service-tests back running'
+                    }
+                }
+                dir('Messaging Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop message-service'
+                        sh 'docker build -f Dockerfile-run-test -t message-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network message-service-tests:latest'
+                        sh 'docker image rm message-service-tests:latest'
+                        sh 'docker start message-service'
+                        sh 'echo message-service-tests back running'
                         sleep 10
                     }
                 }
@@ -253,6 +291,8 @@ pipeline {
                 sh 'docker image rm user-service:latest'
                 sh 'docker image rm websocket-gateway:latest'
                 sh 'docker image rm permission-service:latest'
+                sh 'docker image rm user-presence-service:latest'
+                sh 'docker image rm message-service:latest'
                 // sh 'docker system prune -af'
             }
         }
