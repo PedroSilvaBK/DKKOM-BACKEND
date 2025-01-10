@@ -14,6 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,12 +44,28 @@ class CaveRepositoryTest {
         UUID voiceChannelId = UUID.fromString("423e4567-e89b-42d3-a456-556642440000");
         UUID voiceChannelId2 = UUID.fromString("423e4567-e89a-42d3-a456-556642440000");
 
+        UUID caveRoleId = UUID.fromString("423e6567-e89a-42d3-a456-556642440000");
+
 
         CaveEntity caveEntityExpected = CaveEntity.builder()
                 .id(defaultUUID)
                 .owner(ownerId)
                 .name("test-cave")
                 .build();
+
+        CaveRoleEntity caveRoleEntity = CaveRoleEntity.builder()
+                .id(caveRoleId)
+                .position(0)
+                .permissions(961)
+                .name("role")
+                .caveEntity(caveEntityExpected)
+                .build();
+
+        caveEntityExpected.setCaveRoleEntities(
+                Set.of(
+                        caveRoleEntity
+                )
+        );
 
         caveEntityExpected.setMemberEntities(
                 List.of(
@@ -96,6 +113,7 @@ class CaveRepositoryTest {
                 .userId(user1)
                 .username("username")
                 .nickname("nickname")
+                .roleEntities(Set.of(caveRoleEntity))
                 .build();
 
         MemberEntity memberEntity2 = MemberEntity.builder()
@@ -179,21 +197,39 @@ class CaveRepositoryTest {
 
     @Test
     void findAllRolesByCaveIdAndMemberId() {
+        UUID defaultUUID = UUID.fromString("123e4567-e89b-42d3-a456-556642440000");
+        UUID user1 = UUID.fromString("113e4567-e89b-42d3-a456-556642840000");
+
+        List<CaveRoleEntity> roles = caveRepository.findAllRolesByCaveIdAndMemberId(defaultUUID, user1);
+
+        assertEquals(1, roles.size());
     }
 
     @Test
     void findAllTextChannelsFromCave() {
-    }
+        UUID defaultUUID = UUID.fromString("123e4567-e89b-42d3-a456-556642440000");
 
-    @Test
-    void findAllVoiceChannelsFromCave() {
+        List<UUID> textChannels = caveRepository.findAllTextChannelsFromCave(defaultUUID);
+
+        assertEquals(1, textChannels.size());
     }
 
     @Test
     void existsByOwnerAndId() {
+        UUID defaultUUID = UUID.fromString("123e4567-e89b-42d3-a456-556642440000");
+        UUID ownerId = UUID.fromString("113e4567-e89b-42d3-a456-556642440000");
+
+        boolean exists = caveRepository.existsByOwnerAndId(ownerId, defaultUUID);
+
+        assertTrue(exists);
     }
 
     @Test
     void deleteAllByOwner() {
+        UUID ownerId = UUID.fromString("113e4567-e89b-42d3-a456-556642440000");
+
+        int deletedCaves = caveRepository.deleteAllByOwner(ownerId);
+
+        assertEquals(1, deletedCaves);
     }
 }
