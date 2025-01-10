@@ -104,6 +104,7 @@ pipeline {
                 sh 'docker-compose up -d'
                 sleep 5
                 sh 'docker exec mysql_db mysql -uroot -padmin -e "CREATE DATABASE IF NOT EXISTS users_db;"'
+                sh 'docker exec scylla_db cqlsh -e "CREATE KEYSPACE IF NOT EXISTS messages WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1};"'
                 sh 'docker ps'
             }
         }
