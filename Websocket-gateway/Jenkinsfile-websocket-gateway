@@ -64,15 +64,15 @@ pipeline {
             }
             steps {
                 sh 'echo "Setting up services for integration tests"'
-                // dir('Cave Service'){
-                //     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                //         sh 'chmod +x ./gradlew'
-                //         sh './gradlew build -x test'
-                //         sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
-                //         sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
-                //         sh 'echo Cave service running on test environment'
-                //     }
-                // }
+                dir('Cave Service'){
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
+                        sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
+                        sh 'echo Cave service running on test environment'
+                    }
+                }
                 dir('api gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'chmod +x ./gradlew'
@@ -89,15 +89,6 @@ pipeline {
                         sh 'docker build -f Dockerfile-test-env -t user-service:latest .'
                         sh 'docker run --network=test-network -d --name user-service user-service:latest'
                         sh 'echo User Service running on test environment'
-                    }
-                }
-                dir('Websocket-gateway') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build -x test'
-                        sh 'docker build -f Dockerfile-test-env -t websocket-gateway:latest .'
-                        sh 'docker run --network=test-network -d --name websocket-gateway websocket-gateway:latest'
-                        sh 'echo websocket-gateway running on test environment'
                     }
                 }
                 dir('PermissionsService') {
@@ -143,12 +134,12 @@ pipeline {
                 expression { params.ACTION == 'normal' }
             }
             steps {
-                dir('Cave Service') {
+                dir('Websocket-gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
-                        sh 'docker run --rm --network=test-network cave-service-tests:latest'
-                        sh 'docker image rm cave-service-tests:latest'
-                        sh 'echo Cave service back running'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t websocket-gateway-tests:latest .'
+                        sh 'docker run --rm --network=test-network websocket-gateway-tests:latest'
+                        sh 'docker image rm websocket-gateway-tests:latest'
+                        sh 'echo websocket-gateway back running'
                     }
                 }
             }
@@ -167,9 +158,9 @@ pipeline {
                 sh 'docker-compose down'
                 sh 'docker container prune -f'
                 //
+                sh 'docker image rm cave-service:latest'
                 sh 'docker image rm api-gateway:latest'
                 sh 'docker image rm user-service:latest'
-                sh 'docker image rm websocket-gateway:latest'
                 sh 'docker image rm permission-service:latest'
                 sh 'docker image rm user-presence-service:latest'
                 sh 'docker image rm message-service:latest'
