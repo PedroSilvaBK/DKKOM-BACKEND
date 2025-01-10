@@ -63,9 +63,19 @@ public class GetUsersPresenceUseCaseImpl implements GetUsersPresenceUseCase {
         return userPresences;
     }
 
-    private List<String> buildKeys(List<String> userIds){
+    private List<String> buildKeys(List<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            throw new IllegalArgumentException("userIds list cannot be null or empty");
+        }
+
         return userIds.stream()
+                .peek(userId -> {
+                    if (userId == null || userId.isEmpty()) {
+                        throw new IllegalArgumentException("User ID cannot be null or empty");
+                    }
+                })
                 .map(userId -> String.format(KEY_TEMPLATE, userId))
                 .toList();
     }
+
 }
