@@ -25,14 +25,13 @@ pipeline {
                 }
             }
         }
-    }
-    stage('Terraform Init') {
+        stage('Terraform Init') {
             steps {
                 echo 'Initializing Terraform'
                 sh 'terraform init -reconfigure'
             }
         }
-    stage('Terraform Apply') {
+        stage('Terraform Apply') {
             when {
                 expression { params.ACTION == 'apply' }
             }
@@ -41,4 +40,6 @@ pipeline {
                 sh 'terraform apply -auto-approve'
             }
         }
+    }
+
 }
