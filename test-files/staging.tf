@@ -46,7 +46,7 @@ resource "google_compute_instance" "performance_test_vm" {
     ]
   }
 
-  depends_on = [google_container_cluster.dcom_cluster]
+  # depends_on = [google_container_cluster.dcom_cluster]
 }
 
 # # Optional: Create a firewall rule to allow SSH access to the test VM

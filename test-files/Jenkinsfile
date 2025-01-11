@@ -20,7 +20,7 @@ pipeline {
             steps {
                 echo 'Initializing Terraform'
                 dir('test-files') {
-                    sh 'terraform init'
+                    sh 'terraform init -reconfigure'
                 }
             }
         }
