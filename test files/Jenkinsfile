@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'ACTION', choices: ['normal', 'deploy'], description: 'Choose whether to have normal ci or with deployment')
+    }
+    environment {
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
+        GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+        GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+        SNYK_TOKEN = credentials('SNYK_TOKEN')
+        SONARQUBE_ENV = credentials('SONARQUBE_TOKEN')
+        PATH = "/opt/sonar-scanner/bin:/usr/local/go/bin:${env.PATH}"
+    }
+    stages {
+        stage('Authenticate with Google Cloud') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
+            steps {
+                script {
+                    sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
+                    sh '''
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                    '''
+                }
+            }
+        }
+    }
+    stage('Terraform Init') {
+            steps {
+                echo 'Initializing Terraform'
+                sh 'terraform init -reconfigure'
+            }
+        }
+    stage('Terraform Apply') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                echo 'Applying Terraform'
+                sh 'terraform apply -auto-approve'
+            }
+        }
+}
