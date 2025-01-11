@@ -4,16 +4,14 @@ pipeline {
         choice(name: 'ACTION', choices: ['deploy', 'destroy'], description: 'Choose whether to have normal ci or with deployment')
     }
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY')
     }
     stages {
         stage('Authenticate with Google Cloud') {
-            when {
-                expression { params.ACTION == 'deploy' }
-            }
             steps {
                 script {
                     sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
+                    sh 'ls -ls'
                     sh '''
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                     '''
