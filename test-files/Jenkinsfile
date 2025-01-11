@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['normal', 'deploy'], description: 'Choose whether to have normal ci or with deployment')
+        choice(name: 'ACTION', choices: ['deploy', 'destroy'], description: 'Choose whether to have normal ci or with deployment')
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
@@ -33,11 +33,20 @@ pipeline {
         }
         stage('Terraform Apply') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'deploy' }
             }
             steps {
                 echo 'Applying Terraform'
                 sh 'terraform apply -auto-approve'
+            }
+        }
+        stage('Terraform Destroy') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                echo 'Destroying Terraform infrastructure'
+                sh 'terraform destroy -auto-approve'
             }
         }
     }
