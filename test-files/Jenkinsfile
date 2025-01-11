@@ -5,11 +5,6 @@ pipeline {
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
-        GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
-        GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
-        SNYK_TOKEN = credentials('SNYK_TOKEN')
-        SONARQUBE_ENV = credentials('SONARQUBE_TOKEN')
-        PATH = "/opt/sonar-scanner/bin:/usr/local/go/bin:${env.PATH}"
     }
     stages {
         stage('Authenticate with Google Cloud') {
