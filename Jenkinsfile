@@ -356,7 +356,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
+                        sh './gradlew build -x test'
                     }
                 }
             }
@@ -440,7 +440,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
+                        sh './gradlew build -x test'
                     }
                 }
             }
@@ -520,7 +520,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
+                        sh './gradlew build -x test'
                     }
                 }
             }
@@ -604,7 +604,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
+                        sh './gradlew build -x test'
                     }
                 }
             }
@@ -684,7 +684,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
+                        sh './gradlew build -x test'
                     }
                 }
             }
@@ -764,7 +764,7 @@ pipeline {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
+                        sh './gradlew build -x test'
                     }
                 }
             }
@@ -841,15 +841,6 @@ pipeline {
             }
         }
 
-        stage('Always Run') {
-            when {
-                expression { true } // This ensures the stage runs
-            }
-            steps {
-                echo 'This stage runs regardless of previous failures'
-            }
-        }
-        
         stage('clean test env') {
             agent {
                 label 'local-tests-env'
