@@ -841,6 +841,12 @@ pipeline {
             }
         }
 
+        post {
+            always {
+                echo 'Cleanup or actions that run no matter what'
+            }
+        }       
+
         stage('clean test env') {
             agent {
                 label 'local-tests-env'
@@ -855,13 +861,13 @@ pipeline {
                 sh 'docker-compose down'
                 sh 'docker container prune -f'
                 //
-                sh 'docker image rm cave-service:latest'
-                sh 'docker image rm api-gateway:latest'
-                sh 'docker image rm user-service:latest'
-                sh 'docker image rm websocket-gateway:latest'
-                sh 'docker image rm permission-service:latest'
-                sh 'docker image rm user-presence-service:latest'
-                sh 'docker image rm message-service:latest'
+                sh 'docker image rm cave-service:latest || true'
+                sh 'docker image rm api-gateway:latest || true'
+                sh 'docker image rm user-service:latest || true'
+                sh 'docker image rm websocket-gateway:latest || true'
+                sh 'docker image rm permission-service:latest || true'
+                sh 'docker image rm user-presence-service:latest || true'
+                sh 'docker image rm message-service:latest || true'
                 // sh 'docker system prune -af'
             }
         }
