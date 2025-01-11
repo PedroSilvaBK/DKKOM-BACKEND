@@ -2,7 +2,6 @@ package dcom.messaging_service.persistence.repositories;
 
 import dcom.messaging_service.domain.MessageIdDTO;
 import dcom.messaging_service.persistence.entities.MessageEntity;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.data.cassandra.repository.Query;
 import org.springframework.data.domain.Pageable;
