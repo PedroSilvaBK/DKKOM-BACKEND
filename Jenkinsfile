@@ -841,12 +841,15 @@ pipeline {
             }
         }
 
-        post {
-            always {
-                echo 'Cleanup or actions that run no matter what'
+        stage('Always Run') {
+            when {
+                expression { true } // This ensures the stage runs
             }
-        }       
-
+            steps {
+                echo 'This stage runs regardless of previous failures'
+            }
+        }
+        
         stage('clean test env') {
             agent {
                 label 'local-tests-env'
