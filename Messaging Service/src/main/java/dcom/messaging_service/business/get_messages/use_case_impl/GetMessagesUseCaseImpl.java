@@ -1,6 +1,6 @@
 package dcom.messaging_service.business.get_messages.use_case_impl;
 
-import dcom.messaging_service.business.cannotSeeMeSsagesException;
+import dcom.messaging_service.business.CannotSeeMessagesException;
 import dcom.messaging_service.business.clients.permissions_service_client.PermissionServiceClient;
 import dcom.messaging_service.business.get_messages.use_case.GetMessagesUseCase;
 import dcom.messaging_service.domain.AuthorDTO;
@@ -46,7 +46,7 @@ public class GetMessagesUseCaseImpl implements GetMessagesUseCase {
 
         if (!canSeeChannel) {
             log.debug("user - {} tried to see channel {}", userId, channelId);
-            throw new cannotSeeMeSsagesException("not authorized to see messages");
+            throw new CannotSeeMessagesException("not authorized to see messages");
         }
 
         Pageable pageRequest;
