@@ -25,9 +25,6 @@ resource "google_compute_instance" "performance_test_vm" {
 
   network_interface {
     network = "default"
-    access_config {
-      # This will assign an external IP to the VM if needed
-    }
   }
 
   metadata_startup_script = <<-EOT
