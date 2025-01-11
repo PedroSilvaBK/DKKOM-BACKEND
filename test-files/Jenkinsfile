@@ -19,13 +19,9 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 echo 'Initializing Terraform'
-                sh 'terraform init'
-            }
-        }
-        stage('Terraform Plan') {
-            steps {
-                echo 'Planning Terraform'
-                sh 'terraform plan'
+                dir('test-files') {
+                    sh 'terraform init'
+                }
             }
         }
         stage('Terraform Apply') {
@@ -33,8 +29,10 @@ pipeline {
                 expression { params.ACTION == 'deploy' }
             }
             steps {
-                echo 'Applying Terraform'
-                sh 'terraform apply -auto-approve'
+                dir('test-files') {
+                    echo 'Applying Terraform'
+                    sh 'terraform apply -auto-approve'
+                }
             }
         }
         stage('Terraform Destroy') {
@@ -42,8 +40,10 @@ pipeline {
                 expression { params.ACTION == 'destroy' }
             }
             steps {
-                echo 'Destroying Terraform infrastructure'
-                sh 'terraform destroy -auto-approve'
+                dir('test-files') {
+                    echo 'Destroying Terraform infrastructure'
+                    sh 'terraform destroy -auto-approve'
+                }
             }
         }
     }
