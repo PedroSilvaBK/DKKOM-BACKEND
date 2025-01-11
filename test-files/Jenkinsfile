@@ -22,6 +22,12 @@ pipeline {
                 sh 'terraform init -reconfigure'
             }
         }
+        stage('Terraform Plan') {
+            steps {
+                echo 'Planning Terraform'
+                sh 'terraform plan'
+            }
+        }
         stage('Terraform Apply') {
             when {
                 expression { params.ACTION == 'deploy' }
