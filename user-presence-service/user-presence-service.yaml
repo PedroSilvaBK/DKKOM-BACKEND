@@ -18,11 +18,23 @@ spec:
         ports:
         - containerPort: 8080
         env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /var/secrets/cloud-profiler-key.json
           - name: REDIS_IP
             valueFrom:
               secretKeyRef:
                 name: redis-ip
                 key: REDIS_IP
+        volumeMounts:
+        - mountPath: "/var/secrets"
+          name: cloud-profiler-secret-vol
+      volumes:
+        - name: cloud-profiler-secret-vol
+          csi:
+            driver: secrets-store-gke.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: cloud-profiler-secret
 ---
 apiVersion: v1
 kind: Service
