@@ -12,11 +12,25 @@ spec:
       labels:
         app: websocket-gateway
     spec:
+      serviceAccountName: app-access
       containers:
       - name: websocket-gateway
         image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/websocket-gateway
         ports:
         - containerPort: 8080  # The container listens on port 80
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/cloud-profiler-key.json
+        volumeMounts:
+        - mountPath: "/var/secrets"
+          name: cloud-profiler-secret-vol
+      volumes:
+        - name: cloud-profiler-secret-vol
+          csi:
+            driver: secrets-store-gke.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: cloud-profiler-secret
 
 ---
 
