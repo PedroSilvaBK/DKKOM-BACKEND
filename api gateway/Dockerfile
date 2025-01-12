@@ -12,7 +12,12 @@ COPY ./src/main/resources/jwt_certs ./jwt_certs
 RUN wget -q https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.11.0/opentelemetry-javaagent.jar
 
 # Download the Cloud Profiler native library (example link, check the docs for the latest)
-RUN wget -q https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent.so
+# Download the Cloud Profiler agent (.tar.gz) and extract the .so file
+RUN wget -q https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent.tar.gz \
+    && tar -xf profiler_java_agent.tar.gz \
+    && rm profiler_java_agent.tar.gz
+
+
 
 # ---------------------------
 #    OpenTelemetry Config
