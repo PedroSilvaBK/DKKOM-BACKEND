@@ -33,161 +33,19 @@ pipeline {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
             }
         }
-        stage('create test base env') {
-            agent {
-                label 'local-tests-env'
-            }
-            when {
-                expression { params.ACTION == 'normal' }
-            }
-            steps {
-                sh 'echo "Creating integration test environment"'
-                sh 'docker-compose up -d'
-                sleep 5
-                sh 'docker exec mysql_db mysql -uroot -padmin -e "CREATE DATABASE IF NOT EXISTS users_db;"'
-                sleep 5
-                sh '''
-                    docker exec scylla_db cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1};"
-                '''
-                sh 'docker ps'
-            }
-        }
-        stage('Setup services for test') {
-            agent {
-                label 'local-tests-env'
-            }
-            when {
-                expression { params.ACTION == 'normal' }
-            }
-            environment {
-                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
-            }
-            steps {
-                sh 'echo "Setting up services for integration tests"'
-                // dir('Cave Service'){
-                //     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                //         sh 'chmod +x ./gradlew'
-                //         sh './gradlew build -x test'
-                //         sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
-                //         sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
-                //         sh 'echo Cave service running on test environment'
-                //     }
-                // }
-                dir('api gateway') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build -x test'
-                        sh 'docker build -f Dockerfile-test-env -t api-gateway:latest .'
-                        sh 'docker run --network=test-network -d -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET --name api-gateway api-gateway:latest'
-                        sh 'echo Api gateway running on test environment'
-                    }
-                }
-                dir('User Service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build -x test'
-                        sh 'docker build -f Dockerfile-test-env -t user-service:latest .'
-                        sh 'docker run --network=test-network -d --name user-service user-service:latest'
-                        sh 'echo User Service running on test environment'
-                    }
-                }
-                dir('Websocket-gateway') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build -x test'
-                        sh 'docker build -f Dockerfile-test-env -t websocket-gateway:latest .'
-                        sh 'docker run --network=test-network -d --name websocket-gateway websocket-gateway:latest'
-                        sh 'echo websocket-gateway running on test environment'
-                    }
-                }
-                dir('PermissionsService') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build -x test'
-                        sh 'docker build -f Dockerfile-test-env -t permission-service:latest .'
-                        sh 'docker run --network=test-network -d --name permission-service permission-service:latest'
-                        sh 'echo permission-service running on test environment'
-                    }
-                }
-                dir('user-presence-service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build -x test'
-                        sh 'docker build -f Dockerfile-test-env -t user-presence-service:latest .'
-                        sh 'docker run --network=test-network -d --name user-presence-service user-presence-service:latest'
-                        sh 'echo user-presence-service running on test environment'
-                    }
-                }
-                dir('Messaging Service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew build -x test'
-                        sh 'docker build -f Dockerfile-test-env -t message-service:latest .'
-                        sh 'docker run --network=test-network -d --name message-service message-service:latest'
-                        sh 'echo message-service running on test environment'
-                    }
-                }
-                sh 'echo Service Deployed and running'
-            }
-        }
-        stage('Run integration tests cave-service') {
-            agent {
-                label 'local-tests-env'
-            }
-            environment {
-                GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
-                GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
-                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
-            }
-            when {
-                expression { params.ACTION == 'normal' }
-            }
+        
+        //cave service
+        stage('Build Cave Service') {
             steps {
                 dir('Cave Service') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
-                        sh 'docker run --rm --network=test-network cave-service-tests:latest'
-                        sh 'docker image rm cave-service-tests:latest'
-                        sh 'echo Cave service back running'
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build'
                     }
                 }
             }
         }
-        stage('clean test env') {
-            agent {
-                label 'local-tests-env'
-            }
-            when {
-                expression { params.ACTION == 'normal' }
-            }
-            steps {
-                sh 'echo "Cleaning integration test environment"'
-                sh 'docker image prune -f'
-                sh 'docker stop $(docker ps -q)'
-                sh 'docker-compose down'
-                sh 'docker container prune -f'
-                //
-                sh 'docker image rm api-gateway:latest'
-                sh 'docker image rm user-service:latest'
-                sh 'docker image rm websocket-gateway:latest'
-                sh 'docker image rm permission-service:latest'
-                sh 'docker image rm user-presence-service:latest'
-                sh 'docker image rm message-service:latest'
-                // sh 'docker system prune -af'
-            }
-        }
-        // //cave service
-        // stage('Build Cave Service') {
-        //     steps {
-        //         dir('Cave Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build'
-        //             }
-        //         }
-        //     }
-        // }
         // stage('Sonarqube Analysis Cave Service') {
         //     steps {
         //         dir('Cave Service') {
@@ -212,31 +70,165 @@ pipeline {
         //         }
         //     }
         // }
-        // stage("Dockerize Cave Service") {
+        // stage('create test base env') {
+        //     agent {
+        //         label 'local-tests-env'
+        //     }
         //     when {
-        //         expression { params.ACTION == 'deploy' }
+        //         expression { params.ACTION == 'normal' }
+        //     }
+        //     steps {
+        //         sh 'echo "Creating integration test environment"'
+        //         sh 'docker-compose up -d'
+        //         sleep 5
+        //         sh 'docker exec mysql_db mysql -uroot -padmin -e "CREATE DATABASE IF NOT EXISTS users_db;"'
+        //         sleep 5
+        //         sh '''
+        //             docker exec scylla_db cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1};"
+        //         '''
+        //         sh 'docker ps'
+        //     }
+        // }
+        // stage('Setup services for test') {
+        //     agent {
+        //         label 'local-tests-env'
+        //     }
+        //     when {
+        //         expression { params.ACTION == 'normal' }
+        //     }
+        //     environment {
+        //         GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
+        //     }
+        //     steps {
+        //         sh 'echo "Setting up services for integration tests"'
+        //         dir('api gateway') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build -x test'
+        //                 sh 'docker build -f Dockerfile-test-env -t api-gateway:latest .'
+        //                 sh 'docker run --network=test-network -d -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET --name api-gateway api-gateway:latest'
+        //                 sh 'echo Api gateway running on test environment'
+        //             }
+        //         }
+        //         dir('User Service') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build -x test'
+        //                 sh 'docker build -f Dockerfile-test-env -t user-service:latest .'
+        //                 sh 'docker run --network=test-network -d --name user-service user-service:latest'
+        //                 sh 'echo User Service running on test environment'
+        //             }
+        //         }
+        //         dir('Websocket-gateway') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build -x test'
+        //                 sh 'docker build -f Dockerfile-test-env -t websocket-gateway:latest .'
+        //                 sh 'docker run --network=test-network -d --name websocket-gateway websocket-gateway:latest'
+        //                 sh 'echo websocket-gateway running on test environment'
+        //             }
+        //         }
+        //         dir('PermissionsService') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build -x test'
+        //                 sh 'docker build -f Dockerfile-test-env -t permission-service:latest .'
+        //                 sh 'docker run --network=test-network -d --name permission-service permission-service:latest'
+        //                 sh 'echo permission-service running on test environment'
+        //             }
+        //         }
+        //         dir('user-presence-service') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build -x test'
+        //                 sh 'docker build -f Dockerfile-test-env -t user-presence-service:latest .'
+        //                 sh 'docker run --network=test-network -d --name user-presence-service user-presence-service:latest'
+        //                 sh 'echo user-presence-service running on test environment'
+        //             }
+        //         }
+        //         dir('Messaging Service') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh './gradlew build -x test'
+        //                 sh 'docker build -f Dockerfile-test-env -t message-service:latest .'
+        //                 sh 'docker run --network=test-network -d --name message-service message-service:latest'
+        //                 sh 'echo message-service running on test environment'
+        //             }
+        //         }
+        //         sh 'echo Service Deployed and running'
+        //     }
+        // }
+        // stage('Run integration tests cave-service') {
+        //     agent {
+        //         label 'local-tests-env'
+        //     }
+        //     environment {
+        //         GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+        //         GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+        //         GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
+        //     }
+        //     when {
+        //         expression { params.ACTION == 'normal' }
         //     }
         //     steps {
         //         dir('Cave Service') {
-        //             sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-        //             sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:latest .'
-        //             sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:latest'
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
+        //                 sh 'docker run --rm --network=test-network cave-service-tests:latest'
+        //                 sh 'docker image rm cave-service-tests:latest'
+        //                 sh 'echo Cave service back running'
+        //             }
         //         }
         //     }
         // }
+        // stage('clean test env') {
+        //     agent {
+        //         label 'local-tests-env'
+        //     }
+        //     when {
+        //         expression { params.ACTION == 'normal' }
+        //     }
+        //     steps {
+        //         sh 'echo "Cleaning integration test environment"'
+        //         sh 'docker image prune -f'
+        //         sh 'docker stop $(docker ps -q)'
+        //         sh 'docker-compose down'
+        //         sh 'docker container prune -f'
+        //         //
+        //         sh 'docker image rm api-gateway:latest'
+        //         sh 'docker image rm user-service:latest'
+        //         sh 'docker image rm websocket-gateway:latest'
+        //         sh 'docker image rm permission-service:latest'
+        //         sh 'docker image rm user-presence-service:latest'
+        //         sh 'docker image rm message-service:latest'
+        //         // sh 'docker system prune -af'
+        //     }
+        // }
+        stage("Dockerize Cave Service") {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
+            steps {
+                dir('Cave Service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:latest'
+                }
+            }
+        }
 
-        // // Deploy Cave Service
-        // stage('Deploy Cave Service') {
-        //     when {
-        //         expression { params.ACTION == 'deploy' }
-        //     }
-        //     steps {
-        //         dir('Cave Service') {
-        //             echo 'Deploying Cave Service'
-        //             sh 'kubectl delete deployment cave-service --ignore-not-found=true'
-        //             sh 'kubectl apply -f cave-service-deployment.yaml'
-        //         }
-        //     }
-        // }
+        // Deploy Cave Service
+        stage('Deploy Cave Service') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
+            steps {
+                dir('Cave Service') {
+                    echo 'Deploying Cave Service'
+                    sh 'kubectl delete deployment cave-service --ignore-not-found=true'
+                    sh 'kubectl apply -f cave-service-deployment.yaml'
+                }
+            }
+        }
     }
 }
