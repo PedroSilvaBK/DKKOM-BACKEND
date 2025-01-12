@@ -33,8 +33,8 @@ EXPOSE 8080
 
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} \
   -agentpath:/opt/app/profiler_java_agent.so=\
-      --service=api-gateway,\
-      --project_id=dkkom-446515,\
+      -cprof_service=api-gateway,\
+      -cprof_project_id=dkkom-446515,\
       --logtostderr=1 \
   -javaagent:/opt/app/opentelemetry-javaagent.jar \
   -jar /opt/app/api_gateway.jar \
