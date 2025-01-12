@@ -12,6 +12,7 @@ spec:
       labels:
         app: user-presence-service
     spec:
+      serviceAccountName: app-access
       containers:
       - name: user-presence-service
         image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-presence-service
