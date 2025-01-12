@@ -251,7 +251,7 @@ pipeline {
                 expression { params.ACTION == 'deploy-staging' }
             }
             steps {
-                dir('api-gateway') {
+                dir('api gateway') {
                     echo 'Deploying Api Gateway with Helm'
 
                     sh '''
