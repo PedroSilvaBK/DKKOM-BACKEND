@@ -60,6 +60,9 @@ dependencies {
 	implementation 'ch.qos.logback:logback-core:1.5.14'
 	implementation 'ch.qos.logback:logback-classic:1.5.14'
 
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+
 	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

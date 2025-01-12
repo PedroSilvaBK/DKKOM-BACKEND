@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // Disable CSRF for stateless services
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) // Prevent security context from being stored on the server
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/ws/**", "/health").permitAll()
+                        .pathMatchers("/ws/**", "/actuator/health").permitAll()
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyExchange().authenticated() // Allow all other exchanges without authentication
                 )
