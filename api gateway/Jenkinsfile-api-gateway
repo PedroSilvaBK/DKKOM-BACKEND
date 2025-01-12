@@ -225,8 +225,8 @@ pipeline {
                     echo 'Deploying Api Gateway with Helm'
 
                     sh '''
-                    helm upgrade --install api-gateway ./helm \
-                        -f ./helm/values.yaml
+                    helm upgrade --install api-gateway ./api-gateway-helm \
+                        -f ./api-gateway-helm/values.yaml
                     '''
                 }
             }

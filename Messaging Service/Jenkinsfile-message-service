@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['normal', 'deploy'], description: 'Choose whether to have normal ci or with deployment')
+        choice(name: 'ACTION', choices: ['normal', 'deploy-staging','deploy-prod'], description: 'Choose whether to have normal ci or with deployment')
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Authenticate with Google Cloud') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 script {
@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Get Cluster Credentials') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
@@ -203,29 +203,62 @@ pipeline {
         //         // sh 'docker system prune -af'
         //     }
         // }
-        stage("Dockerize Message Service") {
+        stage("Dockerize Message Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Messaging Service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:latest .'
+                    sh 'docker build -f Dockerfile-prod -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:latest .'
                     sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:latest'
                 }
             }
         }
 
         // Deploy Message Service
-        stage('Deploy Message Service') {
+        stage('Deploy Message Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Messaging Service') {
-                    echo 'Deploying Message Service'
-                    sh 'kubectl delete deployment message-service --ignore-not-found=true'
-                    sh 'kubectl apply -f message-service-deployment.yaml'
+                    echo 'Deploying Messaging Service'
+
+                    sh '''
+                    helm upgrade --install message-service ./api-gateway-helm \
+                        -f ./message-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+        
+        stage("Dockerize Message Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Messaging Service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging'
+                }
+            }
+        }
+
+        // Deploy Message Service
+        stage('Deploy Message Service Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Messaging Service') {
+                    echo 'Deploying Messaging Service'
+
+                    sh '''
+                    helm upgrade --install message-service-staging ./message-service-helm \
+                        -f ./message-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }

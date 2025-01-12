@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['normal', 'deploy'], description: 'Choose whether to have normal ci or with deployment')
+        choice(name: 'ACTION', choices: ['normal', 'deploy-staging','deploy-prod'], description: 'Choose whether to have normal ci or with deployment')
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Authenticate with Google Cloud') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 script {
@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Get Cluster Credentials') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
@@ -202,29 +202,62 @@ pipeline {
         //         // sh 'docker system prune -af'
         //     }
         // }
-        stage("Dockerize User Service") {
+        stage("Dockerize User Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('User Service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:latest .'
+                    sh 'docker build -f Dockerfile-prod -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:latest .'
                     sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:latest'
                 }
             }
         }
 
         // Deploy User Service
-        stage('Deploy User Service') {
+        stage('Deploy User Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('User Service') {
-                    echo 'Deploying User Service'
-                    sh 'kubectl delete deployment user-service --ignore-not-found=true'
-                    sh 'kubectl apply -f user-service-deployment.yaml'
+                    echo 'Deploying User Service with Helm'
+
+                    sh '''
+                    helm upgrade --install user-service ./user-service-helm \
+                        -f ./user-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize User Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('User Service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:staging'
+                }
+            }
+        }
+
+        // Deploy User Service
+        stage('Deploy User Service Production Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('User Service') {
+                    echo 'Deploying User Service with Helm'
+
+                    sh '''
+                    helm upgrade --install user-service-staging ./user-service-helm \
+                        -f ./user-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }

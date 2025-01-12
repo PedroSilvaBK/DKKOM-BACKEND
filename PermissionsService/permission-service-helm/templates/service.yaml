@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: permission-service
+spec:
+  selector:
+    app: {{ .Release.Name }}-permission-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: {{ .Values.service.type }}

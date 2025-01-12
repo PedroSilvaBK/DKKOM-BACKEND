@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: websocket-gateway-service
+spec:
+  selector:
+    app: {{ .Release.Name }}-websocket-gateway
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: {{ .Values.service.type }}
