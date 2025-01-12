@@ -23,6 +23,19 @@ spec:
                 key: GOOGLE_CLIENT_SECRET
         ports:
         - containerPort: 8080  # The container listens on port 80
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/cloud-profiler-key.json
+        volumeMounts:
+        - mountPath: "/var/secrets"
+          name: cloud-profiler-secret
+      volumes:
+        - name: cloud-profiler-secret
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: cloud-profiler-secret
 
 ---
 

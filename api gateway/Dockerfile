@@ -11,6 +11,9 @@ COPY ./src/main/resources/jwt_certs ./jwt_certs
 # Download the OpenTelemetry Java Agent (v2.11.0)
 RUN wget -q https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.11.0/opentelemetry-javaagent.jar
 
+# Download the Cloud Profiler native library (example link, check the docs for the latest)
+RUN wget -q https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent.so
+
 # ---------------------------
 #    OpenTelemetry Config
 # ---------------------------
@@ -21,10 +24,13 @@ ENV OTEL_RESOURCE_ATTRIBUTES=service.name=api-gateway
 ENV OTEL_LOGS_EXPORTER=none
 ENV OTEL_METRICS_EXPORTER=none
 
-# Expose your app port
 EXPOSE 8080
 
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} \
+  -agentpath:/opt/app/profiler_java_agent.so=\
+      --service=api-gateway,\
+      --project_id=dkkom-446515,\
+      --logtostderr=1 \
   -javaagent:/opt/app/opentelemetry-javaagent.jar \
   -jar /opt/app/api_gateway.jar \
   --spring.profiles.active=prod"]
