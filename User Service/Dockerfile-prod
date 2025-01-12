@@ -19,14 +19,14 @@ RUN wget -q https://storage.googleapis.com/cloud-profiler/java/latest/profiler_j
 ENV OTEL_TRACES_EXPORTER=otlp
 ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4318"
 ENV OTEL_PROJECT_ID=dkkom-446515
-ENV OTEL_RESOURCE_ATTRIBUTES=service.name=user-service
+ENV OTEL_RESOURCE_ATTRIBUTES=service.name=user-service-prod
 ENV OTEL_LOGS_EXPORTER=none
 ENV OTEL_METRICS_EXPORTER=none
 
 EXPOSE 8080
 
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} \
-  -agentpath:/opt/app/profiler_java_agent.so=-cprof_service=user-service,-cprof_project_id=dkkom-446515,-cprof_enable_heap_sampling=true,--logtostderr=1 \
+  -agentpath:/opt/app/profiler_java_agent.so=-cprof_service=user-service-prod,-cprof_project_id=dkkom-446515,-cprof_enable_heap_sampling=true,--logtostderr=1 \
   -javaagent:/opt/app/opentelemetry-javaagent.jar \
   -jar Authentication_Service-0.0.1-SNAPSHOT.jar \
   --spring.profiles.active=prod"]

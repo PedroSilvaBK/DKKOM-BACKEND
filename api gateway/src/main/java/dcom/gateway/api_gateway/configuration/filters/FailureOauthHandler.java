@@ -24,15 +24,8 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @Slf4j
 public class FailureOauthHandler {
-    private final JwtTokenProvider jwtTokenProvider;
-    @Value("${frontend.auth.callback.url}")
-    private String callbackUrl;
-
-    @Value("${user.service.host}")
-    private String userServiceUrl;
-
-    @Value("${prod.cookie}")
-    private boolean prodCookie;
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
 
     @Bean
@@ -50,8 +43,7 @@ public class FailureOauthHandler {
 
             exchange.getResponse().setStatusCode(HttpStatus.FOUND);
 
-            String selectedUrl = prodCookie ? "https://dkkom.com/login" : "http://localhost:5173login";
-            exchange.getResponse().getHeaders().setLocation(URI.create(selectedUrl));
+            exchange.getResponse().getHeaders().setLocation(URI.create(frontendUrl));
 
             return exchange.getResponse().setComplete();
         };
