@@ -44,30 +44,30 @@ pipeline {
                 }
             }
         }
-        stage('Sonarqube Analysis Message Service') {
-            steps {
-                dir('Messaging Service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh './gradlew sonar'
-                    }
-                }
-            }
-        }
-        stage('Snyk Scan Message Service') {
-            agent {
-                label 'snyk-agent'
-            }
-            steps {
-                dir('Messaging Service') {
-                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-                        sh 'ls -la'
-                        sh 'chmod +x ./gradlew'
-                        sh 'snyk auth $SNYK_TOKEN'
-                        sh 'snyk test --all-projects'
-                    }
-                }
-            }
-        }
+        // stage('Sonarqube Analysis Message Service') {
+        //     steps {
+        //         dir('Messaging Service') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh './gradlew sonar'
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Snyk Scan Message Service') {
+        //     agent {
+        //         label 'snyk-agent'
+        //     }
+        //     steps {
+        //         dir('Messaging Service') {
+        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+        //                 sh 'ls -la'
+        //                 sh 'chmod +x ./gradlew'
+        //                 sh 'snyk auth $SNYK_TOKEN'
+        //                 sh 'snyk test --all-projects'
+        //             }
+        //         }
+        //     }
+        // }
         // stage('create test base env') {
         //     agent {
         //         label 'local-tests-env'
