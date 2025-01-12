@@ -32,7 +32,7 @@ ENV OTEL_METRICS_EXPORTER=none
 EXPOSE 8080
 
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} \
-  -agentpath:/opt/app/profiler_java_agent.so=-cprof_service=api-gateway,-cprof_project_id=dkkom-446515,--logtostderr=1 \
+  -agentpath:/opt/app/profiler_java_agent.so=-cprof_service=api-gateway,-cprof_project_id=dkkom-446515,-cprof_enable_heap_sampling=true,--logtostderr=1 \
   -javaagent:/opt/app/opentelemetry-javaagent.jar \
   -jar /opt/app/api_gateway.jar \
   --spring.profiles.active=prod"]
