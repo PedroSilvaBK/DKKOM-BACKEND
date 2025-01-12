@@ -12,6 +12,7 @@ spec:
       labels:
         app: api-gateway
     spec:
+      serviceAccountName: app-access
       containers:
       - name: api-gateway
         image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:latest
