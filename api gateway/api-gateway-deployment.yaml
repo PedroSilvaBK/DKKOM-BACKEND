@@ -33,7 +33,7 @@ spec:
       volumes:
         - name: cloud-profiler-secret-vol
           csi:
-            driver: secrets-store.csi.k8s.io
+            driver: secrets-store-gke.csi.k8s.io
             readOnly: true
             volumeAttributes:
               secretProviderClass: cloud-profiler-secret
