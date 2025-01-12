@@ -24,7 +24,7 @@ spec:
         volumeMounts:
         - mountPath: "/var/secrets"
           name: mysecret
-        - mountPath: "/var/secrets"
+        - mountPath: "/var/secret-cloud-profiler"
           name: cloud-profiler-secret-vol
       volumes:
         - name: mysecret
