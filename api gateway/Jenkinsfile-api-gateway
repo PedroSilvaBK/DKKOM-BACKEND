@@ -222,9 +222,12 @@ pipeline {
             }
             steps {
                 dir('api gateway') {
-                    echo 'Deploying Api Gateway'
-                    sh 'kubectl delete deployment api-gateway --ignore-not-found=true'
-                    sh 'kubectl apply -f api-gateway-deployment.yaml'
+                    echo 'Deploying Api Gateway with Helm'
+
+                    sh '''
+                    helm upgrade --install api-gateway ./helm \
+                        -f ./helm/values.yaml
+                    '''
                 }
             }
         }
@@ -237,8 +240,8 @@ pipeline {
                 echo 'Dockerizing Api Gateway'
                 dir('api gateway') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:latest'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:staging'
                 }
             }
         }
@@ -248,12 +251,16 @@ pipeline {
                 expression { params.ACTION == 'deploy-staging' }
             }
             steps {
-                dir('api gateway') {
-                    echo 'Deploying Api Gateway'
-                    sh 'kubectl delete deployment api-gateway --ignore-not-found=true'
-                    sh 'kubectl apply -f api-gateway-deployment.yaml'
+                dir('api-gateway') {
+                    echo 'Deploying Api Gateway with Helm'
+
+                    sh '''
+                    helm upgrade --install api-gateway-staging ./api-gateway-helm \
+                        -f ./api-gateway-helm/values-staging.yaml
+                    '''
                 }
             }
         }
+
     }
 }
