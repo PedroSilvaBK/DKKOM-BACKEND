@@ -15,7 +15,7 @@ RUN wget -q https://github.com/open-telemetry/opentelemetry-java-instrumentation
 #    OpenTelemetry Config
 # ---------------------------
 ENV OTEL_TRACES_EXPORTER=otlp
-ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4317"
+ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4318"
 ENV OTEL_PROJECT_ID=dkkom-446515
 ENV OTEL_RESOURCE_ATTRIBUTES=service.name=api-gateway
 
