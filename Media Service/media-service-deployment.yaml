@@ -20,7 +20,7 @@ spec:
         - containerPort: 8080
         env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/cloud-profiler-key.json
+          value: /var/secret-cloud-profiler/cloud-profiler-key.json
         volumeMounts:
         - mountPath: "/var/secrets"
           name: mysecret
