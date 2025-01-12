@@ -168,7 +168,7 @@ pipeline {
         // //cave service
         stage('Build Api gateway') {
             steps {
-                dir('api gatewaye') {
+                dir('api gateway') {
                     withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
                         sh 'ls -la'
                         sh 'chmod +x ./gradlew'
