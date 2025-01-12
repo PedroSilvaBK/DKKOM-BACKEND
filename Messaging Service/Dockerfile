@@ -27,7 +27,7 @@ EXPOSE 8080
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar Messaging_Service-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod"]
 
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} \
-  -agentpath:/opt/app/profiler_java_agent.so=-cprof_service=api-gateway,-cprof_project_id=dkkom-446515,-cprof_enable_heap_sampling=true,--logtostderr=1 \
+  -agentpath:/opt/app/profiler_java_agent.so=-cprof_service=message-service,-cprof_project_id=dkkom-446515,-cprof_enable_heap_sampling=true,--logtostderr=1 \
   -javaagent:/opt/app/opentelemetry-javaagent.jar \
   -jar Messaging_Service-0.0.1-SNAPSHOT.jar \
   --spring.profiles.active=prod"]
