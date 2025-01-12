@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class ClientSecretDebug {
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
