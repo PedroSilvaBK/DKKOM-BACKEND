@@ -29,9 +29,9 @@ spec:
           value: /var/secrets/cloud-profiler-key.json
         volumeMounts:
         - mountPath: "/var/secrets"
-          name: cloud-profiler-secret
+          name: cloud-profiler-secret-vol
       volumes:
-        - name: cloud-profiler-secret
+        - name: cloud-profiler-secret-vol
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
