@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.time.Duration;
@@ -32,6 +33,10 @@ public class SuccessOauthFilter {
 
     @Value("${prod.cookie}")
     private boolean prodCookie;
+
+    @Value("${spring.profiles.active:default}")
+    private String activeProfile;
+
 
 
     @Bean
@@ -67,9 +72,9 @@ public class SuccessOauthFilter {
 
                         log.debug("token {}", applicationJwt);
 
-                        ResponseCookie cookie;
+                        ResponseCookie cookie = null;
 
-                        if (prodCookie)
+                        if (activeProfile.equals("prod"))
                         {
                             cookie = ResponseCookie.from("jwt", applicationJwt)
                                     .httpOnly(false)
@@ -80,13 +85,28 @@ public class SuccessOauthFilter {
                                     .maxAge(Duration.ofMinutes(1))
                                     .build();
                         }
-                        else {
+                        else if (activeProfile.equals("dev")) {
                             cookie = ResponseCookie.from("jwt", applicationJwt)
                                     .httpOnly(false)
                                     .secure(false)
                                     .path("/")
                                     .maxAge(Duration.ofMinutes(1))
                                     .build();
+                        }
+                        else if (activeProfile.equals("staging"))
+                        {
+                            cookie = ResponseCookie.from("jwt", applicationJwt)
+                                    .httpOnly(false)
+                                    .secure(false)
+                                    .path("staging.dkkom.com")
+                                    .maxAge(Duration.ofMinutes(1))
+                                    .build();
+                        }
+
+                        if (cookie != null)
+                        {
+                            exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                            return exchange.getResponse().setComplete();
                         }
 
                         exchange.getResponse().addCookie(cookie);
