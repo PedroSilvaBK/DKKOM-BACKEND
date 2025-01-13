@@ -25,7 +25,7 @@ pipeline {
         }
         stage('Copy tests into the vm') {
             steps {
-                sh 'gcloud compute scp --recurse ./tests performace-test-vm:/home/jenkins/tests --zone europe-west1-b --project dkkom-446515'
+                sh 'gcloud compute scp --recurse ./tests performance-test-vm:/home/jenkins/tests --zone europe-west1-b --project dkkom-446515'
             }
         }
     }
