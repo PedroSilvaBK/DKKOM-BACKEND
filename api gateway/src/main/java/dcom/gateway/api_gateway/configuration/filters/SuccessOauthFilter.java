@@ -97,8 +97,10 @@ public class SuccessOauthFilter {
                         {
                             cookie = ResponseCookie.from("jwt", applicationJwt)
                                     .httpOnly(false)
-                                    .secure(false)
-                                    .path("staging.dkkom.com")
+                                    .secure(true)   // Ensure HTTPS enable this for production
+                                    .path("/")
+                                    .domain("staging.dkkom.com")
+                                    .sameSite("None")
                                     .maxAge(Duration.ofMinutes(1))
                                     .build();
                         }
