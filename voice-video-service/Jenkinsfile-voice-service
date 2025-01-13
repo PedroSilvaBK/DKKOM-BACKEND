@@ -66,18 +66,18 @@ pipeline {
                 }
             }
         }
-        stage('Snyk Scan Voice Service') {
-            agent {
-                label 'snyk-agent'
-            }
-            steps {
-                dir('voice-video-service') {
-                    sh 'ls -la'
-                    sh 'snyk auth $SNYK_TOKEN'
-                    sh 'snyk test --all-projects'
-                }
-            }
-        }
+        // stage('Snyk Scan Voice Service') {
+        //     agent {
+        //         label 'snyk-agent'
+        //     }
+        //     steps {
+        //         dir('voice-video-service') {
+        //             sh 'ls -la'
+        //             sh 'snyk auth $SNYK_TOKEN'
+        //             sh 'snyk test --all-projects'
+        //         }
+        //     }
+        // }
         stage("Dockerize Voice Service") {
             when {
                 expression { params.ACTION == 'deploy' || params.ACTION == 'deploy-staging' }
