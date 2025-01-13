@@ -26,13 +26,17 @@ pipeline {
             }
         }
         stage('See tests') {
-            steps {
-                sh 'ls -la'
+            dir('performance-tests') {
+                steps {
+                    sh 'ls -la'
+                }
             }
         }
         stage('Copy tests into the vm') {
-            steps {
-                sh 'gcloud compute scp --recurse ./tests performance-test-vm:/home/jenkins/ --zone europe-west1-b --project dkkom-446515'
+            dir('performance-tests') {
+                steps {
+                    sh 'gcloud compute scp --recurse ./tests performance-test-vm:/home/jenkins/ --zone europe-west1-b --project dkkom-446515'
+                }
             }
         }
     }
