@@ -17,7 +17,7 @@ export default function () {
         'Content-Type': 'application/json', // Adjust headers as needed
     };
 
-    let res = http.get('https://stagingapi.dkkom.com/actuator/health', { headers: headers });
+    let res = http.get('https://stagingapi.dkkom.com/cave-service/cave/overview/4333bfbb-071e-495a-bd59-6b5c67a627b0', { headers: headers });
     check(res, { 'status is 200': (r) => r.status === 200 });
     sleep(1);
 }

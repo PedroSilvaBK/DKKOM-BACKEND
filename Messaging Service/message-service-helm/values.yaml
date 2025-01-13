@@ -1,7 +1,7 @@
 replicas: 1
 
 image:
-    repository: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service
+  repository: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service
   tag: latest
 
 service:
