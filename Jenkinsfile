@@ -33,103 +33,103 @@ pipeline {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
             }
         }
-        // stage('Create and configure external services for tests') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     when {
-        //         expression { params.ACTION == 'normal' }
-        //     }
-        //     steps {
-        //         sh 'echo "Creating integration test environment"'
-        //         sh 'docker-compose up -d'
-        //         sleep 5
-        //         sh 'docker exec mysql_db mysql -uroot -padmin -e "CREATE DATABASE IF NOT EXISTS users_db;"'
-        //         sleep 5
-        //         sh '''
-        //             docker exec scylla_db cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1};"
-        //         '''
-        //         sh 'docker ps'
-        //     }
-        // }
-        // stage('Setup micro-services for test') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     when {
-        //         expression { params.ACTION == 'normal' }
-        //     }
-        //     environment {
-        //         GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
-        //     }
-        //     steps {
-        //         sh 'echo "Setting up services for integration tests"'
-        //         dir('Cave Service'){
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build -x test'
-        //                 sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
-        //                 sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
-        //                 sh 'echo Cave service running on test environment'
-        //             }
-        //         }
-        //         dir('api gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build -x test'
-        //                 sh 'docker build -f Dockerfile-test-env -t api-gateway:latest .'
-        //                 sh 'docker run --network=test-network -d -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET --name api-gateway api-gateway:latest'
-        //                 sh 'echo Api gateway running on test environment'
-        //             }
-        //         }
-        //         dir('User Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build -x test'
-        //                 sh 'docker build -f Dockerfile-test-env -t user-service:latest .'
-        //                 sh 'docker run --network=test-network -d --name user-service user-service:latest'
-        //                 sh 'echo User Service running on test environment'
-        //             }
-        //         }
-        //         dir('Websocket-gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build -x test'
-        //                 sh 'docker build -f Dockerfile-test-env -t websocket-gateway:latest .'
-        //                 sh 'docker run --network=test-network -d --name websocket-gateway websocket-gateway:latest'
-        //                 sh 'echo websocket-gateway running on test environment'
-        //             }
-        //         }
-        //         dir('PermissionsService') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build -x test'
-        //                 sh 'docker build -f Dockerfile-test-env -t permission-service:latest .'
-        //                 sh 'docker run --network=test-network -d --name permission-service permission-service:latest'
-        //                 sh 'echo permission-service running on test environment'
-        //             }
-        //         }
-        //         dir('user-presence-service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build -x test'
-        //                 sh 'docker build -f Dockerfile-test-env -t user-presence-service:latest .'
-        //                 sh 'docker run --network=test-network -d --name user-presence-service user-presence-service:latest'
-        //                 sh 'echo user-presence-service running on test environment'
-        //             }
-        //         }
-        //         dir('Messaging Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh './gradlew build -x test'
-        //                 sh 'docker build -f Dockerfile-test-env -t message-service:latest .'
-        //                 sh 'docker run --network=test-network -d --name message-service message-service:latest'
-        //                 sh 'echo message-service running on test environment'
-        //             }
-        //         }
-        //         sh 'echo Service Deployed and running'
-        //     }
-        // }
+        stage('Create and configure external services for tests') {
+            agent {
+                label 'local-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                sh 'echo "Creating integration test environment"'
+                sh 'docker-compose up -d'
+                sleep 5
+                sh 'docker exec mysql_db mysql -uroot -padmin -e "CREATE DATABASE IF NOT EXISTS users_db;"'
+                sleep 5
+                sh '''
+                    docker exec scylla_db cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1};"
+                '''
+                sh 'docker ps'
+            }
+        }
+        stage('Setup micro-services for test') {
+            agent {
+                label 'local-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            environment {
+                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
+            }
+            steps {
+                sh 'echo "Setting up services for integration tests"'
+                dir('Cave Service'){
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t cave-service:latest .'
+                        sh 'docker run --network=test-network -d --name cave-service cave-service:latest'
+                        sh 'echo Cave service running on test environment'
+                    }
+                }
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t api-gateway:latest .'
+                        sh 'docker run --network=test-network -d -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET --name api-gateway api-gateway:latest'
+                        sh 'echo Api gateway running on test environment'
+                    }
+                }
+                dir('User Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t user-service:latest .'
+                        sh 'docker run --network=test-network -d --name user-service user-service:latest'
+                        sh 'echo User Service running on test environment'
+                    }
+                }
+                dir('Websocket-gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t websocket-gateway:latest .'
+                        sh 'docker run --network=test-network -d --name websocket-gateway websocket-gateway:latest'
+                        sh 'echo websocket-gateway running on test environment'
+                    }
+                }
+                dir('PermissionsService') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t permission-service:latest .'
+                        sh 'docker run --network=test-network -d --name permission-service permission-service:latest'
+                        sh 'echo permission-service running on test environment'
+                    }
+                }
+                dir('user-presence-service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t user-presence-service:latest .'
+                        sh 'docker run --network=test-network -d --name user-presence-service user-presence-service:latest'
+                        sh 'echo user-presence-service running on test environment'
+                    }
+                }
+                dir('Messaging Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew build -x test'
+                        sh 'docker build -f Dockerfile-test-env -t message-service:latest .'
+                        sh 'docker run --network=test-network -d --name message-service message-service:latest'
+                        sh 'echo message-service running on test environment'
+                    }
+                }
+                sh 'echo Service Deployed and running'
+            }
+        }
         stage('Build Api Gateway') {
             steps {
                 echo 'Building Api Gateway'
@@ -142,51 +142,51 @@ pipeline {
                 }
             }
         }
-        // stage("Test Api Gateway") {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     environment {
-        //         GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
-        //     }
-        //     steps {
-        //         echo 'Unit and integration tests Api Gateway'
-        //         dir('api gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'docker stop api-gateway'
-        //                 sh 'docker build --build-arg GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET -f Dockerfile-run-test -t api-gateway-tests:latest .'
-        //                 sh 'docker run --rm --network=test-network api-gateway-tests:latest'
-        //                 sh 'docker image rm api-gateway-tests:latest'
-        //                 sh 'docker start api-gateway'
-        //                 sh 'echo Api gateway back running'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Sonarqube Analysis Api Gateway') {
-        //     steps {
-        //         dir('api gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan Api Gateway') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('api gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage("Test Api Gateway") {
+            agent {
+                label 'local-tests-env'
+            }
+            environment {
+                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
+            }
+            steps {
+                echo 'Unit and integration tests Api Gateway'
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop api-gateway'
+                        sh 'docker build --build-arg GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET -f Dockerfile-run-test -t api-gateway-tests:latest .'
+                        sh 'docker run --rm --network=test-network api-gateway-tests:latest'
+                        sh 'docker image rm api-gateway-tests:latest'
+                        sh 'docker start api-gateway'
+                        sh 'echo Api gateway back running'
+                    }
+                }
+            }
+        }
+        stage('Sonarqube Analysis Api Gateway') {
+            steps {
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Api Gateway') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('api gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize Api Gateway") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -234,31 +234,31 @@ pipeline {
                 }
             }
         }
-        // stage('Sonarqube Analysis Voice Service') {
-        //     steps {
-        //         dir('voice-video-service') {
-        //             withSonarQubeEnv('Sonarqube Server') {
-        //                 sh 'sonar-scanner \
-        //                     -Dsonar.projectKey=Voice-Service \
-        //                     -Dsonar.sources=. \
-        //                     -Dsonar.host.url=http://192.168.138.132:9000 \
-        //                     -Dsonar.token=sqp_cc99befa0fa1ba7d0ccc1ed72660e4bc557fc2fe'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan Voice Service') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('voice-video-service') {
-        //             sh 'ls -la'
-        //             sh 'snyk auth $SNYK_TOKEN'
-        //             sh 'snyk test --all-projects'
-        //         }
-        //     }
-        // }
+        stage('Sonarqube Analysis Voice Service') {
+            steps {
+                dir('voice-video-service') {
+                    withSonarQubeEnv('Sonarqube Server') {
+                        sh 'sonar-scanner \
+                            -Dsonar.projectKey=Voice-Service \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://192.168.138.132:9000 \
+                            -Dsonar.token=sqp_cc99befa0fa1ba7d0ccc1ed72660e4bc557fc2fe'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Voice Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('voice-video-service') {
+                    sh 'ls -la'
+                    sh 'snyk auth $SNYK_TOKEN'
+                    sh 'snyk test --all-projects'
+                }
+            }
+        }
         stage("Dockerize Voice Service") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -297,30 +297,30 @@ pipeline {
                 }
             }
         }
-        // stage('Sonarqube Analysis Media Service') {
-        //     steps {
-        //         dir('Media Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan Media Service') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('Media Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Sonarqube Analysis Media Service') {
+            steps {
+                dir('Media Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Media Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('Media Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize Media Service") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -361,51 +361,51 @@ pipeline {
                 }
             }
         }
-        // stage('Unit and Integration Test Cave Service') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     environment {
-        //         GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
-        //         GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
-        //     }
-        //     steps {
-        //         dir('Cave Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'docker stop cave-service'
-        //                 sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
-        //                 sh 'docker run --rm --network=test-network cave-service-tests:latest'
-        //                 sh 'docker image rm cave-service-tests:latest'
-        //                 sh 'docker start cave-service'
-        //                 sh 'echo Cave service back running'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Sonarqube Analysis Cave Service') {
-        //     steps {
-        //         dir('Cave Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan Cave Service') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('Cave Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Unit and Integration Test Cave Service') {
+            agent {
+                label 'local-tests-env'
+            }
+            environment {
+                GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+                GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+            }
+            steps {
+                dir('Cave Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop cave-service'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t cave-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network cave-service-tests:latest'
+                        sh 'docker image rm cave-service-tests:latest'
+                        sh 'docker start cave-service'
+                        sh 'echo Cave service back running'
+                    }
+                }
+            }
+        }
+        stage('Sonarqube Analysis Cave Service') {
+            steps {
+                dir('Cave Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Cave Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('Cave Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize Cave Service") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -445,47 +445,47 @@ pipeline {
                 }
             }
         }
-        // stage('Unit and Integration Test Message Service') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     steps {
-        //         dir('Messaging Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'docker stop message-service'
-        //                 sh 'docker build -f Dockerfile-run-test -t message-service-tests:latest .'
-        //                 sh 'docker run --rm --network=test-network message-service-tests:latest'
-        //                 sh 'docker image rm message-service-tests:latest'
-        //                 sh 'docker start message-service'
-        //                 sh 'echo Message service back running'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Sonarqube Analysis Message Service') {
-        //     steps {
-        //         dir('Messaging Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan Message Service') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('Messaging Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Unit and Integration Test Message Service') {
+            agent {
+                label 'local-tests-env'
+            }
+            steps {
+                dir('Messaging Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop message-service'
+                        sh 'docker build -f Dockerfile-run-test -t message-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network message-service-tests:latest'
+                        sh 'docker image rm message-service-tests:latest'
+                        sh 'docker start message-service'
+                        sh 'echo Message service back running'
+                    }
+                }
+            }
+        }
+        stage('Sonarqube Analysis Message Service') {
+            steps {
+                dir('Messaging Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Message Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('Messaging Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize Message Service") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -525,51 +525,51 @@ pipeline {
                 }
             }
         }
-        // stage('Unit and Integration Test Permission Service') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     environment {
-        //         GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
-        //         GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
-        //     }
-        //     steps {
-        //         dir('PermissionsService') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'docker stop permission-service'
-        //                 sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t permission-service-tests:latest .'
-        //                 sh 'docker run --rm --network=test-network permission-service-tests:latest'
-        //                 sh 'docker image rm permission-service-tests:latest'
-        //                 sh 'docker start permission-service'
-        //                 sh 'echo permission-service back running'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Sonarqube Analysis Permission Service') {
-        //     steps {
-        //         dir('PermissionsService') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan Permission Service') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('PermissionsService') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Unit and Integration Test Permission Service') {
+            agent {
+                label 'local-tests-env'
+            }
+            environment {
+                GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+                GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+            }
+            steps {
+                dir('PermissionsService') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop permission-service'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t permission-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network permission-service-tests:latest'
+                        sh 'docker image rm permission-service-tests:latest'
+                        sh 'docker start permission-service'
+                        sh 'echo permission-service back running'
+                    }
+                }
+            }
+        }
+        stage('Sonarqube Analysis Permission Service') {
+            steps {
+                dir('PermissionsService') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Permission Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('PermissionsService') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize Permission Service") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -609,47 +609,47 @@ pipeline {
                 }
             }
         }
-        // stage('Unit and Integration Test User Service') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     steps {
-        //         dir('User Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'docker stop user-service'
-        //                 sh 'docker build -f Dockerfile-run-test -t user-service-tests:latest .'
-        //                 sh 'docker run --rm --network=test-network user-service-tests:latest'
-        //                 sh 'docker image rm user-service-tests:latest'
-        //                 sh 'docker start user-service'
-        //                 sh 'echo User Service back running'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Sonarqube Analysis User Service') {
-        //     steps {
-        //         dir('User Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan User Service') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('User Service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Unit and Integration Test User Service') {
+            agent {
+                label 'local-tests-env'
+            }
+            steps {
+                dir('User Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop user-service'
+                        sh 'docker build -f Dockerfile-run-test -t user-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network user-service-tests:latest'
+                        sh 'docker image rm user-service-tests:latest'
+                        sh 'docker start user-service'
+                        sh 'echo User Service back running'
+                    }
+                }
+            }
+        }
+        stage('Sonarqube Analysis User Service') {
+            steps {
+                dir('User Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan User Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('User Service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize User Service") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -689,47 +689,47 @@ pipeline {
                 }
             }
         }
-        // stage('Unit and Integration Test User Presence Service') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     steps {
-        //         dir('user-presence-service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'docker stop user-presence-service'
-        //                 sh 'docker build -f Dockerfile-run-test -t user-presence-service-tests:latest .'
-        //                 sh 'docker run --rm --network=test-network user-presence-service-tests:latest'
-        //                 sh 'docker image rm user-presence-service-tests:latest'
-        //                 sh 'docker start user-presence-service'
-        //                 sh 'echo User Presence Service back running'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Sonarqube Analysis User Presence Service') {
-        //     steps {
-        //         dir('user-presence-service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan User Presence Service') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('user-presence-service') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Unit and Integration Test User Presence Service') {
+            agent {
+                label 'local-tests-env'
+            }
+            steps {
+                dir('user-presence-service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop user-presence-service'
+                        sh 'docker build -f Dockerfile-run-test -t user-presence-service-tests:latest .'
+                        sh 'docker run --rm --network=test-network user-presence-service-tests:latest'
+                        sh 'docker image rm user-presence-service-tests:latest'
+                        sh 'docker start user-presence-service'
+                        sh 'echo User Presence Service back running'
+                    }
+                }
+            }
+        }
+        stage('Sonarqube Analysis User Presence Service') {
+            steps {
+                dir('user-presence-service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan User Presence Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('user-presence-service') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize User Presence Service") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -769,51 +769,51 @@ pipeline {
                 }
             }
         }
-        // stage('Unit and Integration Test Websocket Gateway') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     environment {
-        //         GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
-        //         GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
-        //     }
-        //     steps {
-        //         dir('Websocket-gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'docker stop websocket-gateway'
-        //                 sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t websocket-gateway-tests:latest .'
-        //                 sh 'docker run --rm --network=test-network websocket-gateway-tests:latest'
-        //                 sh 'docker image rm websocket-gateway-tests:latest'
-        //                 sh 'docker start websocket-gateway'
-        //                 sh 'echo websocket-gateway back running'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Sonarqube Analysis Websocket Gateway') {
-        //     steps {
-        //         dir('Websocket-gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh './gradlew sonar'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Scan Websocket Gateway') {
-        //     agent {
-        //         label 'snyk-agent'
-        //     }
-        //     steps {
-        //         dir('Websocket-gateway') {
-        //             withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
-        //                 sh 'ls -la'
-        //                 sh 'chmod +x ./gradlew'
-        //                 sh 'snyk auth $SNYK_TOKEN'
-        //                 sh 'snyk test --all-projects'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Unit and Integration Test Websocket Gateway') {
+            agent {
+                label 'local-tests-env'
+            }
+            environment {
+                GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+                GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+            }
+            steps {
+                dir('Websocket-gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'docker stop websocket-gateway'
+                        sh 'docker build --build-arg GITLAB_USER=$GITLAB_USER --build-arg GITLAB_TOKEN=$GITLAB_TOKEN -f Dockerfile-run-test -t websocket-gateway-tests:latest .'
+                        sh 'docker run --rm --network=test-network websocket-gateway-tests:latest'
+                        sh 'docker image rm websocket-gateway-tests:latest'
+                        sh 'docker start websocket-gateway'
+                        sh 'echo websocket-gateway back running'
+                    }
+                }
+            }
+        }
+        stage('Sonarqube Analysis Websocket Gateway') {
+            steps {
+                dir('Websocket-gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh './gradlew sonar'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Websocket Gateway') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('Websocket-gateway') {
+                    withEnv(['GRADLE_USER_HOME=$WORKSPACE/.gradle']) {
+                        sh 'ls -la'
+                        sh 'chmod +x ./gradlew'
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --all-projects'
+                    }
+                }
+            }
+        }
         stage("Dockerize Websocket gateway") {
             when {
                 expression { params.ACTION == 'deploy' }
@@ -841,30 +841,30 @@ pipeline {
             }
         }
 
-        // stage('clean test env') {
-        //     agent {
-        //         label 'local-tests-env'
-        //     }
-        //     when {
-        //         expression { params.ACTION == 'normal' }
-        //     }
-        //     steps {
-        //         sh 'echo "Cleaning integration test environment"'
-        //         sh 'docker image prune -f'
-        //         sh 'docker stop $(docker ps -q)'
-        //         sh 'docker-compose down'
-        //         sh 'docker container prune -f'
-        //         //
-        //         sh 'docker image rm cave-service:latest || true'
-        //         sh 'docker image rm api-gateway:latest || true'
-        //         sh 'docker image rm user-service:latest || true'
-        //         sh 'docker image rm websocket-gateway:latest || true'
-        //         sh 'docker image rm permission-service:latest || true'
-        //         sh 'docker image rm user-presence-service:latest || true'
-        //         sh 'docker image rm message-service:latest || true'
-        //         // sh 'docker system prune -af'
-        //     }
-        // }
+        stage('clean test env') {
+            agent {
+                label 'local-tests-env'
+            }
+            when {
+                expression { params.ACTION == 'normal' }
+            }
+            steps {
+                sh 'echo "Cleaning integration test environment"'
+                sh 'docker image prune -f'
+                sh 'docker stop $(docker ps -q)'
+                sh 'docker-compose down'
+                sh 'docker container prune -f'
+                //
+                sh 'docker image rm cave-service:latest || true'
+                sh 'docker image rm api-gateway:latest || true'
+                sh 'docker image rm user-service:latest || true'
+                sh 'docker image rm websocket-gateway:latest || true'
+                sh 'docker image rm permission-service:latest || true'
+                sh 'docker image rm user-presence-service:latest || true'
+                sh 'docker image rm message-service:latest || true'
+                // sh 'docker system prune -af'
+            }
+        }
 
     }
 }
