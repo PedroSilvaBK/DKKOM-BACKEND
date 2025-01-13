@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['normal', 'deploy'], description: 'Choose whether to have normal ci or with deployment')
+        choice(name: 'ACTION', choices: ['normal', 'deploy-prod', 'deploy-staging'], description: 'Choose whether to have normal ci or with deployment')
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Authenticate with Google Cloud') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' || params.ACTION == 'deploy-staging' }
             }
             steps {
                 script {
@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Get Cluster Credentials') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' || params.ACTION == 'deploy-staging' }
             }
             steps {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
@@ -187,9 +187,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize Api Gateway") {
+        stage("Dockerize Api Gateway Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 echo 'Dockerizing Api Gateway'
@@ -200,15 +200,49 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Api Gateway') {
+
+        stage('Deploy Api Gateway Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('api gateway') {
-                    echo 'Deploying Api Gateway'
-                    sh 'kubectl delete deployment api-gateway --ignore-not-found=true'
-                    sh 'kubectl apply -f api-gateway-deployment.yaml'
+                    echo 'Deploying Api Gateway with Helm'
+
+                    sh '''
+                    helm upgrade --install api-gateway ./api-gateway-helm \
+                        -f ./api-gateway-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize Api Gateway Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                echo 'Dockerizing Api Gateway'
+                dir('api gateway') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/api-gateway:staging'
+                }
+            }
+        }
+
+        stage('Deploy Api Gateway Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('api gateway') {
+                    echo 'Deploying Api Gateway with Helm'
+
+                    sh '''
+                    helm upgrade --install api-gateway-staging ./api-gateway-helm \
+                        -f ./api-gateway-helm/values-staging.yaml
+                    '''
                 }
             }
         }
@@ -261,7 +295,7 @@ pipeline {
         }
         stage("Dockerize Voice Service") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' || params.ACTION == 'deploy-staging' }
             }
             steps {
                 echo 'Dockerizing Voice Service'
@@ -274,7 +308,7 @@ pipeline {
         }
         stage('Deploy Voice Service') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' || params.ACTION == 'deploy-staging' }
             }
             steps {
                 dir('voice-video-service') {
@@ -321,9 +355,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize Media Service") {
+        stage("Dockerize Media Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 echo 'Dockerizing Api Gateway'
@@ -336,15 +370,47 @@ pipeline {
         }
 
         // Deploy Media Service
-        stage('Deploy Media Service') {
+        stage('Deploy Media Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Media Service') {
-                    echo 'Deploying Media Service'
-                    sh 'kubectl delete deployment media-service --ignore-not-found=true'
-                    sh 'kubectl apply -f media-service-deployment.yaml'
+                    echo 'Deploying Media Service with Helm'
+                    sh '''
+                    helm upgrade --install media-service ./media-service-helm \
+                        -f ./media-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize Media Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                echo 'Dockerizing Media Service'
+                dir('Media Service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/media-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/media-service:staging'
+                }
+            }
+        }
+
+        // Deploy Media Service
+        stage('Deploy Media Service Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Media Service') {
+                    echo 'Deploying Media Service with Helm'
+                    sh '''
+                    helm upgrade --install media-service ./media-service-helm \
+                        -f ./media-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }
@@ -406,9 +472,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize Cave Service") {
+        stage("Dockerize Cave Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Cave Service') {
@@ -420,15 +486,46 @@ pipeline {
         }
 
         // Deploy Cave Service
-        stage('Deploy Cave Service') {
+        stage('Deploy Cave Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Cave Service') {
-                    echo 'Deploying Cave Service'
-                    sh 'kubectl delete deployment cave-service --ignore-not-found=true'
-                    sh 'kubectl apply -f cave-service-deployment.yaml'
+                    echo 'Deploying Cave Service with Helm'
+                    sh '''
+                    helm upgrade --install cave-service ./cave-service-helm \
+                        -f ./cave-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize Cave Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Cave Service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/cave-service:staging'
+                }
+            }
+        }
+
+        // Deploy Cave Service
+        stage('Deploy Cave Service Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Cave Service') {
+                    echo 'Deploying Cave Service with Helm'
+                    sh '''
+                    helm upgrade --install cave-service-staging ./cave-service-helm \
+                        -f ./cave-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }
@@ -486,9 +583,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize Message Service") {
+        stage("Dockerize Message Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Messaging Service') {
@@ -500,15 +597,48 @@ pipeline {
         }
 
         // Deploy Message Service
-        stage('Deploy Message Service') {
+        stage('Deploy Message Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Messaging Service') {
-                    echo 'Deploying Message Service'
-                    sh 'kubectl delete deployment message-service --ignore-not-found=true'
-                    sh 'kubectl apply -f message-service-deployment.yaml'
+                    echo 'Deploying Messaging Service'
+
+                    sh '''
+                    helm upgrade --install message-service ./api-gateway-helm \
+                        -f ./message-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+        
+        stage("Dockerize Message Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Messaging Service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging'
+                }
+            }
+        }
+
+        // Deploy Message Service
+        stage('Deploy Message Service Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Messaging Service') {
+                    echo 'Deploying Messaging Service'
+
+                    sh '''
+                    helm upgrade --install message-service-staging ./message-service-helm \
+                        -f ./message-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }
@@ -570,9 +700,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize Permission Service") {
+        stage("Dockerize Permission Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('PermissionsService') {
@@ -584,15 +714,48 @@ pipeline {
         }
 
         // Deploy Permission Service
-        stage('Deploy Permission Service') {
+        stage('Deploy Permission Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('PermissionsService') {
-                    echo 'Deploying Permission Service'
-                    sh 'kubectl delete deployment permission-service --ignore-not-found=true'
-                    sh 'kubectl apply -f permission-service.yaml'
+                    echo 'Deploying Permission Service with Helm'
+
+                    sh '''
+                    helm upgrade --install permission-service ./permission-service-helm \
+                        -f ./permission-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize Permission Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('PermissionsService') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:staging'
+                }
+            }
+        }
+
+        // Deploy Permission Service
+        stage('Deploy Permission Service Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('PermissionsService') {
+                    echo 'Deploying Permission Service with Helm'
+
+                    sh '''
+                    helm upgrade --install permission-service-staging ./permission-service-helm \
+                        -f ./permission-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }
@@ -650,9 +813,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize User Service") {
+        stage("Dockerize User Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('User Service') {
@@ -664,15 +827,48 @@ pipeline {
         }
 
         // Deploy User Service
-        stage('Deploy User Service') {
+        stage('Deploy User Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('User Service') {
-                    echo 'Deploying User Service'
-                    sh 'kubectl delete deployment user-service --ignore-not-found=true'
-                    sh 'kubectl apply -f user-service-deployment.yaml'
+                    echo 'Deploying User Service with Helm'
+
+                    sh '''
+                    helm upgrade --install user-service ./user-service-helm \
+                        -f ./user-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize User Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('User Service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-service:staging'
+                }
+            }
+        }
+
+        // Deploy User Service
+        stage('Deploy User Service Production Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('User Service') {
+                    echo 'Deploying User Service with Helm'
+
+                    sh '''
+                    helm upgrade --install user-service-staging ./user-service-helm \
+                        -f ./user-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }
@@ -730,9 +926,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize User Presence Service") {
+        stage("Dockerize User Presence Service Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('user-presence-service') {
@@ -744,15 +940,48 @@ pipeline {
         }
 
         // Deploy User Presence Service
-        stage('Deploy User Presence Service') {
+        stage('Deploy User Presence Service Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('user-presence-service') {
-                    echo 'Deploying User Presence Service'
-                    sh 'kubectl delete deployment user-presence-service --ignore-not-found=true'
-                    sh 'kubectl apply -f user-presence-service.yaml'
+                    echo 'Deploying user presence service with Helm'
+
+                    sh '''
+                    helm upgrade --install user-presence-service ./user-presence-service-helm \
+                        -f ./user-presence-service-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize User Presence Service Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('user-presence-service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-presence-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/user-presence-service:staging'
+                }
+            }
+        }
+
+        // Deploy User Presence Service
+        stage('Deploy User Presence Service Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('user-presence-service') {
+                    echo 'Deploying user presence service with Helm'
+
+                    sh '''
+                    helm upgrade --install user-presence-service-staging ./user-presence-service-helm \
+                        -f ./user-presence-service-helm/values-staging.yaml
+                    '''
                 }
             }
         }
@@ -814,9 +1043,9 @@ pipeline {
                 }
             }
         }
-        stage("Dockerize Websocket gateway") {
+        stage("Dockerize Websocket gateway Production") {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Websocket-gateway') {
@@ -828,15 +1057,48 @@ pipeline {
         }
 
         // Deploy Websocket Gateway
-        stage('Deploy Websocket Gateway') {
+        stage('Deploy Websocket Gateway Production') {
             when {
-                expression { params.ACTION == 'deploy' }
+                expression { params.ACTION == 'deploy-prod' }
             }
             steps {
                 dir('Websocket-gateway') {
-                    echo 'Deploying Websocket Gateway'
-                    sh 'kubectl delete deployment websocket-gateway --ignore-not-found=true'
-                    sh 'kubectl apply -f websocket-gateway-deployment.yaml'
+                    echo 'Deploying websocket gateway with Helm'
+
+                    sh '''
+                    helm upgrade --install websocket-gateway ./websocket-gateway-helm \
+                        -f ./websocket-gateway-helm/values.yaml
+                    '''
+                }
+            }
+        }
+
+        stage("Dockerize Websocket gateway Staging") {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Websocket-gateway') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/websocket-gateway:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/websocket-gateway:staging'
+                }
+            }
+        }
+
+        // Deploy Websocket Gateway
+        stage('Deploy Websocket Gateway Staging') {
+            when {
+                expression { params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('Websocket-gateway') {
+                    echo 'Deploying websocket gateway with Helm'
+
+                    sh '''
+                    helm upgrade --install websocket-gateway-staging ./websocket-gateway-helm \
+                        -f ./websocket-gateway-helm/values-staging.yaml
+                    '''
                 }
             }
         }
