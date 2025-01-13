@@ -26,15 +26,15 @@ pipeline {
             }
         }
         stage('See tests') {
-            dir('performance-tests') {
-                steps {
+            steps {
+                dir('performance-tests') {
                     sh 'ls -la'
                 }
             }
         }
         stage('Copy tests into the vm') {
-            dir('performance-tests') {
-                steps {
+            steps {
+                dir('performance-tests') {
                     sh 'gcloud compute scp --recurse ./tests performance-test-vm:/home/jenkins/ --zone europe-west1-b --project dkkom-446515'
                 }
             }
