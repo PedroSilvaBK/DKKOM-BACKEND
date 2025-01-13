@@ -1,0 +1,107 @@
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'ACTION', choices: ['normal', 'deploy'], description: 'Choose whether to have normal ci or with deployment')
+    }
+    environment {
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
+        GITLAB_USER = credentials('SHARED_LIBRARY_USERNAME')
+        GITLAB_TOKEN = credentials('SHARED_LIBRARY_PASSWORD')
+        SNYK_TOKEN = credentials('SNYK_TOKEN')
+        SONARQUBE_ENV = credentials('SONARQUBE_TOKEN')
+        PATH = "/opt/sonar-scanner/bin:/usr/local/go/bin:${env.PATH}"
+    }
+    stages {
+        stage('Authenticate with Google Cloud') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
+            steps {
+                script {
+                    sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
+                    sh '''
+                        gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+                    '''
+                }
+            }
+        }
+        stage('Get Cluster Credentials') {
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
+            steps {
+                sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
+            }
+        }
+        stage('Build Voice Service') {
+            steps {
+                echo 'Building Voice Service'
+                dir('voice-video-service') {
+                    sh 'echo $PATH'
+                    sh 'go version'
+                    sh 'go mod tidy'
+                    sh 'go mod download'
+                    sh 'go build -o voice-service'
+                }
+            }
+        }
+        stage("Test Voice Service") {
+            steps {
+                echo 'Testing Voice Service'
+                dir('voice-video-service') {
+                    sh 'echo no teste'
+                }
+            }
+        }
+        stage('Sonarqube Analysis Voice Service') {
+            steps {
+                dir('voice-video-service') {
+                    withSonarQubeEnv('Sonarqube Server') {
+                        sh 'sonar-scanner \
+                            -Dsonar.projectKey=Voice-Service \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://192.168.138.132:9000 \
+                            -Dsonar.token=sqp_cc99befa0fa1ba7d0ccc1ed72660e4bc557fc2fe'
+                    }
+                }
+            }
+        }
+        stage('Snyk Scan Voice Service') {
+            agent {
+                label 'snyk-agent'
+            }
+            steps {
+                dir('voice-video-service') {
+                    sh 'ls -la'
+                    sh 'snyk auth $SNYK_TOKEN'
+                    sh 'snyk test --all-projects'
+                }
+            }
+        }
+        stage("Dockerize Voice Service") {
+            when {
+                expression { params.ACTION == 'deploy' || params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                echo 'Dockerizing Voice Service'
+                dir('voice-video-service') {
+                    sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
+                    sh 'docker build -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/voice-service:latest .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/voice-service:latest'
+                }
+            }
+        }
+        stage('Deploy Voice Service') {
+            when {
+                expression { params.ACTION == 'deploy' || params.ACTION == 'deploy-staging' }
+            }
+            steps {
+                dir('voice-video-service') {
+                    echo 'Deploying Voice Service'
+                    sh 'kubectl delete deployment voice-service --ignore-not-found=true'
+                    sh 'kubectl apply -f voice-service-deployment.yaml'
+                }
+            }
+        }
+    }
+}

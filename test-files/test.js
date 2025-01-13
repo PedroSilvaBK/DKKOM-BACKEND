@@ -5,7 +5,7 @@ const token = "eyJhbGciOiJSUzI1NiJ9.eyJpZCI6IjQzMzNiZmJiLTA3MWUtNDk1YS1iZDU5LTZi
 
 export let options = {
     stages: [
-        { duration: '10s', target: 20 }, // Ramp-up to 10 users
+        { duration: '5s', target: 1000 }, // Ramp-up to 10 users
         // { duration: '3m', target: 10 }, // Stay at 10 users
         // { duration: '1m', target: 0 },  // Ramp-down
     ],
@@ -17,7 +17,7 @@ export default function () {
         'Content-Type': 'application/json', // Adjust headers as needed
     };
 
-    let res = http.get('https://api.dkkom.com/actuator/health', { headers: headers });
+    let res = http.get('https://stagingapi.dkkom.com/actuator/health', { headers: headers });
     check(res, { 'status is 200': (r) => r.status === 200 });
     sleep(1);
 }
