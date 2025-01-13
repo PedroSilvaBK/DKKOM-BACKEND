@@ -1,7 +1,5 @@
 package dcom.gateway.api_gateway.configuration;
 
-import dcom.gateway.api_gateway.configuration.filters.FailureOauthHandler;
-import dcom.gateway.api_gateway.configuration.filters.SuccessOauthFilter;
 import dcom.gateway.api_gateway.configuration.jwt_token.RsaKeyProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +23,8 @@ import java.security.interfaces.RSAPublicKey;
 public class SecurityConfig {
     private final RsaKeyProvider rsaKeyProvider;
 
-    private final SuccessOauthFilter successOauthFilter;
-    private final FailureOauthHandler failureOauthHandler;
+//    private final SuccessOauthFilter successOauthFilter;
+//    private final FailureOauthHandler failureOauthHandler;
     @Value("${frontend.url}")
     private String frontendUrl;
 
@@ -44,14 +42,14 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // Disable CSRF for stateless services
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) // Prevent security context from being stored on the server
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/ws/**", "/actuator/health").permitAll()
+                        .pathMatchers("/ws/**", "/actuator/health", "/user-service/auth/token").permitAll()
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyExchange().authenticated() // Allow all other exchanges without authentication
                 )
-                .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
-                        .authenticationSuccessHandler(successOauthFilter.customAuthenticationSuccessHandler()) // Use custom success handler
-                        .authenticationFailureHandler(failureOauthHandler.serverAuthenticationFailureHandler())
-                )
+//                .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
+//                        .authenticationSuccessHandler(successOauthFilter.customAuthenticationSuccessHandler()) // Use custom success handler
+//                        .authenticationFailureHandler(failureOauthHandler.serverAuthenticationFailureHandler())
+//                )
                 .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                         oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder())) // JWT-based resource server configuration
                 )
