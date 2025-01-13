@@ -11,9 +11,6 @@ pipeline {
     }
     stages {
         stage('Authenticate with Google Cloud') {
-            when {
-                expression { params.ACTION == 'deploy-prod' || params.ACTION == 'deploy-staging' }
-            }
             steps {
                 script {
                     sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
