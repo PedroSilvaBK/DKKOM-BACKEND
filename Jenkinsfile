@@ -35,8 +35,7 @@ pipeline {
         }
         stage('ssh test') {
             steps {
-                sh 'gcloud compute ssh --zone "europe-west1-d" "turn-server" --project "dkkom-446515"'
-                sh 'ls -la'
+                sh 'gcloud compute ssh --zone "europe-west1-d" "turn-server" --project "dkkom-446515 --command "ls -la"'
             }
         }
         // stage('Create and configure external services for tests') {
