@@ -20,6 +20,11 @@ pipeline {
                 }
             }
         }
+        stage('ssh test'){
+            steps {
+                sh 'gcloud compute ssh performance-test-vm --zone europe-west1-b --project dkkom-446515 --command "echo hello"'
+            }
+        }
         stage('Copy tests into the vm') {
             steps {
                 sh 'gcloud compute scp --recurse ./tests performance-test-vm:/home/jenkins/ --zone europe-west1-b --project dkkom-446515'
