@@ -24,7 +24,7 @@ public class DBPopulate implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         CaveEntity caveEntity1 = CaveEntity.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.fromString("4443bfbb-071e-495a-bd59-6b5c67a627b0"))
                 .owner(UUID.fromString("4333bfbb-071e-495a-bd59-6b5c67a627b0"))
                 .name("staging-cave-test")
                 .build();
