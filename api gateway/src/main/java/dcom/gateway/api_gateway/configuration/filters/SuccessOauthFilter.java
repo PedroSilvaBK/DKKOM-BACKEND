@@ -99,7 +99,7 @@ public class SuccessOauthFilter {
                                     .httpOnly(false)
                                     .secure(true)   // Ensure HTTPS enable this for production
                                     .path("/")
-                                    .domain("staging.dkkom.com")
+                                    .domain("dkkom.com")
                                     .sameSite("None")
                                     .maxAge(Duration.ofMinutes(1))
                                     .build();
