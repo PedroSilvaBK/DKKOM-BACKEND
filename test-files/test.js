@@ -5,7 +5,7 @@ const token = "eyJhbGciOiJSUzI1NiJ9.eyJpZCI6IjQzMzNiZmJiLTA3MWUtNDk1YS1iZDU5LTZi
 
 export let options = {
     stages: [
-        { duration: '5s', target: 1000 }, // Ramp-up to 10 users
+        { duration: '5s', target: 10 }, // Ramp-up to 10 users
         // { duration: '3m', target: 10 }, // Stay at 10 users
         // { duration: '1m', target: 0 },  // Ramp-down
     ],
@@ -17,7 +17,11 @@ export default function () {
         'Content-Type': 'application/json', // Adjust headers as needed
     };
 
-    let res = http.get('https://stagingapi.dkkom.com/cave-service/cave/overview/4333bfbb-071e-495a-bd59-6b5c67a627b0', { headers: headers });
+    let res = http.post('https://stagingapi.dkkom.com/message-service/message/db74487d-486c-4bb2-981c-a83370a5730b', {
+        "channelId": "db74487d-486c-4bb2-981c-a83370a5730b",
+        "content": "new message witrh some data on it sdfsdfsdfsdf"
+    }
+    ,  { headers: headers });
     check(res, { 'status is 200': (r) => r.status === 200 });
     sleep(1);
 }
