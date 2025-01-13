@@ -10,8 +10,8 @@ export let options = {
             startVUs: 0,
             stages: [
                 { duration: '1m', target: 100 }, // Ramp-up to 10 users
-                { duration: '1m', target: 500 }, // Gradually increase to 50 users
-                { duration: '1m', target: 500 }, // Steady-state at 50 users
+                { duration: '1m', target: 1000 }, // Gradually increase to 50 users
+                { duration: '1m', target: 1000 }, // Steady-state at 50 users
                 { duration: '30s', target: 0 }, // Ramp-down to 0 users
             ],
             gracefulRampDown: '30s',
@@ -29,14 +29,8 @@ export default function () {
         'Content-Type': 'application/json', // Adjust headers as needed
     };
 
-    const body = JSON.stringify({
-        channelId: 'db74487d-486c-4bb2-981c-a83370a5730b',
-        content: 'new message witrh some data on it sdfsdfsdfsdf',
-    });
-
-    let res = http.post('https://stagingapi.dkkom.com/message-service/message/db74487d-486c-4bb2-981c-a83370a5730b', 
-        body
-    ,  { headers: headers });
+    let res = http.get('https://stagingapi.dkkom.com/cave-service/cave/overview/4333bfbb-071e-495a-bd59-6b5c67a627b0', 
+    { headers: headers });
     check(res, { 'status is 200': (r) => r.status === 200 });
     sleep(1);
 }

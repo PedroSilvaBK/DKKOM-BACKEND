@@ -35,6 +35,13 @@ spec:
         volumeMounts:
         - mountPath: "/var/secrets"
           name: cloud-profiler-secret-vol
+        resources:                      # Add this section for HPA
+          requests:
+            cpu: 100m                  # Minimum guaranteed CPU (100 millicores)
+            memory: 128Mi              # Minimum guaranteed memory (128 MiB)
+          limits:
+            cpu: 400m                  # Maximum CPU
+            memory: 500Mi              # Maximum memory
       volumes:
         - name: cloud-profiler-secret-vol
           csi:
