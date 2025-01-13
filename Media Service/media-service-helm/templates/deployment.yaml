@@ -37,7 +37,7 @@ spec:
             cpu: 200m                  # Minimum guaranteed CPU (100 millicores)
             memory: 228Mi              # Minimum guaranteed memory (128 MiB)
           limits:
-            cpu: 600m                  # Maximum CPU
+            cpu: 800m                  # Maximum CPU
             memory: 500Mi              # Maximum memory
       volumes:
         - name: mysecret
