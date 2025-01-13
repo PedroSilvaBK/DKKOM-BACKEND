@@ -7,7 +7,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: permission-service  # Name of your deployment
+    name: {{ .Release.Name }}-permission-service  # Name of your deployment
   minReplicas: 1      # Minimum number of pods
   maxReplicas: 4      # Maximum number of pods
   metrics:
