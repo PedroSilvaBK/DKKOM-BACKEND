@@ -30,8 +30,8 @@ spec:
         - name: DATABASE_IP
           valueFrom:
             secretKeyRef:
-              name: database-ip
-              key: DATABASE_IP
+              name: database-replica-ip
+              key: DATABASE_REPLICA_IP
         - name: REDIS_IP
           valueFrom:
             secretKeyRef:
