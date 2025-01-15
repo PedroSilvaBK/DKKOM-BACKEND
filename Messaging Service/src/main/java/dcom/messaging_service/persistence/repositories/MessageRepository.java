@@ -20,4 +20,7 @@ public interface MessageRepository extends CassandraRepository<MessageEntity, UU
 
     @Query("SELECT id FROM messages WHERE authorId = ?0 ALLOW FILTERING")
     List<MessageIdDTO> findByAuthorId(UUID authorId);
+
+    @Query("SELECT * FROM messages WHERE authorId = ?0 ALLOW FILTERING")
+    List<MessageEntity> findAllAuthorMessages(UUID authorId);
 }
