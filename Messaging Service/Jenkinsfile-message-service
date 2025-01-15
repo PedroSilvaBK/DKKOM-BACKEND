@@ -226,7 +226,7 @@ pipeline {
                     echo 'Deploying Messaging Service'
 
                     sh '''
-                    helm upgrade --install message-service ./api-gateway-helm \
+                    helm upgrade --install message-service ./message-service-helm \
                         -f ./message-service-helm/values.yaml
                     '''
                 }
