@@ -8,6 +8,7 @@ pipeline {
         SNYK_TOKEN = credentials('SNYK_TOKEN')
         SONARQUBE_ENV = credentials('SONARQUBE_TOKEN')
         PATH = "/opt/sonar-scanner/bin:/usr/local/go/bin:${env.PATH}"
+        JWT_STAGING_TOKEN = credentials('staging-auth-token')
     }
     stages {
         stage('Authenticate with Google Cloud') {
@@ -22,7 +23,7 @@ pipeline {
         }
         stage('ssh test'){
             steps {
-                sh 'gcloud compute ssh performance-test-vm --zone europe-west4-b --project dkkom-446515 --command "echo hello"'
+                sh 'gcloud compute ssh performance-test-vm --zone europe-west4-b --project dkkom-446515 --command "export JWT_TOKEN=$JWT_STAGING_TOKEN && echo $JWT_TOKEN"'
             }
         }
         stage('See tests') {
