@@ -34,6 +34,7 @@ dependencies {
     implementation 'org.springframework:spring-web'
     implementation 'org.springframework:spring-webmvc'
     implementation 'ch.qos.logback:logback-core:1.5.14'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'ch.qos.logback:logback-classic:1.5.14'
     implementation 'org.xmlunit:xmlunit-core:2.10.0'
     implementation 'io.netty:netty-common:4.1.115.Final'

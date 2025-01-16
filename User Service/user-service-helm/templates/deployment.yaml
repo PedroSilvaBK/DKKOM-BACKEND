@@ -37,11 +37,26 @@ spec:
           name: cloud-profiler-secret-vol
         resources:                      # Add this section for HPA
           requests:
-            cpu: 100m                  # Minimum guaranteed CPU (100 millicores)
+            cpu: 200m                  # Minimum guaranteed CPU (100 millicores)
             memory: 128Mi              # Minimum guaranteed memory (128 MiB)
           limits:
             cpu: 400m                  # Maximum CPU
-            memory: 500Mi              # Maximum memory
+            memory: 256Mi              # Maximum memory
+        readinessProbe:
+          httpGet:
+            path: /actuator/health  # Spring Actuator health check endpoint
+            port: 8080
+          initialDelaySeconds: 30    # Time before the first probe
+          periodSeconds: 15           # Interval between probes
+          successThreshold: 1        # Minimum consecutive successes
+          failureThreshold: 6        # Failures before marking as Unready
+        livenessProbe:
+          httpGet:
+            path: /actuator/health  # Liveness check on the same endpoint
+            port: 8080
+          initialDelaySeconds: 40    # Time before the first probe
+          periodSeconds: 15          # Interval between probes
+          failureThreshold: 5        # Failures before restarting the container
       volumes:
         - name: cloud-profiler-secret-vol
           csi:
