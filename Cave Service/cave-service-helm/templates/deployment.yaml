@@ -51,7 +51,7 @@ spec:
           httpGet:
             path: /actuator/health  # Liveness check on the same endpoint
             port: 8080
-          initialDelaySeconds: 60    # Time before the first probe
+          initialDelaySeconds: 50    # Time before the first probe
           periodSeconds: 20          # Interval between probes
           failureThreshold: 5        # Failures before restarting the container
       volumes:
