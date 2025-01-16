@@ -1,9 +1,9 @@
 package dcom.messaging_service.persistence.repositories;
 
 import dcom.messaging_service.persistence.entities.AuthorEntity;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.data.cassandra.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
