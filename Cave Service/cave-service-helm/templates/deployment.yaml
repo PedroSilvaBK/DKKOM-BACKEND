@@ -43,8 +43,8 @@ spec:
           httpGet:
             path: /actuator/health  # Spring Actuator health check endpoint
             port: 8080
-          initialDelaySeconds: 20    # Time before the first probe
-          periodSeconds: 5           # Interval between probes
+          initialDelaySeconds: 30    # Time before the first probe
+          periodSeconds: 10          # Interval between probes
           successThreshold: 1        # Minimum consecutive successes
           failureThreshold: 4        # Failures before marking as Unready
         livenessProbe:
