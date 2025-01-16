@@ -240,8 +240,8 @@ pipeline {
             steps {
                 dir('Messaging Service') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging2 .'
-                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging2'
+                    sh 'docker build -f Dockerfile-staging -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service:staging'
                 }
             }
         }
