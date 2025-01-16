@@ -22,7 +22,7 @@ pipeline {
         }
         stage('ssh test'){
             steps {
-                sh 'gcloud compute ssh performance-test-vm --zone europe-west1-b --project dkkom-446515 --command "echo hello"'
+                sh 'gcloud compute ssh performance-test-vm --zone europe-west4-b --project dkkom-446515 --command "echo hello"'
             }
         }
         stage('See tests') {
