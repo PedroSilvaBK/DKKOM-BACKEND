@@ -15,11 +15,13 @@ import dcom.messaging_service.persistence.repositories.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CreateMessageUseCaseImpl implements CreateMessageUseCase {
     private final PermissionServiceClient permissionServiceClient;
     private final MessageRepository repository;

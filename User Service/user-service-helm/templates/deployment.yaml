@@ -37,7 +37,7 @@ spec:
           name: cloud-profiler-secret-vol
         resources:                      # Add this section for HPA
           requests:
-            cpu: 200m                  # Minimum guaranteed CPU (100 millicores)
+            cpu: 100m                  # Minimum guaranteed CPU (100 millicores)
             memory: 128Mi              # Minimum guaranteed memory (128 MiB)
           limits:
             cpu: 600m                  # Maximum CPU

@@ -41,7 +41,6 @@ public class Controller {
     }
 
     @PostMapping("/{channelId}")
-    @Transactional
     public ResponseEntity<Void> sendMessage(@RequestHeader("X-User-Id") String userId, @RequestHeader("X-Username") String username, @PathVariable String channelId, @RequestBody CreateMessageRequest message) {
 
         createMessageUseCase.sendMessage(username, channelId, userId, message);
