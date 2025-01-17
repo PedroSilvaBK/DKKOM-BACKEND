@@ -45,13 +45,13 @@ spec:
           periodSeconds: 15           # Interval between probes
           successThreshold: 1        # Minimum consecutive successes
           failureThreshold: 6        # Failures before marking as Unready
-        livenessProbe:
-          httpGet:
-            path: /actuator/health  # Liveness check on the same endpoint
-            port: 8080
-          initialDelaySeconds: 40    # Time before the first probe
-          periodSeconds: 60          # Interval between probes
-          failureThreshold: 5        # Failures before restarting the container
+        # livenessProbe:
+        #   httpGet:
+        #     path: /actuator/health  # Liveness check on the same endpoint
+        #     port: 8080
+        #   initialDelaySeconds: 40    # Time before the first probe
+        #   periodSeconds: 60          # Interval between probes
+        #   failureThreshold: 5        # Failures before restarting the container
       volumes:
         - name: cloud-profiler-secret-vol
           csi:
