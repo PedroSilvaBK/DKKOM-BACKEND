@@ -23,11 +23,12 @@ public class GetCaveBootstrapUseCaveImpl implements GetCaveBootstrapUseCase {
     private final CaveRepository caveRepository;
     private final MemberRepository memberRepository;
     private final RolesAndPermissionsService rolesAndPermissionsService;
-//    private final JwtUserDetails jwtUserDetails;
+    private final JwtUserDetails jwtUserDetails;
     private final RedisTemplate<String, List<User>> redisTemplate;
 
-    public CaveBootStrapInformation getCaveBootstrapUseCave(UUID caveId, String authUserId) {
-        boolean userBelongsToCave = memberRepository.existsByUserIdAndCaveEntity_Id(UUID.fromString(authUserId), caveId);
+    public CaveBootStrapInformation getCaveBootstrapUseCave(UUID caveId) {
+        UUID authUserId = UUID.fromString(jwtUserDetails.getUserId());
+        boolean userBelongsToCave = memberRepository.existsByUserIdAndCaveEntity_Id(authUserId, caveId);
         if (!userBelongsToCave) {
             throw new Unauthorized("");
         }
@@ -61,7 +62,7 @@ public class GetCaveBootstrapUseCaveImpl implements GetCaveBootstrapUseCase {
                         .build()
         ));
 
-        UserRolesAndPermissionsCache userPermissionsCache = rolesAndPermissionsService.forceUpdate(UUID.fromString(authUserId), caveId);
+        UserRolesAndPermissionsCache userPermissionsCache = rolesAndPermissionsService.forceUpdate(authUserId, caveId);
 
         caveBootStrapInformation.setUserPermissionsCache(userPermissionsCache);
 

@@ -61,8 +61,8 @@ public class CaveController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CaveBootStrapInformation> getCaveBootstrap(@PathVariable UUID id, @RequestHeader("X-User-Id") String authUserId) {
-        return ResponseEntity.ok(getCaveBootstrapUseCase.getCaveBootstrapUseCave(id, authUserId));
+    public ResponseEntity<CaveBootStrapInformation> getCaveBootstrap(@PathVariable UUID id) {
+        return ResponseEntity.ok(getCaveBootstrapUseCase.getCaveBootstrapUseCave(id));
     }
 
     @GetMapping("/user/{userId}")

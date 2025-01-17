@@ -5,5 +5,5 @@ import dcom.cave_service.domain.CaveBootStrapInformation;
 import java.util.UUID;
 
 public interface GetCaveBootstrapUseCase {
-    CaveBootStrapInformation getCaveBootstrapUseCave(UUID caveId, String authUserId);
+    CaveBootStrapInformation getCaveBootstrapUseCave(UUID caveId);
 }
