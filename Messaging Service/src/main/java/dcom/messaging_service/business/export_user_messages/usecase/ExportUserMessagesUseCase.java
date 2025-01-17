@@ -5,5 +5,5 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface ExportUserMessagesUseCase {
-    File exportMessages(UUID userId, String authUserId) throws IOException;
+    File exportMessages(UUID userId) throws IOException;
 }

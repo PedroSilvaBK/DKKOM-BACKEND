@@ -4,6 +4,7 @@ import dcom.messaging_service.business.CannotSeeMessagesException;
 import dcom.messaging_service.business.clients.permissions_service_client.PermissionServiceClient;
 import dcom.messaging_service.business.get_messages.use_case.GetMessagesUseCase;
 import dcom.messaging_service.domain.AuthorDTO;
+import dcom.messaging_service.domain.JwtUserDetails;
 import dcom.messaging_service.domain.MessageDTO;
 import dcom.messaging_service.domain.requests.GetMessagesRequest;
 import dcom.messaging_service.domain.responses.GetMessagesResponse;
@@ -35,9 +36,10 @@ public class GetMessagesUseCaseImpl implements GetMessagesUseCase {
     private final AuthorRepository authorRepository;
     private static final int PAGE_SIZE = 25;
     private final PermissionServiceClient permissionServiceClient;
+    private final JwtUserDetails jwtUserDetails;
 
     public GetMessagesResponse getMessages(GetMessagesRequest getMessagesRequest) {
-        String userId = getMessagesRequest.getUserId();
+        String userId = jwtUserDetails.getUserId();
         String channelId = getMessagesRequest.getChannelId();
 
         log.debug("message request for user {} with channel {}", userId, channelId);

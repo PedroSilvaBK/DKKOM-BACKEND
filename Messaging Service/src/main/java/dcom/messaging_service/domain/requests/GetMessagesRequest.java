@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class GetMessagesRequest {
-    private String userId;
     private String channelId;
     private String pagingState;
 }

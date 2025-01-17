@@ -3,6 +3,7 @@ package dcom.messaging_service.business.export_user_messages.usecase_impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dcom.messaging_service.business.Unauthorized;
 import dcom.messaging_service.business.export_user_messages.usecase.ExportUserMessagesUseCase;
+import dcom.messaging_service.domain.JwtUserDetails;
 import dcom.messaging_service.persistence.entities.MessageEntity;
 import dcom.messaging_service.persistence.repositories.MessageRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,10 @@ import java.util.UUID;
 public class ExportUserMessagesUseCaseImpl implements ExportUserMessagesUseCase {
     private final MessageRepository messageRepository;
     private final ObjectMapper objectMapper; // Injected ObjectMapper for JSON serialization
+    private final JwtUserDetails jwtUserDetails;
 
-    public File exportMessages(UUID userId, String authUserId) throws IOException {
+    public File exportMessages(UUID userId) throws IOException {
+        String authUserId = jwtUserDetails.getUserId();
         if (!userId.toString().equals(authUserId)) {
             throw new Unauthorized("Wrong user ID");
         }

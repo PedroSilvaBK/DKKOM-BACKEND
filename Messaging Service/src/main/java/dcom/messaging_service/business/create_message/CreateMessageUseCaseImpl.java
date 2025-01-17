@@ -6,6 +6,7 @@ import dcom.messaging_service.business.publishers.MessagePublisher;
 import dcom.messaging_service.config.InstantGenerator;
 import dcom.messaging_service.config.UUIDGenerator;
 import dcom.messaging_service.domain.AuthorDTO;
+import dcom.messaging_service.domain.JwtUserDetails;
 import dcom.messaging_service.domain.MessageDTO;
 import dcom.messaging_service.domain.requests.CreateMessageRequest;
 import dcom.messaging_service.persistence.entities.AuthorEntity;
@@ -30,9 +31,13 @@ public class CreateMessageUseCaseImpl implements CreateMessageUseCase {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final UUIDGenerator uuidGenerator;
     private final InstantGenerator instantGenerator;
+    private final JwtUserDetails jwtUserDetails;
 
 
-    public boolean sendMessage(String username, String channelId, String userId, CreateMessageRequest message) {
+    public boolean sendMessage(String channelId, CreateMessageRequest message) {
+        String userId = jwtUserDetails.getUserId();
+        String username = jwtUserDetails.getUsername();
+
         boolean canSendMessage = permissionServiceClient.canSendMessage(userId, channelId);
 
         if (!canSendMessage) {

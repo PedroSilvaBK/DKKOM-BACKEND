@@ -12,7 +12,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -28,29 +27,28 @@ public class Controller {
     private final ExportUserMessagesUseCase exportUserMessagesUseCase;
 
     @GetMapping("/{channelId}")
-    public ResponseEntity<GetMessagesResponse> getMessages(@PathVariable String channelId, @RequestHeader("X-User-Id") String userId, @RequestParam("pageState")String pageState) {
+    public ResponseEntity<GetMessagesResponse> getMessages(@PathVariable String channelId, @RequestParam("pageState")String pageState) {
         return ResponseEntity.ok(
                 getMessagesUseCase.getMessages(
                         GetMessagesRequest.builder()
                                 .channelId(channelId)
                                 .pagingState(pageState)
-                                .userId(userId)
                                 .build()
                 )
         );
     }
 
     @PostMapping("/{channelId}")
-    public ResponseEntity<Void> sendMessage(@RequestHeader("X-User-Id") String userId, @RequestHeader("X-Username") String username, @PathVariable String channelId, @RequestBody CreateMessageRequest message) {
+    public ResponseEntity<Void> sendMessage(@PathVariable String channelId, @RequestBody CreateMessageRequest message) {
 
-        createMessageUseCase.sendMessage(username, channelId, userId, message);
+        createMessageUseCase.sendMessage(channelId, message);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/export-messages/{userId}")
-    public ResponseEntity<FileSystemResource> downloadMessages(@PathVariable UUID userId, @RequestHeader("X-User-Id") String authUserId) {
+    public ResponseEntity<FileSystemResource> downloadMessages(@PathVariable UUID userId) {
         try {
-            File jsonFile = exportUserMessagesUseCase.exportMessages(userId, authUserId);
+            File jsonFile = exportUserMessagesUseCase.exportMessages(userId);
             FileSystemResource resource = new FileSystemResource(jsonFile);
 
             HttpHeaders headers = new HttpHeaders();
