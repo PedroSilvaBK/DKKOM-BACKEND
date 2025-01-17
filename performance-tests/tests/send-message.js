@@ -37,7 +37,7 @@ export default function () {
         content: 'new message witrh some data on it sdfsdfsdfsdf',
     });
 
-    let res = http.post('https://stagingapi.dkkom.com/message-service/message/db74487d-486c-4bb2-981c-a83370a5730b', 
+    let res = http.post('https://stagingapi.dkkom.com/message/db74487d-486c-4bb2-981c-a83370a5730b', 
         body
     ,  { headers: headers });
 

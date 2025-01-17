@@ -32,7 +32,7 @@ export default function () {
         'Content-Type': 'application/json', // Adjust headers as needed
     };
 
-    let res = http.get('https://stagingapi.dkkom.com/message-service/message/db74487d-486c-4bb2-981c-a83370a5730b', { headers: headers });
+    let res = http.get('https://stagingapi.dkkom.com/message/db74487d-486c-4bb2-981c-a83370a5730b', { headers: headers });
 
     if (res.status !== 200) {
         console.error(`Request failed with status: ${res.status}`);
