@@ -2,4 +2,4 @@ replicas: 2
 
 image:
   repository: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/message-service
-  tag: staging2
+  tag: staging3
