@@ -80,9 +80,14 @@ public class CaveController {
         return ResponseEntity.ok(getCaveMembersFilteredByChannelUseCase.getCaveMembersResponse(channelId, caveId));
     }
 
+//    @GetMapping("/overview/{userId}")
+//    public ResponseEntity<GetCavesOverviewResponse> getCavesOverview(@PathVariable UUID userId,  @RequestHeader("X-User-Id") String authUserId) {
+//        return ResponseEntity.ok(getCavesOverviewUseCase.getCavesOverview(userId, authUserId));
+//    }
+
     @GetMapping("/overview/{userId}")
-    public ResponseEntity<GetCavesOverviewResponse> getCavesOverview(@PathVariable UUID userId,  @RequestHeader("X-User-Id") String authUserId) {
-        return ResponseEntity.ok(getCavesOverviewUseCase.getCavesOverview(userId, authUserId));
+    public ResponseEntity<GetCavesOverviewResponse> getCavesOverview(@PathVariable UUID userId) {
+        return ResponseEntity.ok(getCavesOverviewUseCase.getCavesOverview(userId));
     }
 
     @PostMapping

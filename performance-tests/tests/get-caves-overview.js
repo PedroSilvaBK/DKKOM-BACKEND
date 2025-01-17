@@ -14,12 +14,15 @@ export let options = {
                 { duration: '1m', target: 2000 }, // Gradually increase to 50 users
                 { duration: '1m', target: 2000 }, // Steady-state at 50 users
                 { duration: '1m', target: 0 }, // Ramp-down to 0 users
+                // { duration: '30s', target: 500 }, // Ramp-up to 10 users
+                // { duration: '1m', target: 1000 }, // Gradually increase to 50 users
+                // { duration: '1m', target: 0 }, // Ramp-down to 0 users
             ],
             gracefulRampDown: '30s',
         },
     },
     thresholds: {
-        http_req_duration: ['p(90)<700'], // 95% of requests should be below 500ms
+        http_req_duration: ['p(90)<700'], // 90% of requests should be below 700ms
         http_req_failed: ['rate<0.01'],   // Failure rate should be less than 1%
     },
 };
