@@ -41,7 +41,7 @@ spec:
             memory: 1Gi              # Maximum memory
         readinessProbe:
           httpGet:
-            path: /actuator/health  # Spring Actuator health check endpoint
+            path: /health  # Spring Actuator health check endpoint
             port: 8080
           initialDelaySeconds: 60    # Time before the first probe
           periodSeconds: 40          # Interval between probes

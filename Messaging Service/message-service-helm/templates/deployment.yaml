@@ -31,19 +31,20 @@ spec:
             memory: 512Mi              # Maximum memory
         readinessProbe:
           httpGet:
-            path: /actuator/health  # Spring Actuator health check endpoint
-            port: 8080
-          initialDelaySeconds: 30    # Time before the first probe
-          periodSeconds: 15           # Interval between probes
-          successThreshold: 1        # Minimum consecutive successes
-          failureThreshold: 6        # Failures before marking as Unready
-        livenessProbe:
-          httpGet:
-            path: /actuator/health  # Liveness check on the same endpoint
+            path: /health  # Spring Actuator health check endpoint
             port: 8080
           initialDelaySeconds: 40    # Time before the first probe
-          periodSeconds: 15          # Interval between probes
-          failureThreshold: 5        # Failures before restarting the container
+          periodSeconds: 40          # Interval between probes
+          timeoutSeconds:  50     # Wait up for a response
+          successThreshold: 1        # Minimum consecutive successes
+          failureThreshold: 10        # Failures before marking as Unready
+        # livenessProbe:
+        #   httpGet:
+        #     path: /actuator/health  # Liveness check on the same endpoint
+        #     port: 8080
+        #   initialDelaySeconds: 40    # Time before the first probe
+        #   periodSeconds: 15          # Interval between probes
+        #   failureThreshold: 5        # Failures before restarting the container
       volumes:
         - name: cloud-profiler-secret-vol
           csi:
