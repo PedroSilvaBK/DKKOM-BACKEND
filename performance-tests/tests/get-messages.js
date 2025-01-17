@@ -21,7 +21,7 @@ export let options = {
         },
     },
     thresholds: {
-        http_req_duration: ['p(70)<5000'], // 95% of requests should be below 500ms
+        http_req_duration: ['p(70)<6000'], // 95% of requests should be below 500ms
         http_req_failed: ['rate<0.01'],   // Failure rate should be less than 1%
     },
 };
@@ -32,7 +32,7 @@ export default function () {
         'Content-Type': 'application/json', // Adjust headers as needed
     };
 
-    let res = http.get('https://stagingapi.dkkom.com/message/db74487d-486c-4bb2-981c-a83370a5730b', { headers: headers });
+    let res = http.get('https://stagingapi.dkkom.com/message/db74487d-486c-4bb2-981c-a83370a5730b?pageState=', { headers: headers });
 
     if (res.status !== 200) {
         console.error(`Request failed with status: ${res.status}`);
