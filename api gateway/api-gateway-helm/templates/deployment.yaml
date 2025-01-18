@@ -37,6 +37,9 @@ spec:
           limits:
             cpu: "1"                  # Maximum CPU
             memory: 512Mi              # Maximum memory
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
         readinessProbe:
           httpGet:
             path: /actuator/health  # Spring Actuator health check endpoint
