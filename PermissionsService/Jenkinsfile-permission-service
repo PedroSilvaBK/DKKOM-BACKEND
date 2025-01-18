@@ -209,8 +209,8 @@ pipeline {
             steps {
                 dir('PermissionsService') {
                     sh 'gcloud auth configure-docker europe-west1-docker.pkg.dev || true'
-                    sh 'docker build -f Dockerfile-prod -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:latest .'
-                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:latest'
+                    sh 'docker build -f Dockerfile-prod -t europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:latest2 .'
+                    sh 'docker push europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/permission-service:latest2'
                 }
             }
         }
