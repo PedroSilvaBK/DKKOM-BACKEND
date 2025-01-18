@@ -27,8 +27,8 @@ spec:
             cpu: 100m                  # Minimum guaranteed CPU (100 millicores)
             memory: 256Mi              # Minimum guaranteed memory (128 MiB)
           limits:
-            cpu: 2000m                  # Maximum CPU
-            memory: 2Gi              # Maximum memory
+            cpu: 1200m                  # Maximum CPU
+            memory: 1Gi              # Maximum memory
         readinessProbe:
           httpGet:
             path: /health  # Spring Actuator health check endpoint
