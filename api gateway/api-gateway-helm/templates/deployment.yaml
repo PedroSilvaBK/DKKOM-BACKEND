@@ -39,6 +39,7 @@ spec:
             memory: 512Mi              # Maximum memory
         securityContext:
           allowPrivilegeEscalation: false
+          runAsUser: 1000
           runAsNonRoot: true
         readinessProbe:
           httpGet:

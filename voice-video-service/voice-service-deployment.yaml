@@ -29,6 +29,7 @@ spec:
             value: "kafka"
         securityContext:
           allowPrivilegeEscalation: false
+          runAsUser: 1000
           runAsNonRoot: true
         ports:
         - containerPort: 9999  # The container listens on port 80
