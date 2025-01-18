@@ -27,6 +27,9 @@ spec:
                 key: TURN_SERVER_PASSWORD
           - name: KAFKA_HOST
             value: "kafka"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
         ports:
         - containerPort: 9999  # The container listens on port 80
 

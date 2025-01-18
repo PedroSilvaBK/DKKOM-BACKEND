@@ -22,6 +22,9 @@ spec:
               secretKeyRef:
                 name: google-client-secret
                 key: GOOGLE_CLIENT_SECRET
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
         ports:
         - containerPort: 8080
         env:

@@ -37,6 +37,9 @@ spec:
             secretKeyRef:
               name: mysql-password
               key: MYSQL_PASSWORD
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
         volumeMounts:
         - mountPath: "/var/secrets"
           name: cloud-profiler-secret-vol
