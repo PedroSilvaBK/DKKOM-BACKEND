@@ -32,6 +32,11 @@ spec:
             secretKeyRef:
               name: database-replica-ip
               key: DATABASE_REPLICA_IP
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-password
+              key: MYSQL_PASSWORD
         - name: REDIS_IP
           valueFrom:
             secretKeyRef:

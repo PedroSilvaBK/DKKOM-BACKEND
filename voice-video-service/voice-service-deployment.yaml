@@ -20,6 +20,11 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: TURN_SERVER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: turn-server-password
+                key: TURN_SERVER_PASSWORD
           - name: KAFKA_HOST
             value: "kafka"
         ports:

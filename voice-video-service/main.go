@@ -74,11 +74,13 @@ var (
 	rooms      = make(map[string]*Room)
 	producer   sarama.SyncProducer
 	instanceIP string
+	turnServerPassword string
 )
 
 func main() {
 	instanceIP = os.Getenv("POD_IP")
 	kafkaHost := os.Getenv("KAFKA_HOST")
+	turnServerPassword := os.Getenv("TURN_SERVER_PASSWORD")
 
 	log.Printf("Server IP: %s", instanceIP)
 
@@ -214,7 +216,7 @@ func createPeerConnection(w http.ResponseWriter, r *http.Request) {
 			{
 				URLs:       []string{"turn:turn.dkkom.com:3478"},
 				Username:   "username",
-				Credential: "password",
+				Credential: turnServerPassword,
 			},
 		},
 	})

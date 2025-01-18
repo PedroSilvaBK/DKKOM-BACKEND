@@ -29,6 +29,11 @@ spec:
               secretKeyRef:
                 name: redis-ip
                 key: REDIS_IP
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-password
+                key: MYSQL_PASSWORD
         volumeMounts:
         - mountPath: "/var/secrets"
           name: cloud-profiler-secret-vol

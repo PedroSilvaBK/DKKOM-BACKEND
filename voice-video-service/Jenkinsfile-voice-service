@@ -10,6 +10,7 @@ pipeline {
         SNYK_TOKEN = credentials('SNYK_TOKEN')
         SONARQUBE_ENV = credentials('SONARQUBE_TOKEN')
         PATH = "/opt/sonar-scanner/bin:/usr/local/go/bin:${env.PATH}"
+        TURN_SERVER_PASSWORD = credentials('TURN_SERVER_PASSWORD')
     }
     stages {
         stage('Authenticate with Google Cloud') {
