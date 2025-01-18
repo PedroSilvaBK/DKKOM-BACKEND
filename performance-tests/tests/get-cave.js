@@ -2,8 +2,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 
-// const token = __ENV.JWT_TOKEN;
-const token = "eyJhbGciOiJSUzI1NiJ9.eyJpZCI6IjQzMzNiZmJiLTA3MWUtNDk1YS1iZDU5LTZiNWM2N2E2MjdiMCIsImVtYWlsIjoiZGtrb20uZm9udHlzQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiVXNlcm5hbWUtNDMzM2JmYmItMDcxZS00OTVhLWJkNTktNmI1YzY3YTYyN2IwIiwic3ViIjoiZGtrb20uZm9udHlzQGdtYWlsLmNvbSIsImlhdCI6MTczNjcwNjU3MiwiZXhwIjo2NDA2MzI2MzYwMH0.Vt0SL1OlropyiMge0RNbGakr-5uE9w-AIHvPl8cTjkLFYtrvPpOgain1wqeXyXGyKd2FTt6pnz0-0ndEV_lMG3uGCM_x7wfrKHKNVkbWnnMuT9pwwafhU4Y21ByBWx9bln9g5Z0VtWhLZhFy2_Qgg4XoeLcC4j8HbatER0JYvExP9qBljD751B7yQ8zkzqeJPVv7DTlnYPruUMY97S1ebRn2kS3WM_dOc42umoNO8gvEFVBmVgXYzd5C6DrU_FyYytu-Tsjc8kGb00oNek_oNY1p_ETdaN5W-xEAYrOz9poJ8xAJhIhDkx45-r3pR0k-eAbMwsG6jiXCgGDkJa7M8Q";
+const token = __ENV.JWT_TOKEN;
 
 export let options = {
     scenarios: {
