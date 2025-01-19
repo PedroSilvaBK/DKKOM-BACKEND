@@ -70,17 +70,17 @@ type DisconnectRequest struct {
 }
 
 var (
-	mu         sync.Mutex
-	rooms      = make(map[string]*Room)
-	producer   sarama.SyncProducer
-	instanceIP string
+	mu                 sync.Mutex
+	rooms              = make(map[string]*Room)
+	producer           sarama.SyncProducer
+	instanceIP         string
 	turnServerPassword string
 )
 
 func main() {
 	instanceIP = os.Getenv("POD_IP")
 	kafkaHost := os.Getenv("KAFKA_HOST")
-	turnServerPassword := os.Getenv("TURN_SERVER_PASSWORD")
+	turnServerPassword = os.Getenv("TURN_SERVER_PASSWORD")
 
 	log.Printf("Server IP: %s", instanceIP)
 
