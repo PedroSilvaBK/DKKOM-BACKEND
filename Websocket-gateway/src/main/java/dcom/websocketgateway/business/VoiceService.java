@@ -37,7 +37,7 @@ public class VoiceService {
             throw new RuntimeException("Could not create connection");
         }
 
-        log.info("Received response with server ip: ${}", response.getInstanceIP());
+        log.info("Received response with server ip: {}", response.getInstanceIP());
 
         String userId = session.getHandshakeHeaders().getFirst("x-user-id");
 
