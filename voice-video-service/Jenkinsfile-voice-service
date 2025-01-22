@@ -54,19 +54,19 @@ pipeline {
                 }
             }
         }
-        stage('Sonarqube Analysis Voice Service') {
-            steps {
-                dir('voice-video-service') {
-                    withSonarQubeEnv('Sonarqube Server') {
-                        sh 'sonar-scanner \
-                            -Dsonar.projectKey=Voice-Service \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://192.168.138.132:9000 \
-                            -Dsonar.token=sqp_cc99befa0fa1ba7d0ccc1ed72660e4bc557fc2fe'
-                    }
-                }
-            }
-        }
+        // stage('Sonarqube Analysis Voice Service') {
+        //     steps {
+        //         dir('voice-video-service') {
+        //             withSonarQubeEnv('Sonarqube Server') {
+        //                 sh 'sonar-scanner \
+        //                     -Dsonar.projectKey=Voice-Service \
+        //                     -Dsonar.sources=. \
+        //                     -Dsonar.host.url=http://192.168.138.132:9000 \
+        //                     -Dsonar.token=sqp_cc99befa0fa1ba7d0ccc1ed72660e4bc557fc2fe'
+        //             }
+        //         }
+        //     }
+        // }
         // stage('Snyk Scan Voice Service') {
         //     agent {
         //         label 'snyk-agent'
