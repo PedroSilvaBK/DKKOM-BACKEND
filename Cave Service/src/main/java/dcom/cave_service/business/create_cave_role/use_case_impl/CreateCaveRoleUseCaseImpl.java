@@ -51,6 +51,7 @@ public class CreateCaveRoleUseCaseImpl implements CreateCaveRoleUseCase {
         return CreateCaveRoleResponse.builder()
                 .id(savedCaveRole.getId())
                 .name(savedCaveRole.getName())
+                .caveId(cave.getId())
                 .permissions(savedCaveRole.getPermissions())
                 .build();
     }

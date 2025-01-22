@@ -13,6 +13,7 @@ import java.util.UUID;
 @Data
 public class CreateCaveRoleResponse {
     private UUID id;
+    private UUID caveId;
     private String name;
     private int permissions;
 }

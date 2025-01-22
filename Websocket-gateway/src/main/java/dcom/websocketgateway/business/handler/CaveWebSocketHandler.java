@@ -44,7 +44,7 @@ public class CaveWebSocketHandler extends TextWebSocketHandler {
 
         log.debug("User - {} connected", userId);
 
-        userStatusService.updateUserStatus(userId, Status.ONLINE);
+        userStatusService.updateUserStatus(userId, 1);
     }
 
     @Override
@@ -52,9 +52,8 @@ public class CaveWebSocketHandler extends TextWebSocketHandler {
         String userId = session.getHandshakeHeaders().getFirst(USER_ID_HEADER);
         sessionService.deleteSession(session.getId());
 
+        userStatusService.updateUserStatus(userId,2);
         log.debug("User - {} disconnected", userId);
-
-        userStatusService.updateUserStatus(userId, Status.OFFLINE);
     }
 
     @Override
@@ -64,6 +63,7 @@ public class CaveWebSocketHandler extends TextWebSocketHandler {
         log.debug("Received event {}", event.getType());
         switch (event.getType()) {
             case "ping":
+                handlePing(session);
                 break;
             case "select_cave":
                 selectCave(event, session);
@@ -87,6 +87,11 @@ public class CaveWebSocketHandler extends TextWebSocketHandler {
                 log.warn("Unhandled event {}", event.getType());
                 throw new IllegalStateException("Unexpected value: " + event.getType());
         }
+    }
+
+    private void handlePing(WebSocketSession session) {
+        String userId = (String) session.getAttributes().get("userId");
+        userStatusService.updateUserStatus(userId, 1);
     }
 
     private void handleDisconnect(Event event, WebSocketSession session) {

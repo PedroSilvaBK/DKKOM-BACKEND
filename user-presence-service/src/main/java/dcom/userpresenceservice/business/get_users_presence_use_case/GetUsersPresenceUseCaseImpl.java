@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class GetUsersPresenceUseCaseImpl implements GetUsersPresenceUseCase {
-    private final RedisTemplate<String, UserPresence> redisTemplate;
+    private final RedisTemplate<String, Integer> redisTemplate;
 
     private final static String KEY_TEMPLATE = "presence:%s";
 
@@ -24,25 +24,34 @@ public class GetUsersPresenceUseCaseImpl implements GetUsersPresenceUseCase {
         try {
             log.info("Getting users presences for {}", userIds);
             List<String> keys = buildKeys(userIds);
-            List<UserPresence> userPresences = redisTemplate.opsForValue().multiGet(keys);
-
+            List<Integer> userPresences = redisTemplate.opsForValue().multiGet(keys);
             if (userPresences == null) {
                 return fallback(userIds);
             }
 
-            for (int i = 0; i < userPresences.size(); i++) {
-                UserPresence userPresence = userPresences.get(i);
-                if (userPresence == null) {
-                    userPresences.set(i, UserPresence.builder()
+            List<UserPresence> userPresenceList = new ArrayList<>();
+            for(int i = 0; i < userPresences.size(); i++){
+                if (userPresences.get(i) != null) {
+                    userPresenceList.add(
+                            UserPresence.builder()
+                                    .userId(userIds.get(i))
+                                    .status(Status.ONLINE)
+                                    .build()
+                    );
+                }
+                else {
+                    userPresenceList.add(
+                            UserPresence.builder()
                                     .userId(userIds.get(i))
                                     .status(Status.OFFLINE)
-                            .build());
+                                    .build()
+                    );
                 }
             }
 
             log.debug("Users presences for {} are {}", userIds, userPresences);
 
-            return userPresences;
+            return userPresenceList;
         } catch (Exception e) {
             log.error("there was a problem retrieving the user presence: {}", e.getMessage());
             throw new ErrorRetrievingUserPresence("there was a problem retrieving the user presence");
