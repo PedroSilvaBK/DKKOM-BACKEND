@@ -42,6 +42,8 @@ public class CaveWebSocketHandler extends TextWebSocketHandler {
         String userId = session.getHandshakeHeaders().getFirst(USER_ID_HEADER);
         sessionService.saveSession(session.getId(), session);
 
+        session.getAttributes().put("userId", userId);
+
         log.debug("User - {} connected", userId);
 
         userStatusService.updateUserStatus(userId, 1);
@@ -221,7 +223,6 @@ public class CaveWebSocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        session.getAttributes().put("userId", userId);
         session.getAttributes().put("currentCave",
                 CurrentCaveInfo.builder()
                         .channelsWithOverriddenPermissions((List<String>) channelsWithOverriddenPermissions)
