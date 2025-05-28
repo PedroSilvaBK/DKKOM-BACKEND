@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class CreateCaveUseCaseImpl implements CreateCaveUseCase {
     private final CaveRepository caveRepository;
     private final UUIDGenerator uuidGenerator;
+
 
     public CreateCaveResponse createCave(CreateCaveRequest request, String authUserId, String authUsername) {
         if (!authUserId.equals(request.getOwnerId())) {
